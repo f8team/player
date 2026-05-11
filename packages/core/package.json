@@ -1,0 +1,76 @@
+{
+  "name": "@f8/player-core",
+  "version": "0.0.0",
+  "description": "Headless, framework-agnostic, plugin-driven video player engine. Powers the @f8/player-* adapters.",
+  "license": "MIT",
+  "homepage": "https://github.com/f8/player/tree/main/packages/core#readme",
+  "bugs": {
+    "url": "https://github.com/f8/player/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/f8/player.git",
+    "directory": "packages/core"
+  },
+  "author": "F8 <devs@f8.edu.vn>",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./internal": {
+      "types": "./dist/internal/index.d.ts",
+      "import": "./dist/internal/index.js",
+      "require": "./dist/internal/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --max-warnings=0",
+    "size": "size-limit",
+    "clean": "rm -rf dist coverage .turbo"
+  },
+  "keywords": [
+    "video",
+    "player",
+    "html5",
+    "hls",
+    "headless",
+    "framework-agnostic",
+    "plugin",
+    "f8",
+    "media"
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^11.1.6",
+    "@vitest/coverage-v8": "^2.1.2",
+    "jsdom": "^25.0.1",
+    "size-limit": "^11.1.6",
+    "tsup": "^8.3.0"
+  }
+}

@@ -28,6 +28,7 @@ export default [
         ecmaFeatures: { jsx: true },
       },
       globals: {
+        // Runtime
         window: "readonly",
         document: "readonly",
         navigator: "readonly",
@@ -39,6 +40,29 @@ export default [
         queueMicrotask: "readonly",
         requestAnimationFrame: "readonly",
         cancelAnimationFrame: "readonly",
+        // DOM types (TypeScript validates these via lib.dom; ESLint's
+        // no-undef can't read TS types so we whitelist explicitly).
+        Element: "readonly",
+        HTMLElement: "readonly",
+        HTMLDivElement: "readonly",
+        HTMLButtonElement: "readonly",
+        HTMLVideoElement: "readonly",
+        HTMLMediaElement: "readonly",
+        HTMLScriptElement: "readonly",
+        HTMLAnchorElement: "readonly",
+        HTMLInputElement: "readonly",
+        HTMLLabelElement: "readonly",
+        HTMLImageElement: "readonly",
+        HTMLTrackElement: "readonly",
+        XMLHttpRequest: "readonly",
+        Event: "readonly",
+        KeyboardEvent: "readonly",
+        MouseEvent: "readonly",
+        CustomEvent: "readonly",
+        TimeRanges: "readonly",
+        MediaError: "readonly",
+        CSSStyleDeclaration: "readonly",
+        Promise: "readonly",
       },
     },
     plugins: {
@@ -47,6 +71,9 @@ export default [
     },
     rules: {
       ...tsRecommendedRules,
+      // TS already flags undefined identifiers; disable ESLint's no-undef
+      // because it can't see ambient types from lib.dom.
+      "no-undef": "off",
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": [
         "error",
