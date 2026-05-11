@@ -1,0 +1,10 @@
+[
+  {
+    "name": "@f8/player-plugin-fullscreen (gzip)",
+    "path": "dist/index.js",
+    "import": "*",
+    "ignore": ["@f8/player-core"],
+    "limit": "3 KB",
+    "gzip": true
+  }
+]

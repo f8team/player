@@ -1,0 +1,224 @@
+/**
+ * @f8/player-themes — classroom
+ * Course-learning theme: focused, minimal chrome, comfortable for long sessions.
+ * Golden cases: G1 (course lesson), G3 (progress bar with chapters).
+ *
+ * Usage: import "@f8/player-themes/classroom.css";
+ */
+
+/* ─── Design tokens ─────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"],
+.f8-player-classroom {
+  --f8p-bg: #0d0d0d;
+  --f8p-ctrl-bg: linear-gradient(to top, rgba(0,0,0,.85) 0%, transparent 100%);
+  --f8p-ctrl-height: 6.4rem;
+  --f8p-accent: #f05123;
+  --f8p-accent-hover: #ff6a3e;
+  --f8p-text: #ffffff;
+  --f8p-text-secondary: rgba(255,255,255,.65);
+  --f8p-seek-track: rgba(255,255,255,.25);
+  --f8p-seek-fill: var(--f8p-accent);
+  --f8p-seek-thumb: var(--f8p-accent);
+  --f8p-seek-buffered: rgba(255,255,255,.45);
+  --f8p-radius: 0.4rem;
+  --f8p-btn-size: 3.2rem;
+  --f8p-icon-size: 1.8rem;
+  --f8p-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --f8p-font-size: 1.3rem;
+  --f8p-transition: 0.18s ease;
+  --f8p-volume-width: 7.2rem;
+}
+
+/* ─── Container ─────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"],
+.f8-player-classroom {
+  position: relative;
+  background: var(--f8p-bg);
+  border-radius: var(--f8p-radius);
+  overflow: hidden;
+  font-family: var(--f8p-font);
+  font-size: var(--f8p-font-size);
+  color: var(--f8p-text);
+  line-height: 1;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Video ──────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] video,
+.f8-player-classroom video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+
+/* ─── Controls bar ───────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] .f8p-controls,
+.f8-player-classroom .f8p-controls {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: var(--f8p-ctrl-height);
+  padding: 0 1.2rem 1rem;
+  background: var(--f8p-ctrl-bg);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: opacity var(--f8p-transition);
+}
+
+[data-f8-player][data-theme="classroom"]:not([data-controls-visible]) .f8p-controls,
+.f8-player-classroom:not([data-controls-visible]) .f8p-controls {
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-f8-player][data-theme="classroom"]:hover .f8p-controls,
+[data-f8-player][data-theme="classroom"]:focus-within .f8p-controls,
+.f8-player-classroom:hover .f8p-controls,
+.f8-player-classroom:focus-within .f8p-controls {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ─── Seek bar ───────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] .f8p-seek,
+.f8-player-classroom .f8p-seek {
+  position: absolute;
+  inset-inline: 1.2rem;
+  bottom: calc(var(--f8p-ctrl-height) - 1.2rem);
+  height: 0.4rem;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-seek input[type="range"],
+.f8-player-classroom .f8p-seek input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 0.4rem;
+  background: transparent;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+  border-radius: 99px;
+  outline: none;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-seek input[type="range"]::-webkit-slider-runnable-track,
+.f8-player-classroom .f8p-seek input[type="range"]::-webkit-slider-runnable-track {
+  background: var(--f8p-seek-track);
+  height: 0.4rem;
+  border-radius: 99px;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-seek input[type="range"]::-webkit-slider-thumb,
+.f8-player-classroom .f8p-seek input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 50%;
+  background: var(--f8p-seek-thumb);
+  margin-top: -0.4rem;
+  transition: transform var(--f8p-transition);
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-seek input[type="range"]:hover::-webkit-slider-thumb,
+.f8-player-classroom .f8p-seek input[type="range"]:hover::-webkit-slider-thumb {
+  transform: scale(1.4);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] .f8p-btn,
+.f8-player-classroom .f8p-btn {
+  width: var(--f8p-btn-size);
+  height: var(--f8p-btn-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  background: transparent;
+  color: var(--f8p-text);
+  cursor: pointer;
+  border-radius: var(--f8p-radius);
+  transition: background var(--f8p-transition), color var(--f8p-transition);
+  padding: 0;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-btn:hover,
+.f8-player-classroom .f8p-btn:hover {
+  background: rgba(255,255,255,.12);
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-btn:focus-visible,
+.f8-player-classroom .f8p-btn:focus-visible {
+  outline: 2px solid var(--f8p-accent);
+  outline-offset: 2px;
+}
+
+/* ─── Time ───────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] .f8p-time,
+.f8-player-classroom .f8p-time {
+  font-variant-numeric: tabular-nums;
+  color: var(--f8p-text-secondary);
+  font-size: var(--f8p-font-size);
+  white-space: nowrap;
+  margin: 0 0.4rem;
+}
+
+/* ─── Spacer ─────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] .f8p-spacer,
+.f8-player-classroom .f8p-spacer {
+  flex: 1;
+}
+
+/* ─── Volume ─────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] .f8p-volume,
+.f8-player-classroom .f8p-volume {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-volume-slider,
+.f8-player-classroom .f8p-volume-slider {
+  width: var(--f8p-volume-width);
+}
+
+/* ─── Watermark ──────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] .f8-watermark,
+.f8-player-classroom .f8-watermark {
+  position: absolute;
+  bottom: 5.6rem;
+  right: 1.6rem;
+  opacity: 0.35;
+  pointer-events: none;
+  font-size: 1.2rem;
+  color: #fff;
+  user-select: none;
+}
+
+/* ─── Loading / error states ─────────────────────────────────────────────── */
+[data-f8-player][data-theme="classroom"][data-status="loading"] video,
+.f8-player-classroom[data-status="loading"] video {
+  opacity: 0;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-spinner,
+.f8-player-classroom .f8p-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4rem;
+  height: 4rem;
+  border: 3px solid rgba(255,255,255,.2);
+  border-top-color: var(--f8p-accent);
+  border-radius: 50%;
+  animation: f8p-spin 0.7s linear infinite;
+}
+
+@keyframes f8p-spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}

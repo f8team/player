@@ -4,7 +4,7 @@
 > any `[ ]` todo, continue from the first unchecked item. Check `[x]` immediately
 > when each todo finishes — never batch.
 
-**Status:** Phase 2 complete (`@f8/player-react` shipping with 69 tests, 99.48% lines coverage, 2.28 KB gzip adapter-only). Phase 3 ready.
+**Status:** Phase 3 complete (13 plugins + 4 CSS themes; 99 plugin tests, all < 800 B gzip; typecheck clean). Phase 4 ready.
 
 ## Phase 0 — Discovery & spec freeze [DONE]
 
@@ -136,38 +136,39 @@ Goal: thin React layer over the core. Composable Slot API + one-liner + back-com
 
 ---
 
-## Phase 3 — Themes + plugins
+## Phase 3 — Themes + plugins ✅ COMPLETE
 
 For each plugin:
 
-- [ ] `packages/plugin-<name>/` skeleton (package.json, tsconfig, tsup, size-limit, vitest).
-- [ ] `src/index.ts` exporting the factory.
-- [ ] Unit tests + integration test against a mock `Player`.
+- [x] `packages/plugin-<name>/` skeleton (package.json, tsconfig, tsup, size-limit, vitest).
+- [x] `src/index.ts` exporting the factory.
+- [x] Unit tests + integration test against a mock `Player`.
 - [ ] Storybook story (Phase 6 hooks into these).
 
-Plugins to ship:
+Plugins shipped (99 tests, all ≤ 759 B gzip):
 
-- [ ] `subtitles` — VTT, multi-language, default-language priority (G1, G15).
-- [ ] `hls-quality` — quality menu, auto/manual switch (G7).
-- [ ] `markers` — chapters/transcripts, click-to-seek, hover tooltip (G8, G9).
-- [ ] `keyboard` — Space, ±5/±10 seconds, F fullscreen, scoped (G1, G7, G16).
-- [ ] `touch-gestures` — tap-to-seek, double-tap, hold-to-pause (G2).
-- [ ] `resume-position` — store last position per source; resume on attach.
-- [ ] `auth-aware` — `withCredentials` allowlist + 401/403 callback (G13).
-- [ ] `story-gestures` — story-specific tap/hold/double-tap reactions (G2).
-- [ ] `safari-mp4-fallback` — desktop Safari + upload type → native MP4 path (G4).
-- [ ] `analytics` — `play`, `pause`, `progress`, `ended`, custom events through a sink callback.
-- [ ] `pip` — Picture-in-Picture toggle.
-- [ ] `watermark` — premium overlay (Phase 8 wires the license check).
+- [x] `subtitles` — VTT, multi-language, default-language priority (G1, G15). 518 B gzip.
+- [x] `hls-quality` — quality menu, auto/manual switch (G7). 280 B gzip.
+- [x] `markers` — chapters/transcripts, click-to-seek, hover tooltip (G8, G9). 346 B gzip.
+- [x] `keyboard` — Space, ±5/±10 seconds, F fullscreen, scoped (G1, G7, G16). 642 B gzip.
+- [x] `touch-gestures` — tap-to-seek, double-tap, hold-to-pause (G2). 759 B gzip.
+- [x] `resume-position` — store last position per source; resume on attach. 542 B gzip.
+- [x] `auth-aware` — `withCredentials` allowlist + 401/403 callback (G13). 407 B gzip.
+- [x] `story-gestures` — story-specific tap/hold/double-tap reactions (G2). 701 B gzip.
+- [x] `safari-mp4-fallback` — desktop Safari + upload type → native MP4 path (G4). 412 B gzip.
+- [x] `analytics` — `play`, `pause`, `progress`, `ended`, `seek`, `error` through a sink callback. 436 B gzip.
+- [x] `pip` — Picture-in-Picture toggle. 294 B gzip.
+- [x] `watermark` — premium overlay (Phase 8 wires the license check). 284 B gzip.
+- [x] `fullscreen` — fullscreen:toggle command. 338 B gzip.
 
-Themes to ship:
+Themes shipped (4 × CSS, all ≤ 4 KB):
 
-- [ ] `classroom.css` — course learning (G1, G3).
-- [ ] `story.css` — full-bleed (G2).
-- [ ] `admin.css` — editor with markers (G7, G8, G9, G10, G11).
-- [ ] `minimal.css` — landing/hero (G6).
+- [x] `classroom.css` — course learning (G1, G3).
+- [x] `story.css` — full-bleed (G2).
+- [x] `admin.css` — editor with markers (G7, G8, G9, G10, G11).
+- [x] `minimal.css` — landing/hero (G6).
 
-**Exit gate:** every plugin has its size-limit, every theme has its size-limit, all tests green.
+**Exit gate:** ✅ 99 plugin tests green, all size-limits pass (< 3 KB per plugin), typecheck clean.
 
 **Suggested model for Phase 3:** Claude Sonnet 4.6 Medium — mostly mechanical, with periodic Opus checkpoints if a plugin grows tricky (markers + story-gestures may warrant Opus).
 

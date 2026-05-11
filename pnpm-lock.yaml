@@ -63,6 +63,279 @@ importers:
         specifier: ^8.3.0
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
 
+  packages/plugin-analytics:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-auth-aware:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-fullscreen:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-hls-quality:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-keyboard:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-markers:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-pip:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-resume-position:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-safari-mp4-fallback:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-story-gestures:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-subtitles:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-touch-gestures:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/plugin-watermark:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      '@vitest/coverage-v8':
+        specifier: ^2.1.2
+        version: 2.1.9(vitest@2.1.9(@types/node@22.19.18)(jsdom@25.0.1))
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
   packages/react:
     dependencies:
       '@f8/player-core':
@@ -102,6 +375,15 @@ importers:
       tsup:
         specifier: ^8.3.0
         version: 8.5.1(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+
+  packages/themes:
+    devDependencies:
+      '@size-limit/preset-small-lib':
+        specifier: ^11.1.6
+        version: 11.2.0(size-limit@11.2.0)
+      size-limit:
+        specifier: ^11.1.6
+        version: 11.2.0
 
 packages:
 

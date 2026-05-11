@@ -1,0 +1,30 @@
+{
+  "name": "@f8/player-themes",
+  "version": "0.0.0",
+  "description": "CSS themes for @f8/player-react: classroom, story, admin, minimal",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": true,
+  "exports": {
+    "./classroom.css": "./src/classroom.css",
+    "./story.css": "./src/story.css",
+    "./admin.css": "./src/admin.css",
+    "./minimal.css": "./src/minimal.css",
+    "./package.json": "./package.json"
+  },
+  "files": ["src/**/*.css", "README.md"],
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "echo 'CSS-only package — no build step'",
+    "typecheck": "echo 'CSS-only — no TS'",
+    "lint": "echo 'CSS-only — no lint'",
+    "size": "size-limit",
+    "clean": "echo 'nothing to clean'"
+  },
+  "keywords": ["video", "player", "f8", "css", "theme"],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^11.1.6",
+    "size-limit": "^11.1.6"
+  }
+}

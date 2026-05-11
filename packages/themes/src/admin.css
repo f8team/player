@@ -1,0 +1,196 @@
+/**
+ * @f8/player-themes — admin
+ * Editor/admin theme: always-visible controls, markers, chapter timeline.
+ * High-contrast, space-efficient, keyboard-first.
+ * Golden cases: G7 (quality select), G8 (transcript panel), G9 (chapter list),
+ *               G10 (editor scrubbing), G11 (preview).
+ *
+ * Usage: import "@f8/player-themes/admin.css";
+ */
+
+[data-f8-player][data-theme="admin"],
+.f8-player-admin {
+  --f8p-bg: #1a1a1a;
+  --f8p-ctrl-bg: #252525;
+  --f8p-ctrl-height: 5.6rem;
+  --f8p-accent: #3b82f6;
+  --f8p-accent-hover: #60a5fa;
+  --f8p-text: #e5e7eb;
+  --f8p-text-secondary: #9ca3af;
+  --f8p-border: #374151;
+  --f8p-seek-track: #374151;
+  --f8p-seek-fill: var(--f8p-accent);
+  --f8p-seek-thumb: var(--f8p-accent);
+  --f8p-radius: 0.4rem;
+  --f8p-btn-size: 2.8rem;
+  --f8p-icon-size: 1.6rem;
+  --f8p-font: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --f8p-font-size: 1.2rem;
+  --f8p-transition: 0.12s ease;
+  --f8p-volume-width: 8rem;
+  --f8p-marker-color: #facc15;
+}
+
+/* ─── Container ─────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"],
+.f8-player-admin {
+  position: relative;
+  background: var(--f8p-bg);
+  border: 1px solid var(--f8p-border);
+  border-radius: var(--f8p-radius);
+  overflow: hidden;
+  font-family: var(--f8p-font);
+  font-size: var(--f8p-font-size);
+  color: var(--f8p-text);
+  user-select: none;
+}
+
+/* ─── Video ──────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] video,
+.f8-player-admin video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  background: #000;
+}
+
+/* ─── Controls bar — always visible ─────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] .f8p-controls,
+.f8-player-admin .f8p-controls {
+  position: relative;
+  height: var(--f8p-ctrl-height);
+  padding: 0 1rem;
+  background: var(--f8p-ctrl-bg);
+  border-top: 1px solid var(--f8p-border);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* ─── Seek bar ───────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] .f8p-seek,
+.f8-player-admin .f8p-seek {
+  flex: 1;
+  position: relative;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+[data-f8-player][data-theme="admin"] .f8p-seek input[type="range"],
+.f8-player-admin .f8p-seek input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 0.4rem;
+  background: var(--f8p-seek-track);
+  cursor: pointer;
+  border-radius: 99px;
+  outline: none;
+}
+
+[data-f8-player][data-theme="admin"] .f8p-seek input[type="range"]::-webkit-slider-thumb,
+.f8-player-admin .f8p-seek input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--f8p-seek-thumb);
+}
+
+/* ─── Marker dots on the seek bar ────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] .f8p-marker-dot,
+.f8-player-admin .f8p-marker-dot {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--f8p-marker-color);
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 2;
+  transition: transform var(--f8p-transition);
+}
+
+[data-f8-player][data-theme="admin"] .f8p-marker-dot:hover,
+.f8-player-admin .f8p-marker-dot:hover {
+  transform: translate(-50%, -50%) scale(1.5);
+}
+
+/* ─── Buttons ────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] .f8p-btn,
+.f8-player-admin .f8p-btn {
+  width: var(--f8p-btn-size);
+  height: var(--f8p-btn-size);
+  min-width: 2.8rem;
+  min-height: 2.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--f8p-text);
+  cursor: pointer;
+  border-radius: var(--f8p-radius);
+  transition: background var(--f8p-transition), border-color var(--f8p-transition);
+  padding: 0;
+}
+
+[data-f8-player][data-theme="admin"] .f8p-btn:hover,
+.f8-player-admin .f8p-btn:hover {
+  background: rgba(255,255,255,.08);
+  border-color: var(--f8p-border);
+}
+
+[data-f8-player][data-theme="admin"] .f8p-btn:focus-visible,
+.f8-player-admin .f8p-btn:focus-visible {
+  outline: 2px solid var(--f8p-accent);
+  outline-offset: 2px;
+}
+
+/* ─── Time ───────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] .f8p-time,
+.f8-player-admin .f8p-time {
+  font-variant-numeric: tabular-nums;
+  color: var(--f8p-text-secondary);
+  font-size: var(--f8p-font-size);
+  white-space: nowrap;
+  padding: 0 0.4rem;
+  font-family: "JetBrains Mono", "Fira Code", monospace;
+}
+
+/* ─── Quality badge ──────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] .f8p-quality-label,
+.f8-player-admin .f8p-quality-label {
+  font-size: 1rem;
+  color: var(--f8p-text-secondary);
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--f8p-border);
+  border-radius: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+}
+
+/* ─── Spacer ─────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] .f8p-spacer,
+.f8-player-admin .f8p-spacer {
+  flex: 1;
+}
+
+/* ─── Watermark ──────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="admin"] .f8-watermark,
+.f8-player-admin .f8-watermark {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  opacity: 0.3;
+  pointer-events: none;
+  font-size: 1.1rem;
+  color: #9ca3af;
+  user-select: none;
+  font-family: "JetBrains Mono", monospace;
+}

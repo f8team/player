@@ -1,0 +1,43 @@
+{
+  "name": "@f8/player-plugin-keyboard",
+  "version": "0.0.0",
+  "description": "f8-player plugin: keyboard",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md"],
+  "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --max-warnings=0",
+    "size": "size-limit",
+    "clean": "rm -rf dist coverage .turbo"
+  },
+  "keywords": ["video", "player", "f8", "plugin", "keyboard"],
+  "peerDependencies": { "@f8/player-core": "workspace:*" },
+  "devDependencies": {
+    "@f8/player-core": "workspace:*",
+    "@size-limit/preset-small-lib": "^11.1.6",
+    "@vitest/coverage-v8": "^2.1.2",
+    "jsdom": "^25.0.1",
+    "size-limit": "^11.1.6",
+    "tsup": "^8.3.0"
+  }
+}
