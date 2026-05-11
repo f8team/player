@@ -25,6 +25,8 @@ export type YouTubePlayerCtor = new (
   el: HTMLElement,
   options: {
     videoId?: string;
+    width?: string | number;
+    height?: string | number;
     playerVars?: Record<string, unknown>;
     events?: {
       onReady?: (event: { target: YouTubePlayerInstance }) => void;
@@ -119,22 +121,36 @@ class YouTubeLoader implements SourceLoader {
     }
     const host = document.createElement("div");
     host.setAttribute("data-f8-player-yt-host", "");
-    host.style.position = "absolute";
-    host.style.inset = "0";
+    // The host must fill the stage absolutely so the YT iframe stretches to 100%.
+    host.style.cssText = "position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#000;";
     parent.appendChild(host);
     this.host = host;
 
-    // Hide the underlying <video> while YT owns playback. Adapters can
-    // override via theme tokens.
+    // Hide the underlying <video> while YT owns playback.
     video.style.visibility = "hidden";
 
     return new Promise<void>((resolve, reject) => {
       try {
         this.yt = new YT.Player(host, {
           videoId: id,
-          playerVars: { playsinline: 1, modestbranding: 1, rel: 0 },
+          // 100% so the iframe fills the host div rather than using default px dimensions.
+          width: "100%",
+          height: "100%",
+          playerVars: {
+            playsinline: 1,
+            modestbranding: 1,
+            rel: 0,
+            // enablejsapi is implicitly set by the IFrame API; explicit = good practice.
+            enablejsapi: 1,
+          },
           events: {
             onReady: () => {
+              // Force the generated <iframe> to fill its parent regardless of
+              // what YT.Player chose as its initial dimensions.
+              const iframe = host.querySelector("iframe");
+              if (iframe) {
+                iframe.style.cssText = "width:100%;height:100%;border:none;display:block;";
+              }
               this.startTimeBridge();
               this.options.onStateChange?.("ready");
               resolve();

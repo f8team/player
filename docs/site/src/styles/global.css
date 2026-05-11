@@ -1,0 +1,228 @@
+/* ─── Reset ──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+html {
+  font-size: 62.5%; /* 1rem = 10px */
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 1.6rem;
+  line-height: 1.7;
+  color: #1a1a1a;
+  background: #fff;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Layout ─────────────────────────────────────────────────────────────── */
+.site-layout {
+  display: grid;
+  grid-template-columns: 26rem 1fr;
+  min-height: 100vh;
+}
+
+@media (max-width: 860px) {
+  .site-layout { grid-template-columns: 1fr; }
+  .site-sidebar { display: none; }
+}
+
+/* ─── Sidebar ────────────────────────────────────────────────────────────── */
+.site-sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  background: #fafafa;
+  border-right: 1px solid #e5e7eb;
+  padding: 3.2rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.sidebar-logo {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f05123;
+  text-decoration: none;
+  margin-bottom: 2.4rem;
+  display: block;
+}
+
+.sidebar-section {
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  margin: 1.6rem 0 0.6rem;
+}
+
+.sidebar-link {
+  display: block;
+  padding: 0.5rem 1rem;
+  border-radius: 0.6rem;
+  font-size: 1.4rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sidebar-link:hover,
+.sidebar-link.active {
+  background: #f05123;
+  color: #fff;
+}
+
+/* ─── Content ────────────────────────────────────────────────────────────── */
+.site-content {
+  max-width: 86rem;
+  padding: 4rem 4.8rem;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ─── Prose ──────────────────────────────────────────────────────────────── */
+.prose h1 { font-size: 3.6rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.6rem; color: #111; }
+.prose h2 { font-size: 2.4rem; font-weight: 700; margin: 3.2rem 0 1.2rem; color: #111; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.6rem; }
+.prose h3 { font-size: 1.8rem; font-weight: 600; margin: 2.4rem 0 0.8rem; color: #222; }
+.prose p { margin-bottom: 1.4rem; color: #374151; }
+.prose ul, .prose ol { padding-left: 2rem; margin-bottom: 1.4rem; }
+.prose li { margin-bottom: 0.4rem; }
+.prose a { color: #f05123; text-decoration: underline; text-underline-offset: 0.2em; }
+.prose a:hover { color: #c73d0f; }
+.prose code { background: #f3f4f6; padding: 0.15em 0.4em; border-radius: 0.3rem; font-family: "Fira Code", "Cascadia Code", monospace; font-size: 0.9em; color: #d97706; }
+.prose pre { background: #1e1e2e; color: #cdd6f4; padding: 2rem; border-radius: 0.8rem; overflow-x: auto; margin: 1.6rem 0; }
+.prose pre code { background: none; color: inherit; padding: 0; font-size: 1.4rem; line-height: 1.65; }
+.prose blockquote { border-left: 3px solid #f05123; padding-left: 1.6rem; color: #6b7280; margin: 1.6rem 0; }
+.prose table { width: 100%; border-collapse: collapse; margin: 1.6rem 0; font-size: 1.4rem; }
+.prose th { text-align: left; padding: 0.8rem 1.2rem; background: #f9fafb; border-bottom: 2px solid #e5e7eb; font-weight: 600; }
+.prose td { padding: 0.8rem 1.2rem; border-bottom: 1px solid #e5e7eb; }
+
+/* ─── Hero ────────────────────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #0d0d0d 0%, #1a0a00 60%, #2d0f00 100%);
+  color: #fff;
+  padding: 8rem 4.8rem;
+  border-radius: 1.6rem;
+  margin-bottom: 5.6rem;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(240,81,35,0.15);
+  border: 1px solid rgba(240,81,35,0.4);
+  color: #f05123;
+  padding: 0.4rem 1rem;
+  border-radius: 10rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 2.4rem;
+}
+
+.hero h1 {
+  font-size: clamp(3.2rem, 5vw, 5.6rem);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1.6rem;
+  background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.75) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero p {
+  font-size: 1.8rem;
+  color: rgba(255,255,255,0.7);
+  max-width: 56rem;
+  line-height: 1.65;
+  margin-bottom: 3.2rem;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #f05123;
+  color: #fff;
+  padding: 1rem 2.4rem;
+  border-radius: 0.8rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.btn-primary:hover { background: #d94315; transform: translateY(-1px); }
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.15);
+  padding: 1rem 2.4rem;
+  border-radius: 0.8rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.btn-secondary:hover { background: rgba(255,255,255,0.14); }
+
+/* ─── Feature cards ──────────────────────────────────────────────────────── */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+  gap: 2rem;
+  margin: 3.2rem 0;
+}
+
+.feature-card {
+  background: #fafafa;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.2rem;
+  padding: 2.4rem;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.feature-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border-color: #f05123;
+}
+
+.feature-card h3 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.8rem; color: #111; }
+.feature-card p { font-size: 1.4rem; color: #6b7280; line-height: 1.6; }
+
+/* ─── Code block ──────────────────────────────────────────────────────────── */
+.code-block {
+  background: #1e1e2e;
+  color: #cdd6f4;
+  padding: 2.4rem;
+  border-radius: 1rem;
+  overflow-x: auto;
+  font-family: "Fira Code", "Cascadia Code", monospace;
+  font-size: 1.4rem;
+  line-height: 1.65;
+  margin: 1.6rem 0;
+}
+
+/* ─── Playground ─────────────────────────────────────────────────────────── */
+.playground-wrapper {
+  margin: 3.2rem 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 1.2rem;
+  overflow: hidden;
+}

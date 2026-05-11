@@ -1,7 +1,7 @@
 {
   "name": "@f8/player-react",
   "version": "0.0.0",
-  "description": "React adapter for @f8/player-core — composable slot API, hooks, and a one-liner <Player>.",
+  "description": "React adapter for @f8/player-core \u2014 composable slot API, hooks, and a one-liner <Player>.",
   "license": "MIT",
   "homepage": "https://github.com/f8/player/tree/main/packages/react#readme",
   "bugs": {
@@ -26,7 +26,12 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md", "LICENSE", "CHANGELOG.md"],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
   "engines": {
     "node": ">=20"
   },
@@ -55,8 +60,8 @@
     "media"
   ],
   "peerDependencies": {
-    "react": ">=18",
-    "react-dom": ">=18",
+    "react": ">=17",
+    "react-dom": ">=17",
     "@f8/player-core": ">=0.0.0"
   },
   "devDependencies": {
@@ -70,6 +75,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "size-limit": "^11.1.6",
-    "tsup": "^8.3.0"
+    "tsup": "^8.3.0",
+    "@f8/player-core": "workspace:*"
   }
 }

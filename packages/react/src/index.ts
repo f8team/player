@@ -43,3 +43,4 @@ export * as Controls from "./components/controls/index.js";
 export { usePlayer } from "./hooks/usePlayer.js";
 export { usePlayerEvent } from "./hooks/usePlayerEvent.js";
 export { usePlayerState } from "./hooks/usePlayerState.js";
+export { useSourceType } from "./hooks/useSourceType.js";

@@ -52,6 +52,8 @@
     "@vitest/coverage-v8": "^2.1.2",
     "jsdom": "^25.0.1",
     "size-limit": "^11.1.6",
-    "tsup": "^8.3.0"
+    "tsup": "^8.3.0",
+    "@f8/player-core": "workspace:*",
+    "@f8/player-react": "workspace:*"
   }
 }

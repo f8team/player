@@ -146,6 +146,15 @@ export function createPlayer(
     bus.emit("qualitychange", { quality, auto });
   }
 
+  // Built-in command: hls-quality plugin delegates to this via
+  // player.commands.run("hls:setQuality", level).
+  commands.add("hls:setQuality", (level: unknown) => {
+    const loader = activeLoader as { setQuality?: (l: QualityLevel | "auto") => void } | null;
+    if (typeof loader?.setQuality === "function") {
+      loader.setQuality(level === null ? "auto" : (level as QualityLevel));
+    }
+  });
+
   // Order matters: extra providers win first so consumers (and tests) can
   // override the built-ins without unregistering them.
   for (const provider of internal.extraProviders ?? []) registry.register(provider);

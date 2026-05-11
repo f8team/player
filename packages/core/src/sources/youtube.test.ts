@@ -187,6 +187,17 @@ describe("createYouTubeProvider — loader lifecycle", () => {
     expect(onStateChange).toHaveBeenCalledWith("ready");
   });
 
+  it("yt-host fills the stage (position:absolute, inset:0, width/height 100%)", async () => {
+    const { runtime } = makeRuntime();
+    const provider = createYouTubeProvider({ loadRuntime: () => Promise.resolve(runtime) });
+    const loader = provider.createLoader();
+    await loader.attach(video, { src: "https://youtube.com/watch?v=abc" });
+    const host = parent.querySelector<HTMLElement>("[data-f8-player-yt-host]")!;
+    expect(host.style.position).toBe("absolute");
+    expect(host.style.width).toBe("100%");
+    expect(host.style.height).toBe("100%");
+  });
+
   it("hides the underlying <video> while YT owns playback and restores on detach", async () => {
     const provider = createYouTubeProvider({
       loadRuntime: () => Promise.resolve(makeRuntime().runtime),

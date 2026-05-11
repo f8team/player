@@ -75,17 +75,17 @@ export interface HlsProviderOptions {
   onError?: (error: { message: string; cause?: unknown; status?: number; url?: string }) => void;
 }
 
-// Indirect dynamic import via `Function` keeps `hls.js` out of every
-// static-analysis pass (Vite, esbuild, Rollup) — consumers must install
-// `hls.js` themselves; tests inject a mock through `loadRuntime`.
+// Dynamic import of hls.js. Using a regular import() (not `new Function`) so
+// that webpack/CRA can discover and bundle hls.js as a lazy chunk at compile
+// time. The `new Function` trick intentionally escapes static-analysis passes
+// (Vite, esbuild, Rollup) but breaks webpack because webpack cannot see the
+// specifier inside the function string and therefore never emits a chunk —
+// the browser's native import("hls.js") fails with "Failed to resolve module
+// specifier". Tests still inject a mock via `loadRuntime`.
 
 /* c8 ignore start — only exercised in real browsers; tests inject `loadRuntime`. */
-const dynamicImport = new Function("specifier", "return import(specifier)") as (
-  specifier: string,
-) => Promise<unknown>;
-
 const defaultLoad = (): Promise<HlsRuntime> => {
-  return (dynamicImport("hls.js") as Promise<{ default: HlsRuntime }>).then((m) => m.default);
+  return import("hls.js").then((m) => (m as unknown as { default: HlsRuntime }).default);
 };
 /* c8 ignore stop */
 
