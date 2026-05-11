@@ -56,10 +56,8 @@
   ],
   "peerDependencies": {
     "react": ">=18",
-    "react-dom": ">=18"
-  },
-  "dependencies": {
-    "@f8/player-core": "workspace:*"
+    "react-dom": ">=18",
+    "@f8/player-core": ">=0.0.0"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",

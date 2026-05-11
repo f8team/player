@@ -16,9 +16,16 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md"],
-  "engines": { "node": ">=20" },
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -30,10 +37,17 @@
     "size": "size-limit",
     "clean": "rm -rf dist coverage .turbo"
   },
-  "keywords": ["video", "player", "f8", "plugin", "keyboard"],
-  "peerDependencies": { "@f8/player-core": "workspace:*" },
+  "keywords": [
+    "video",
+    "player",
+    "f8",
+    "plugin",
+    "keyboard"
+  ],
+  "peerDependencies": {
+    "@f8/player-core": ">=0.0.0"
+  },
   "devDependencies": {
-    "@f8/player-core": "workspace:*",
     "@size-limit/preset-small-lib": "^11.1.6",
     "@vitest/coverage-v8": "^2.1.2",
     "jsdom": "^25.0.1",
