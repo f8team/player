@@ -1,0 +1,57 @@
+{
+  "name": "f8-player",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Headless, framework-agnostic, plugin-driven video player engine. Powers F8 learning, story, and admin surfaces.",
+  "license": "MIT",
+  "homepage": "https://github.com/f8/player#readme",
+  "bugs": {
+    "url": "https://github.com/f8/player/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/f8/player.git"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
+  "packageManager": "pnpm@10.32.1",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev --parallel",
+    "test": "vitest run && turbo run test",
+    "test:root": "vitest run",
+    "test:watch": "turbo run test:watch --parallel",
+    "test:coverage": "turbo run test:coverage",
+    "lint": "eslint . && turbo run lint",
+    "lint:fix": "eslint . --fix && turbo run lint -- --fix",
+    "typecheck": "tsc --noEmit && turbo run typecheck",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\" --ignore-path .gitignore",
+    "format:check": "prettier --check \"**/*.{ts,tsx,js,jsx,json,md,yml,yaml}\" --ignore-path .gitignore",
+    "clean": "turbo run clean && rm -rf node_modules .turbo",
+    "size": "turbo run size",
+    "verify": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build && changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.9",
+    "@eslint/js": "^9.11.1",
+    "@types/node": "^22.7.4",
+    "@typescript-eslint/eslint-plugin": "^8.8.0",
+    "@typescript-eslint/parser": "^8.8.0",
+    "eslint": "^9.11.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
+    "prettier": "^3.3.3",
+    "turbo": "^2.1.2",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.2"
+  }
+}

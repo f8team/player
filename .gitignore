@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+out/
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# Test artifacts
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+.vitest-cache/
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Storybook
+storybook-static/
+
+# Size-limit
+.size-snapshot.json
