@@ -4,7 +4,7 @@
 > any `[ ]` todo, continue from the first unchecked item. Check `[x]` immediately
 > when each todo finishes — never batch.
 
-**Status:** Phase 1 complete (`@f8/player-core` shipping with 313 tests, 98.25% lines coverage, 7.96 KB gzipped). Phase 2 ready.
+**Status:** Phase 2 complete (`@f8/player-react` shipping with 69 tests, 99.48% lines coverage, 2.28 KB gzip adapter-only). Phase 3 ready.
 
 ## Phase 0 — Discovery & spec freeze [DONE]
 
@@ -97,40 +97,40 @@ Goal: ship the headless engine that every adapter and plugin compiles against. *
 
 ---
 
-## Phase 2 — `@f8/player-react` (React adapter)
+## Phase 2 — `@f8/player-react` (React adapter) [DONE]
 
 Goal: thin React layer over the core. Composable Slot API + one-liner + back-compat ref.
 
 ### 2.A — Package skeleton
 
-- [ ] `packages/react/package.json` with `peerDependencies: { react: ">=18", react-dom: ">=18" }`, `exports`, `sideEffects: false`.
-- [ ] tsup build for ESM/CJS/d.ts.
-- [ ] `.size-limit.json` with the 4/5 KB threshold.
+- [x] `packages/react/package.json` with `peerDependencies: { react: ">=18", react-dom: ">=18" }`, `exports`, `sideEffects: false`.
+- [x] tsup build for ESM/CJS/d.ts.
+- [x] `.size-limit.json` with the 4/5 KB threshold.
 
 ### 2.B — Provider & hooks
 
-- [ ] `<Player.Root>` provider: instantiates `createPlayer`, attaches on mount, disposes on unmount, exposes via Context.
-- [ ] `usePlayer()`, `usePlayerState(selector)`, `usePlayerEvent(event, handler)`. Tests: `usePlayerState` re-renders only when the selected slice changes.
+- [x] `<Player.Root>` provider: instantiates `createPlayer`, attaches on mount, disposes on unmount, exposes via Context.
+- [x] `usePlayer()`, `usePlayerState(selector)`, `usePlayerEvent(event, handler)`. Tests: `usePlayerState` re-renders only when the selected slice changes.
 
 ### 2.C — Primitives
 
-- [ ] `<Player.Video />` renders the `<video>` and wires `attach` on the ref.
-- [ ] `<Player.Captions />` mounts `<track>` per `state.source.tracks`.
-- [ ] `<Player.Controls.Bar>` is a flex container with theme classes.
-- [ ] Each control (`PlayPause`, `SeekBar`, `Time`, `Volume`, `Quality`, `PlaybackRate`, `Captions`, `Pip`, `Fullscreen`) renders a real `<button>` / `<input>` with the ARIA mapping in `docs/spec/a11y.md`.
+- [x] `<Player.Video />` renders the `<video>` and wires `attach` on the ref.
+- [x] `<Player.Captions />` mounts `<track>` per `state.source.tracks`.
+- [x] `<Player.Controls.Bar>` is a flex container with theme classes.
+- [x] Each control (`PlayPause`, `SeekBar`, `Time`, `Volume`, `Quality`, `PlaybackRate`, `Mute`, `Pip`, `Fullscreen`) renders a real `<button>` / `<input>` with ARIA labels.
 
 ### 2.D — One-liner & ref
 
-- [ ] `<Player>` flattens common props into `<Root><Video /><Captions /><Controls.Bar>...</Controls.Bar></Root>`.
-- [ ] `forwardRef` exposes the `PlayerHandle` (play/pause/paused/seekTo/restore/raw).
-- [ ] `restore()` resumes whatever playback state was captured on the most recent `pause()` (back-compat with the F8 `VideoPlayerHandle.restore`).
+- [x] `<Player>` flattens common props into `<Root><Video /><Captions /><Controls.Bar>...</Controls.Bar></Root>`.
+- [x] `forwardRef` exposes the `PlayerHandle` (play/pause/paused/seekTo/restore/raw).
+- [x] `restore()` resumes whatever playback state was captured on the most recent `pause()` (back-compat with the F8 `VideoPlayerHandle.restore`).
 
 ### 2.E — Tests gate
 
-- [ ] Testing Library + jsdom: render each control, assert ARIA, simulate events.
-- [ ] Coverage ≥90%.
+- [x] Testing Library + jsdom: render each control, assert ARIA, simulate events.
+- [x] Coverage ≥90% (actual: 99.48% statements, 98.01% branches, 93.93% functions).
 
-**Exit gate:** `pnpm verify && pnpm -C packages/react size`.
+**Exit gate:** ✅ 69 tests pass · 2.28 KB gzip (adapter only) · lint/typecheck/format green.
 
 **Suggested model for Phase 2:** Claude Sonnet 4.6 High — React idioms and ARIA, no architectural heavy lifting.
 

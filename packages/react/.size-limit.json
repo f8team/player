@@ -1,0 +1,18 @@
+[
+  {
+    "name": "@f8/player-react adapter only (gzip)",
+    "path": "dist/index.js",
+    "import": "*",
+    "ignore": ["@f8/player-core", "react", "react-dom"],
+    "limit": "4 KB",
+    "gzip": true
+  },
+  {
+    "name": "@f8/player-react adapter hard cap (gzip)",
+    "path": "dist/index.js",
+    "import": "*",
+    "ignore": ["@f8/player-core", "react", "react-dom"],
+    "limit": "5 KB",
+    "gzip": true
+  }
+]
