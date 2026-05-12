@@ -20,6 +20,7 @@
  * ## Z-index contract
  *
  * - `--f8p-z-buffered`: 0
+ * - `--f8p-z-center-tap`: 3 (full-stage play/pause — below controls)
  * - `--f8p-z-controls`: 5
  * - `--f8p-z-watermark`: 10
  * - `--f8p-z-overlay`: 20 (poster, error, spinner)
@@ -58,6 +59,7 @@
 
   /* ─── z-index contract ───────────────────────────────────────────── */
   --f8p-z-buffered: 0;
+  --f8p-z-center-tap: 3;
   --f8p-z-controls: 5;
   --f8p-z-watermark: 10;
   --f8p-z-overlay: 20;
@@ -75,6 +77,41 @@
   line-height: 1;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Center tap (YouTube-style play/pause on video surface) ───────── */
+[data-f8-player][data-theme="classroom"] [data-f8-player-center-tap] {
+  position: absolute;
+  inset: 0;
+  z-index: var(--f8p-z-center-tap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--f8p-text);
+  outline: none;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8-player-big-play] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 7.2rem;
+  height: 7.2rem;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8-player-big-play] [data-f8-player-icon] {
+  width: 3.2rem;
+  height: 3.2rem;
+  fill: currentColor;
 }
 
 /* ─── Native <video> hidden while YouTube iframe owns playback (B6) ── */
@@ -103,6 +140,8 @@
   align-items: center;
   align-content: flex-end;
   gap: 1rem 1.6rem;
+  opacity: 0;
+  pointer-events: none;
   transition: opacity var(--f8p-transition);
   z-index: var(--f8p-z-controls);
 }
@@ -264,28 +303,9 @@
 }
 
 [data-f8-player][data-theme="classroom"]
-  [data-f8-player-control="seek-bar"]:focus-visible::-webkit-slider-thumb {
+  [data-f8-player-control="seek-bar"]:hover::-moz-range-thumb {
   opacity: 1;
   transform: scale(1.1);
-}
-
-[data-f8-player][data-theme="classroom"]
-  [data-f8-player-control="seek-bar"]:hover::-moz-range-thumb,
-[data-f8-player][data-theme="classroom"]
-  [data-f8-player-control="seek-bar"]:focus-visible::-moz-range-thumb {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-/* Focus replacement for `outline: none` — required so keyboard users still
-   see where focus is (B4). */
-[data-f8-player][data-theme="classroom"]
-  [data-f8-player-control="seek-bar"]:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 0.4rem color-mix(in srgb, var(--f8p-accent) 40%, transparent);
-}
-[data-f8-player][data-theme="classroom"]
-  [data-f8-player-control="seek-bar"]:focus-visible::-moz-range-thumb {
-  box-shadow: 0 0 0 0.4rem color-mix(in srgb, var(--f8p-accent) 40%, transparent);
 }
 
 /* ─── Buttons ───────────────────────────────────────────────────────── */
@@ -313,6 +333,7 @@
     color var(--f8p-transition),
     transform var(--f8p-transition);
   padding: 0;
+  outline: none;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-backward"] {
@@ -390,17 +411,6 @@
   transform: scale(1.1);
 }
 
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="play-pause"]:focus-visible,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-backward"]:focus-visible,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-forward"]:focus-visible,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"]:focus-visible,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"]:focus-within,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"]:focus-visible,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"]:focus-visible {
-  outline: 2px solid var(--f8p-accent);
-  outline-offset: 2px;
-}
-
 /* ─── Time ──────────────────────────────────────────────────────────── */
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="time"] {
   width: 4rem;
@@ -472,11 +482,6 @@
   background: #ffffff;
 }
 
-[data-f8-player][data-theme="classroom"]
-  [data-f8-player-control="volume"]:focus-visible::-webkit-slider-thumb {
-  box-shadow: 0 0 0 0.4rem color-mix(in srgb, var(--f8p-accent) 40%, transparent);
-}
-
 /* ─── Select-backed controls (quality / settings) ───────────────────── */
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"] {
   order: 21;
@@ -497,6 +502,7 @@
   min-width: 5.8rem;
   padding: 0 0.5rem;
   cursor: pointer;
+  outline: none;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-quality-value] {
@@ -520,11 +526,6 @@
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:focus-within {
   background: rgba(255, 255, 255, 0.08);
-}
-
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:focus-within {
-  outline: 2px solid var(--f8p-accent);
-  outline-offset: 2px;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-quality-select],

@@ -52,11 +52,13 @@
   align-items: center;
   gap: 0.6rem;
   opacity: 0;
+  pointer-events: none;
   transition: opacity var(--f8p-transition);
 }
 [data-f8-player][data-theme="minimal"]:hover .f8p-controls,
 [data-f8-player][data-theme="minimal"]:focus-within .f8p-controls {
   opacity: 1;
+  pointer-events: auto;
 } /* ─── Seek bar ───────────────────────────────────────────────────────────── */
 [data-f8-player][data-theme="minimal"] .f8p-seek {
   flex: 1;
@@ -99,13 +101,10 @@
   border-radius: 50%;
   padding: 0;
   transition: background var(--f8p-transition);
+  outline: none;
 }
 [data-f8-player][data-theme="minimal"] .f8p-btn:hover {
   background: rgba(255, 255, 255, 0.15);
-}
-[data-f8-player][data-theme="minimal"] .f8p-btn:focus-visible {
-  outline: 2px solid rgba(255, 255, 255, 0.8);
-  outline-offset: 2px;
 } /* ─── Spacer ─────────────────────────────────────────────────────────────── */
 [data-f8-player][data-theme="minimal"] .f8p-spacer {
   flex: 1;

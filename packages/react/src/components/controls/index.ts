@@ -10,6 +10,9 @@ export type { ActionsRowProps } from "./ActionsRow.js";
 export { PlayPause } from "./PlayPause.js";
 export type { PlayPauseProps } from "./PlayPause.js";
 
+export { CenterPlayOverlay } from "./CenterPlayOverlay.js";
+export type { CenterPlayOverlayProps } from "./CenterPlayOverlay.js";
+
 export { SeekBar } from "./SeekBar.js";
 export type { SeekBarProps } from "./SeekBar.js";
 

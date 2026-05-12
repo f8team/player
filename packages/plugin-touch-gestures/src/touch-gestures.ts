@@ -116,6 +116,17 @@ export function createTouchGesturesPlugin(
           return;
         }
 
+        // YouTube-style center overlay owns play/pause on the middle zone; skip
+        // so the overlay's follow-up click does not double-toggle. Left/right
+        // zones still seek via this handler.
+        const target = e.target as Element | null;
+        if (target?.closest?.("[data-f8-player-center-tap]")) {
+          const x = e.changedTouches[0]?.clientX ?? lastTapX;
+          if (getZone(x) === "center") {
+            return;
+          }
+        }
+
         e.preventDefault();
         tapCount += 1;
 
