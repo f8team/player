@@ -45,6 +45,8 @@ export { usePlayerEvent } from "./hooks/usePlayerEvent.js";
 export { usePlayerState } from "./hooks/usePlayerState.js";
 export { useSourceType } from "./hooks/useSourceType.js";
 
+export { blurFocusInside } from "./dom/blurFocusInside.js";
+
 // i18n — public OSS surface defaults to English; opt into Vietnamese via the
 // `vietnameseLabels` preset or pass a partial override to `<Player.Root>`.
 export { defaultLabels, vietnameseLabels, useLabels, type PlayerLabels } from "./i18n.js";

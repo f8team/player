@@ -135,6 +135,13 @@ export class F8PlayerElement extends LitElement {
   /** Forward declaration for typed re-emission setup. */
   private bridgesInstalled = false;
 
+  private readonly onHostMouseLeave = (): void => {
+    const ae = document.activeElement;
+    if (ae instanceof HTMLElement && this.contains(ae)) {
+      ae.blur();
+    }
+  };
+
   static override properties = {
     options: { attribute: false },
     videoClass: { attribute: "video-class" },
@@ -144,6 +151,7 @@ export class F8PlayerElement extends LitElement {
 
   override connectedCallback(): void {
     super.connectedCallback();
+    this.addEventListener("mouseleave", this.onHostMouseLeave);
     this.syncHostChromeAttributes();
   }
 
@@ -167,6 +175,7 @@ export class F8PlayerElement extends LitElement {
   }
 
   override disconnectedCallback(): void {
+    this.removeEventListener("mouseleave", this.onHostMouseLeave);
     super.disconnectedCallback();
     this.videoEl = null;
     this.bridgesInstalled = false;
