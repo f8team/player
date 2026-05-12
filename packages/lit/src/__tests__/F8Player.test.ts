@@ -67,6 +67,12 @@ vi.mock("@f8/player-core", () => ({
     const rest = String(safe % 60).padStart(2, "0");
     return `${minutes}:${rest}`;
   },
+  detectSourceType: (source: unknown) => {
+    const src = (source as { src?: string } | null | undefined)?.src ?? "";
+    if (/youtu\.?be/i.test(src)) return "youtube";
+    if (/\.m3u8(\?|$)/i.test(src)) return "hls";
+    return "mp4";
+  },
 }));
 
 // Wire `player.on(event, handler)` to capture handlers so tests can fire
@@ -402,5 +408,114 @@ describe("<f8-player> event bridges", () => {
     for (const name of expected) {
       expect(eventHandlers.get(name)?.size ?? 0).toBeGreaterThan(0);
     }
+  });
+});
+
+// ── Default controls: thumbnails + captions ────────────────────────────────
+
+describe("<f8-player controls> sprite thumbnails", () => {
+  beforeEach(() => {
+    mockPlayer.getState.mockReturnValue({
+      ...defaultState,
+      status: "paused",
+      source: { src: "video.m3u8" },
+      duration: 20,
+    });
+  });
+
+  it("subscribes to thumbnails:ready and thumbnails:cleared on firstUpdated", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    expect(eventHandlers.get("thumbnails:ready")?.size ?? 0).toBeGreaterThan(0);
+    expect(eventHandlers.get("thumbnails:cleared")?.size ?? 0).toBeGreaterThan(0);
+  });
+
+  it("does not render a thumbnail tile when no cues are loaded", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    expect(el.querySelector("[data-f8p-seek-thumbnail]")).toBeNull();
+  });
+});
+
+describe("<f8-player controls> captions", () => {
+  beforeEach(() => {
+    mockPlayer.getState.mockReturnValue({
+      ...defaultState,
+      status: "paused",
+      source: {
+        src: "video.m3u8",
+        tracks: [
+          { src: "vi.vtt", srcLang: "vi", label: "Tiếng Việt", default: true },
+          { src: "en.vtt", srcLang: "en", label: "English" },
+        ],
+      },
+    });
+  });
+
+  it("renders a captions select when source has tracks", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    const captions = el.querySelector('[data-f8-player-control="captions"]');
+    expect(captions).not.toBeNull();
+    const select = captions?.querySelector("select");
+    const values = Array.from(select?.options ?? []).map((o) => o.value);
+    expect(values).toEqual(["__off__", "vi", "en"]);
+  });
+
+  it("runs subtitles:setLang when the user changes language", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    const select = el.querySelector(
+      '[data-f8-player-control="captions"] select',
+    ) as HTMLSelectElement;
+    select.value = "en";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(mockPlayer.commands.run).toHaveBeenCalledWith("subtitles:setLang", "en");
+  });
+
+  it("runs subtitles:off when the user picks the off option", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    const select = el.querySelector(
+      '[data-f8-player-control="captions"] select',
+    ) as HTMLSelectElement;
+    select.value = "__off__";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(mockPlayer.commands.run).toHaveBeenCalledWith("subtitles:off");
+  });
+
+  it("hides the captions control when source has no tracks", async () => {
+    mockPlayer.getState.mockReturnValue({
+      ...defaultState,
+      status: "paused",
+      source: { src: "video.m3u8" },
+    });
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    expect(el.querySelector('[data-f8-player-control="captions"]')).toBeNull();
   });
 });

@@ -43,6 +43,7 @@ export type {
   SourceProvider,
   SourceType,
   SubtitleTrack,
+  ThumbnailsDescriptor,
   ThemeName,
   ThemeTokens,
   UnauthorizedEvent,

@@ -60,6 +60,10 @@ export interface PlayerLabels {
   timeRemaining: (formatted: string) => string;
   /** Light-mode poster overlay click-to-play label. */
   posterPlay: string;
+  /** Captions / closed-captions selector label. */
+  captions: string;
+  /** Captions "off" option label. */
+  captionsOff: string;
 }
 
 /** English defaults — the public OSS shape. */
@@ -85,6 +89,8 @@ export const defaultLabels: PlayerLabels = {
   timeDuration: (formatted) => `Total duration ${formatted}`,
   timeRemaining: (formatted) => `Time remaining ${formatted}`,
   posterPlay: "Play video",
+  captions: "Captions",
+  captionsOff: "Off",
 };
 
 /**
@@ -114,6 +120,8 @@ export const vietnameseLabels: PlayerLabels = {
   timeDuration: (formatted) => `Thời lượng: ${formatted}`,
   timeRemaining: (formatted) => `Còn lại: ${formatted}`,
   posterPlay: "Phát video",
+  captions: "Phụ đề",
+  captionsOff: "Tắt phụ đề",
 };
 
 const LabelsContext = createContext<PlayerLabels>(defaultLabels);

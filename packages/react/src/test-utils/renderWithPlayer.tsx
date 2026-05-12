@@ -20,6 +20,11 @@ export interface RenderWithPlayerOptions {
 export interface RenderWithPlayerResult extends RenderResult {
   player: Player;
   mockSetState: (patch: Partial<PlayerState>) => void;
+  /**
+   * Fire a synthetic plugin event (e.g. `thumbnails:ready`) on the mock
+   * player. No-op when the test passed in a custom player instance.
+   */
+  mockEmit: (event: string, payload?: unknown) => void;
 }
 
 /**
@@ -30,8 +35,12 @@ export function renderWithPlayer(
   ui: ReactNode,
   { initialState = {}, player: externalPlayer, labels }: RenderWithPlayerOptions = {},
 ): RenderWithPlayerResult {
-  const { player, mockSetState } = externalPlayer
-    ? { player: externalPlayer, mockSetState: () => undefined }
+  const { player, mockSetState, mockEmit } = externalPlayer
+    ? {
+        player: externalPlayer,
+        mockSetState: () => undefined,
+        mockEmit: () => undefined,
+      }
     : makeMockPlayer(initialState);
 
   const ctx: PlayerContextValue = {
@@ -45,5 +54,5 @@ export function renderWithPlayer(
     </PlayerContext.Provider>,
   );
 
-  return { ...result, player, mockSetState };
+  return { ...result, player, mockSetState, mockEmit };
 }

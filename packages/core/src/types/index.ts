@@ -17,6 +17,7 @@ export type {
   SourceProvider,
   SourceType,
   SubtitleTrack,
+  ThumbnailsDescriptor,
 } from "./source.js";
 export type { BufferedRange, PlayerState, PlayerStatus } from "./state.js";
 export type { MutableStore, ReadableStore } from "./store.js";

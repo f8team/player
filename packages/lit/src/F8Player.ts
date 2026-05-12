@@ -1,8 +1,58 @@
 import { detectSourceType, formatTime } from "@f8/player-core";
-import type { Player, PlayerEvents, PlayerOptions, PlayerState } from "@f8/player-core";
+import type {
+  Disposer,
+  Player,
+  PlayerEvents,
+  PlayerOptions,
+  PlayerState,
+} from "@f8/player-core";
 import { LitElement, html, css } from "lit";
 
 import { PlayerController } from "./PlayerController.js";
+
+/**
+ * Shape of one parsed sprite-thumbnail cue — structurally compatible with
+ * `@f8/player-plugin-thumbnails`'s `ThumbnailCue` without taking a hard
+ * dependency on the plugin package.
+ */
+interface ThumbnailCueLite {
+  start: number;
+  end: number;
+  src: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+/** Shape emitted by `@f8/player-plugin-subtitles` on `subtitles:changed`. */
+interface SubtitleTrackStateLite {
+  lang: string;
+  label: string;
+  mode: "showing" | "hidden" | "disabled";
+}
+
+const THUMB_PREVIEW_WIDTH = 160;
+const THUMB_PREVIEW_HEIGHT = 90;
+
+function findCueAt(cues: readonly ThumbnailCueLite[], time: number): ThumbnailCueLite | null {
+  if (!cues.length || !Number.isFinite(time)) return null;
+  let lo = 0;
+  let hi = cues.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    const cue = cues[mid];
+    if (!cue) return null;
+    if (time < cue.start) {
+      hi = mid - 1;
+    } else if (time >= cue.end) {
+      lo = mid + 1;
+    } else {
+      return cue;
+    }
+  }
+  return null;
+}
 
 const ICONS = {
   play: {
@@ -44,6 +94,10 @@ const ICONS = {
   pip: {
     viewBox: "0 0 576 512",
     path: "M502.5 32H73.5C32.969 32 0 65.188 0 106V168C0 181.25 10.75 192 24 192S48 181.25 48 168V106C48 91.656 59.438 80 73.5 80H502.5C516.562 80 528 91.656 528 106V406C528 420.344 516.562 432 502.5 432H312C298.75 432 288 442.75 288 456S298.75 480 312 480H502.5C543.031 480 576 446.812 576 406V106C576 65.188 543.031 32 502.5 32ZM32 416C14.326 416 0 430.328 0 448S14.326 480 32 480S64 465.672 64 448S49.674 416 32 416ZM24 320C10.75 320 0 330.75 0 344S10.75 368 24 368C72.531 368 112 407.469 112 456C112 469.25 122.75 480 136 480S160 469.25 160 456C160 381 99 320 24 320ZM24 224C10.75 224 0 234.75 0 248S10.75 272 24 272C125.469 272 208 354.531 208 456C208 469.25 218.75 480 232 480S256 469.25 256 456C256 328.062 151.938 224 24 224Z",
+  },
+  cc: {
+    viewBox: "0 0 512 512",
+    path: "M464 64H48C21.49 64 0 85.49 0 112V400C0 426.51 21.49 448 48 448H464C490.51 448 512 426.51 512 400V112C512 85.49 490.51 64 464 64ZM214.83 320.06C220.31 322.74 226.43 322.42 231.62 319.18C236.78 315.95 240 310.27 240 304.06C240 295.22 247.16 288.06 256 288.06S272 295.22 272 304.06C272 322.5 262.46 339.34 246.49 349.34C230.5 359.34 210.61 360.45 193.59 352.16C167.91 339.66 152 313.71 152 285.4V226.7C152 198.39 167.91 172.44 193.59 159.94C210.59 151.66 230.51 152.74 246.49 162.76C262.45 172.78 272 189.62 272 208.05C272 216.89 264.84 224.05 256 224.05S240 216.89 240 208.05C240 201.85 236.78 196.16 231.62 192.92C226.45 189.69 220.31 189.36 214.83 192.04C202.55 198.04 195 209.95 195 226.69V285.39C195 302.14 202.55 314.05 214.83 320.06ZM374.83 320.06C380.3 322.74 386.42 322.42 391.61 319.18C396.78 315.95 400 310.26 400 304.06C400 295.22 407.16 288.06 416 288.06S432 295.22 432 304.06C432 322.5 422.45 339.34 406.49 349.36C390.5 359.36 370.62 360.46 353.59 352.18C327.91 339.68 312 313.73 312 285.42V226.7C312 198.39 327.91 172.44 353.59 159.94C370.59 151.66 390.51 152.74 406.49 162.76C422.45 172.78 432 189.62 432 208.05C432 216.89 424.84 224.05 416 224.05S400 216.89 400 208.05C400 201.85 396.78 196.16 391.61 192.92C386.45 189.69 380.31 189.36 374.83 192.04C362.55 198.04 355 209.95 355 226.69V285.39C355 302.14 362.55 314.05 374.83 320.06Z",
   },
 } as const;
 
@@ -135,6 +189,25 @@ export class F8PlayerElement extends LitElement {
   /** Forward declaration for typed re-emission setup. */
   private bridgesInstalled = false;
 
+  /**
+   * Sprite-thumbnail cues populated by `@f8/player-plugin-thumbnails` events
+   * (`thumbnails:ready` / `thumbnails:cleared`). Empty when the plugin
+   * isn't loaded — in which case the hover preview never renders.
+   */
+  private thumbnailCues: readonly ThumbnailCueLite[] = [];
+
+  /** Hover pointer state tracked on the timeline wrapper. */
+  private thumbnailHover: { x: number; time: number } | null = null;
+
+  /** Active caption language (null = off). Mirrored from `subtitles:changed`. */
+  private activeCaptionsLang: string | null = null;
+
+  /** Whether the user opened the captions `<select>` overlay at least once. */
+  private captionsTouched = false;
+
+  /** Disposers returned by `controller.on(...)` for plugin-event subscriptions. */
+  private pluginEventDisposers: Disposer[] = [];
+
   private readonly onHostMouseLeave = (): void => {
     const ae = document.activeElement;
     if (ae instanceof HTMLElement && this.contains(ae)) {
@@ -172,6 +245,7 @@ export class F8PlayerElement extends LitElement {
       // Surface via the player's "error" event; nothing to do here.
     });
     this.installEventBridges();
+    this.installPluginEventBridges();
   }
 
   override disconnectedCallback(): void {
@@ -179,6 +253,51 @@ export class F8PlayerElement extends LitElement {
     super.disconnectedCallback();
     this.videoEl = null;
     this.bridgesInstalled = false;
+    for (const d of this.pluginEventDisposers) d();
+    this.pluginEventDisposers = [];
+    this.thumbnailCues = [];
+    this.thumbnailHover = null;
+  }
+
+  /**
+   * Subscribe to optional plugin events (`@f8/player-plugin-thumbnails`,
+   * `@f8/player-plugin-subtitles`). If the plugins aren't loaded the core
+   * bus simply never fires and the fields stay at their defaults.
+   */
+  private installPluginEventBridges(): void {
+    type PluginEventName = "thumbnails:ready" | "thumbnails:cleared" | "subtitles:changed";
+    // `controller.on` is a class method — bind to preserve `this` when we
+    // cast the signature to accept plugin-level event names.
+    const bound = this.controller.on.bind(this.controller);
+    const onAny = bound as unknown as (
+      event: PluginEventName,
+      handler: (payload: unknown) => void,
+    ) => Disposer;
+
+    this.pluginEventDisposers.push(
+      onAny("thumbnails:ready", (payload) => {
+        const next = (payload as { cues?: ThumbnailCueLite[] } | undefined)?.cues;
+        if (!Array.isArray(next)) return;
+        this.thumbnailCues = next;
+        this.requestUpdate();
+      }),
+      onAny("thumbnails:cleared", () => {
+        if (this.thumbnailCues.length === 0) return;
+        this.thumbnailCues = [];
+        this.thumbnailHover = null;
+        this.requestUpdate();
+      }),
+      onAny("subtitles:changed", (payload) => {
+        const states = payload as SubtitleTrackStateLite[] | undefined;
+        if (!Array.isArray(states)) return;
+        const showing = states.find((s) => s.mode === "showing");
+        const next = showing?.lang ?? null;
+        if (next !== this.activeCaptionsLang) {
+          this.activeCaptionsLang = next;
+          this.requestUpdate();
+        }
+      }),
+    );
   }
 
   protected override render(): unknown {
@@ -311,12 +430,15 @@ export class F8PlayerElement extends LitElement {
             class="f8p-seek"
             data-f8p-seek-wrapper
             style=${`--f8p-seek-progress: ${playedPct}%`}
+            @pointermove=${this.handleSeekPointerMove}
+            @pointerleave=${this.handleSeekPointerLeave}
           >
             <div
               data-f8p-seek-buffered
               style=${`width: ${bufferedPct}%`}
               aria-hidden="true"
             ></div>
+            ${this.renderThumbnailTile(max)}
             <input
               type="range"
               min="0"
@@ -407,8 +529,8 @@ export class F8PlayerElement extends LitElement {
             />
           </div>
 
-          ${this.renderQualityControl(state)} ${this.renderSettingsControl(state)}
-          ${this.renderPipButton(state)}
+          ${this.renderCaptionsControl(state)} ${this.renderQualityControl(state)}
+          ${this.renderSettingsControl(state)} ${this.renderPipButton(state)}
 
           <button
             type="button"
@@ -500,6 +622,89 @@ export class F8PlayerElement extends LitElement {
       >
         ${this.renderIcon("pip")}
       </button>
+    `;
+  }
+
+  private renderCaptionsControl(state: PlayerState | null): unknown {
+    const tracks = state?.source?.tracks ?? [];
+    if (tracks.length === 0) return null;
+
+    // Hydrate the active language from the track defaults the first time the
+    // user hasn't interacted yet (and the plugin hasn't emitted).
+    if (this.activeCaptionsLang === null && !this.captionsTouched) {
+      const def = tracks.find((t) => t.default);
+      if (def) this.activeCaptionsLang = def.srcLang;
+    }
+
+    const isActive = this.activeCaptionsLang !== null;
+    const selectValue = this.activeCaptionsLang ?? "__off__";
+
+    return html`
+      <span
+        class="f8p-captions"
+        data-f8-player-control="captions"
+        ?data-f8-player-captions-active=${isActive}
+      >
+        ${this.renderIcon("cc")}
+        <select
+          class="f8p-native-select"
+          .value=${selectValue}
+          aria-label="Phụ đề"
+          data-f8-player-captions-select
+          @change=${this.handleCaptionsChange}
+        >
+          <option value="__off__">Tắt phụ đề</option>
+          ${tracks.map(
+            (t) => html`<option value=${t.srcLang}>${t.label}</option>`,
+          )}
+        </select>
+      </span>
+    `;
+  }
+
+  private renderThumbnailTile(max: number): unknown {
+    const hover = this.thumbnailHover;
+    if (!hover || this.thumbnailCues.length === 0) return null;
+    const cue = findCueAt(this.thumbnailCues, hover.time);
+    if (!cue) return null;
+    const tileW = cue.w > 0 ? cue.w : THUMB_PREVIEW_WIDTH;
+    const tileH = cue.h > 0 ? cue.h : THUMB_PREVIEW_HEIGHT;
+    const scale = tileW > 0 ? THUMB_PREVIEW_WIDTH / tileW : 1;
+    const renderW = tileW * scale;
+    const renderH = tileH * scale;
+    const sheetW = tileW * scale;
+    void max;
+    const style = [
+      "position:absolute",
+      `bottom:calc(100% + 0.8rem)`,
+      `left:${hover.x}px`,
+      "transform:translateX(-50%)",
+      `width:${renderW}px`,
+      `height:${renderH}px`,
+      `background-image:url("${cue.src}")`,
+      "background-repeat:no-repeat",
+      `background-position:-${cue.x * scale}px -${cue.y * scale}px`,
+      `background-size:${sheetW}px auto`,
+      "pointer-events:none",
+      "z-index:2",
+    ].join(";");
+    const labelStyle = [
+      "position:absolute",
+      "left:50%",
+      "bottom:-2rem",
+      "transform:translateX(-50%)",
+      "color:#fff",
+      "font-size:1.2rem",
+      "font-variant-numeric:tabular-nums",
+      "text-shadow:0 1px 0.2rem rgba(0,0,0,0.55)",
+      "white-space:nowrap",
+    ].join(";");
+    return html`
+      <div data-f8p-seek-thumbnail aria-hidden="true" style=${style}>
+        <span data-f8p-seek-thumbnail-time style=${labelStyle}>
+          ${this.formatTimeLabel(hover.time)}
+        </span>
+      </div>
     `;
   }
 
@@ -601,6 +806,42 @@ export class F8PlayerElement extends LitElement {
   private handleFullscreenClick(): void {
     this.controller.player?.commands.run("fullscreen:toggle");
   }
+
+  private handleSeekPointerMove = (event: PointerEvent): void => {
+    const wrapper = event.currentTarget as HTMLElement | null;
+    if (!wrapper) return;
+    const rect = wrapper.getBoundingClientRect();
+    if (rect.width <= 0) return;
+    const duration = this.controller.player?.getState().duration ?? 0;
+    const max = Number.isFinite(duration) && duration > 0 ? duration : 1;
+    const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
+    const time = (x / rect.width) * max;
+    this.thumbnailHover = { x, time };
+    this.requestUpdate();
+  };
+
+  private handleSeekPointerLeave = (): void => {
+    if (!this.thumbnailHover) return;
+    this.thumbnailHover = null;
+    this.requestUpdate();
+  };
+
+  private handleCaptionsChange = (event: Event): void => {
+    const select = event.currentTarget as HTMLSelectElement;
+    const value = select.value;
+    this.captionsTouched = true;
+    if (value === "__off__") {
+      this.controller.player?.commands.run("subtitles:off");
+      this.activeCaptionsLang = null;
+    } else {
+      this.controller.player?.commands.run(
+        "subtitles:setLang",
+        value as unknown as Record<string, unknown>,
+      );
+      this.activeCaptionsLang = value;
+    }
+    this.requestUpdate();
+  };
 
   private formatTimeLabel(seconds: number): string {
     if (!Number.isFinite(seconds)) return "Trực tiếp";

@@ -1,6 +1,9 @@
 export { Bar } from "./Bar.js";
 export type { ControlsBarProps } from "./Bar.js";
 
+export { Captions } from "./Captions.js";
+export type { CaptionsProps } from "./Captions.js";
+
 export { TimelineRow } from "./TimelineRow.js";
 export type { TimelineRowProps } from "./TimelineRow.js";
 

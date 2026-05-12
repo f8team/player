@@ -24,11 +24,14 @@ export function makeInitialState(overrides: Partial<PlayerState> = {}): PlayerSt
 
 /**
  * Creates a minimal `Player` mock usable in React tests. Subscribers are
- * invoked synchronously when `mockSetState` is called.
+ * invoked synchronously when `mockSetState` is called. Plugin events can be
+ * fired in tests via `mockEmit(name, payload)` — useful when asserting that
+ * a control reacts to plugin emissions (e.g. `thumbnails:ready`).
  */
 export function makeMockPlayer(initialState: Partial<PlayerState> = {}): {
   player: Player;
   mockSetState: (patch: Partial<PlayerState>) => void;
+  mockEmit: (event: string, payload?: unknown) => void;
 } {
   let state = makeInitialState(initialState);
   type Sub = { selector: (s: PlayerState) => unknown; listener: (v: unknown) => void };
@@ -89,5 +92,11 @@ export function makeMockPlayer(initialState: Partial<PlayerState> = {}): {
     commands: commandsMock as unknown as Player["commands"],
   };
 
-  return { player, mockSetState };
+  function mockEmit(event: string, payload?: unknown): void {
+    for (const sub of evSubs.slice()) {
+      if (sub.event === event) sub.handler(payload);
+    }
+  }
+
+  return { player, mockSetState, mockEmit };
 }

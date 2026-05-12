@@ -25,6 +25,34 @@ export interface SubtitleTrack {
 }
 
 /**
+ * Sprite thumbnails (timeline hover preview) descriptor.
+ *
+ * The `src` URL must point to a WebVTT file whose cues map a time range to a
+ * sprite tile, e.g.:
+ *
+ * ```
+ * WEBVTT
+ *
+ * 00:00:00.000 --> 00:00:10.000
+ * sprites/00001.jpg#xywh=0,0,160,90
+ * ```
+ *
+ * Image URLs in the cue body may be absolute or relative; relative paths are
+ * resolved against the VTT URL. The `@f8/player-plugin-thumbnails` plugin
+ * fetches and parses the VTT, then exposes a `thumbnails:getAt(time)` command
+ * consumed by the React/Lit `SeekBar` hover preview.
+ */
+export interface ThumbnailsDescriptor {
+  /** Absolute VTT URL describing sprite cues. */
+  src: string;
+  /**
+   * Send credentials when fetching the VTT (and resolved sprite images
+   * when the browser permits). Defaults to `false`.
+   */
+  withCredentials?: boolean;
+}
+
+/**
  * The kind of source. `auto` lets the registry pick.
  *
  * - `hls` — HLS m3u8 manifest, dispatched to `hls.js` (or native on Safari).
@@ -56,6 +84,13 @@ export interface SourceDescriptor {
   withCredentials?: boolean | ((url: string) => boolean);
   /** Subtitle tracks to attach (G1, G15). */
   tracks?: SubtitleTrack[];
+  /**
+   * Sprite-thumbnails VTT descriptor for timeline hover previews. When set,
+   * the `@f8/player-plugin-thumbnails` plugin fetches and parses the VTT;
+   * the `Controls.SeekBar` (React) and the Lit default chrome render a tile
+   * tooltip during pointer hover.
+   */
+  thumbnails?: ThumbnailsDescriptor;
 }
 
 /**
