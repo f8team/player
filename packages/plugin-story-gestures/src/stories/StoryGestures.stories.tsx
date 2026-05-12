@@ -1,8 +1,11 @@
+import { Root, Video } from "@f8/player-react";
 import type { Meta, StoryObj } from "@storybook/react";
-import { Root, Video, Controls } from "@f8/player-react";
+import React from "react";
+
 import { createStoryGesturesPlugin } from "../index.js";
 
-const DEMO_MP4 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+const DEMO_MP4 =
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
 function StoryGesturesDemo({ onPrev, onNext }: { onPrev?: () => void; onNext?: () => void }) {
   const plugins = [
@@ -14,15 +17,29 @@ function StoryGesturesDemo({ onPrev, onNext }: { onPrev?: () => void; onNext?: (
 
   return (
     <div>
-      <div style={{ width: "min(36rem, 90vw)", aspectRatio: "9/16", position: "relative", background: "#000", borderRadius: "1.2rem", overflow: "hidden" }} data-f8-player="" data-theme="story">
+      <div
+        style={{
+          width: "min(36rem, 90vw)",
+          aspectRatio: "9/16",
+          position: "relative",
+          background: "#000",
+          borderRadius: "1.2rem",
+          overflow: "hidden",
+        }}
+        data-f8-player=""
+        data-theme="story"
+      >
         <Root options={{ source: { src: DEMO_MP4, tracks: [] }, plugins, playsInline: true }}>
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
-            <Video style={{ flex: 1, width: "100%", minHeight: 0, objectFit: "cover", display: "block" }} />
+            <Video
+              style={{ flex: 1, width: "100%", minHeight: 0, objectFit: "cover", display: "block" }}
+            />
           </div>
         </Root>
       </div>
-      <p style={{ marginTop: "1.2rem", color: "#888", fontSize: "1.3rem" }}>
-        Swipe left → next story &bull; Swipe right → previous story &bull; Tap left/right thirds → seek &bull; Hold → pause
+      <p style={{ marginTop: "1.2rem", color: "#374151", fontSize: "1.3rem" }}>
+        Swipe left → next story &bull; Swipe right → previous story &bull; Tap left/right thirds →
+        seek &bull; Hold → pause
       </p>
     </div>
   );

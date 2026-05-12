@@ -1,7 +1,6 @@
 import type { PlayerEvents } from "@f8/player-core";
 import { useEffect, useRef } from "react";
 
-
 import { usePlayerContext } from "../context/PlayerContext.js";
 
 /**
@@ -23,8 +22,7 @@ export function usePlayerEvent<K extends keyof PlayerEvents>(
   handlerRef.current = handler;
 
   useEffect(() => {
-    const stable = (payload: PlayerEvents[K]): void =>
-      handlerRef.current(payload);
+    const stable = (payload: PlayerEvents[K]): void => handlerRef.current(payload);
     return player.on(event, stable);
   }, [player, event]);
 }

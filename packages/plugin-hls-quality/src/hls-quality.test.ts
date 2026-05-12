@@ -1,7 +1,7 @@
+import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createHlsQualityPlugin } from "./hls-quality.js";
-import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
 
 type Handler<K extends keyof PlayerEvents> = (payload: PlayerEvents[K]) => void;
 
@@ -16,19 +16,29 @@ function makePlayer() {
 
   return {
     getState: () => ({
-      status: "idle" as const, source: null,
-      currentTime: 0, duration: 0, buffered: [],
-      playbackRate: 1, volume: 1, muted: false,
-      videoWidth: 0, videoHeight: 0, pip: false, fullscreen: false,
-      qualities: QUALITIES, activeQuality: null, error: null,
+      status: "idle" as const,
+      source: null,
+      currentTime: 0,
+      duration: 0,
+      buffered: [],
+      playbackRate: 1,
+      volume: 1,
+      muted: false,
+      videoWidth: 0,
+      videoHeight: 0,
+      pip: false,
+      fullscreen: false,
+      qualities: QUALITIES,
+      activeQuality: null,
+      error: null,
     }),
-    on: vi.fn().mockImplementation(<K extends keyof PlayerEvents>(
-      event: K, handler: Handler<K>,
-    ) => {
-      if (!handlers[event]) (handlers as Record<string, unknown[]>)[event as string] = [];
-      (handlers[event] as Handler<K>[]).push(handler);
-      return () => undefined;
-    }),
+    on: vi
+      .fn()
+      .mockImplementation(<K extends keyof PlayerEvents>(event: K, handler: Handler<K>) => {
+        if (!handlers[event]) (handlers as Record<string, unknown[]>)[event as string] = [];
+        (handlers[event] as Handler<K>[]).push(handler);
+        return () => undefined;
+      }),
     subscribe: vi.fn().mockImplementation((_sel: unknown, listener: (v: unknown) => void) => {
       subs.push(listener);
       return () => undefined;
@@ -41,11 +51,24 @@ function makePlayer() {
     fire: <K extends keyof PlayerEvents>(event: K, payload: PlayerEvents[K]) => {
       (handlers[event] as Handler<K>[] | undefined)?.forEach((h) => h(payload));
     },
-    getSource: vi.fn(), getCurrentTime: vi.fn(), getDuration: vi.fn(),
-    getBuffered: vi.fn(), play: vi.fn(), pause: vi.fn(), paused: vi.fn(),
-    seekTo: vi.fn(), setPlaybackRate: vi.fn(), setVolume: vi.fn(), setMuted: vi.fn(),
-    setSource: vi.fn(), off: vi.fn(), attach: vi.fn(), detach: vi.fn(),
-    dispose: vi.fn(), use: vi.fn(), removePlugin: vi.fn(),
+    getSource: vi.fn(),
+    getCurrentTime: vi.fn(),
+    getDuration: vi.fn(),
+    getBuffered: vi.fn(),
+    play: vi.fn(),
+    pause: vi.fn(),
+    paused: vi.fn(),
+    seekTo: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    setSource: vi.fn(),
+    off: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
   } as unknown as Player & {
     fire: <K extends keyof PlayerEvents>(e: K, p: PlayerEvents[K]) => void;
   };
@@ -58,7 +81,9 @@ function makeHost(): PluginHost {
     commands: {
       add: vi.fn().mockImplementation((name: string, handler: (p: unknown) => void) => {
         cmds[name] = handler;
-        return () => { delete cmds[name]; };
+        return () => {
+          delete cmds[name];
+        };
       }),
       run: vi.fn().mockImplementation((name: string, payload?: unknown) => {
         cmds[name]?.(payload as unknown);

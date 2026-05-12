@@ -13,9 +13,7 @@ describe("<PlaybackRate>", () => {
 
   it("shows 'Bình thường' for rate 1", () => {
     renderWithPlayer(<PlaybackRate />, { initialState: { playbackRate: 1 } });
-    expect(
-      (screen.getByRole("combobox") as HTMLSelectElement).value,
-    ).toBe("1");
+    expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe("1");
     expect(screen.getByText("Bình thường")).toBeDefined();
   });
 

@@ -3,25 +3,40 @@ export default function PluginsPage() {
     <article className="prose">
       <h1>Plugins</h1>
       <p>
-        Mỗi plugin là một factory function nhỏ, tree-shakeable.
-        Install riêng package và truyền vào <code>options.plugins</code>.
+        Mỗi plugin là một factory function nhỏ, tree-shakeable. Install riêng package và truyền vào{" "}
+        <code>options.plugins</code>.
       </p>
 
       {PLUGIN_DOCS.map((plugin) => (
         <section key={plugin.name} id={plugin.id} style={{ marginBottom: "4rem" }}>
-          <h2><code>{plugin.name}</code></h2>
+          <h2>
+            <code>{plugin.name}</code>
+          </h2>
           <p>{plugin.desc}</p>
-          <pre><code>{plugin.example}</code></pre>
+          <pre>
+            <code>{plugin.example}</code>
+          </pre>
           {plugin.options && (
             <>
               <h3>Options</h3>
               <table>
-                <thead><tr><th>Key</th><th>Type</th><th>Default</th><th>Mô tả</th></tr></thead>
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Mô tả</th>
+                  </tr>
+                </thead>
                 <tbody>
                   {plugin.options.map((o) => (
                     <tr key={o.key}>
-                      <td><code>{o.key}</code></td>
-                      <td><code>{o.type}</code></td>
+                      <td>
+                        <code>{o.key}</code>
+                      </td>
+                      <td>
+                        <code>{o.type}</code>
+                      </td>
                       <td>{o.default}</td>
                       <td>{o.desc}</td>
                     </tr>
@@ -73,7 +88,12 @@ const plugin = createMarkersPlugin({
 // Cập nhật runtime:
 player.command("markers:setMarkers", newMarkers);`,
     options: [
-      { key: "markers", type: "Marker[]", default: "[]", desc: "{ time: number; label: string }[]" },
+      {
+        key: "markers",
+        type: "Marker[]",
+        default: "[]",
+        desc: "{ time: number; label: string }[]",
+      },
       { key: "markerStyle", type: "CSSProperties", default: "—", desc: "Style cho marker element" },
     ],
   },
@@ -90,7 +110,12 @@ const plugin = createKeyboardPlugin({
     options: [
       { key: "seekStep", type: "number", default: "10", desc: "Số giây seek mỗi lần ←/→" },
       { key: "volumeStep", type: "number", default: "0.1", desc: "Bước tăng/giảm âm lượng ↑/↓" },
-      { key: "enableVolumeScroll", type: "boolean", default: "false", desc: "Scroll chuột để chỉnh âm lượng" },
+      {
+        key: "enableVolumeScroll",
+        type: "boolean",
+        default: "false",
+        desc: "Scroll chuột để chỉnh âm lượng",
+      },
     ],
   },
   {
@@ -103,7 +128,12 @@ const plugin = createHlsQualityPlugin({
   defaultQuality: "auto",
 });`,
     options: [
-      { key: "defaultQuality", type: '"auto" | number', default: '"auto"', desc: "Quality ban đầu" },
+      {
+        key: "defaultQuality",
+        type: '"auto" | number',
+        default: '"auto"',
+        desc: "Quality ban đầu",
+      },
     ],
   },
   {
@@ -119,8 +149,18 @@ const plugin = createAnalyticsPlugin({
   },
 });`,
     options: [
-      { key: "sink", type: "(event: AnalyticsEvent) => void", default: "—", desc: "Callback nhận events" },
-      { key: "progressInterval", type: "number", default: "30000", desc: "Khoảng cách giữa các progress events (ms)" },
+      {
+        key: "sink",
+        type: "(event: AnalyticsEvent) => void",
+        default: "—",
+        desc: "Callback nhận events",
+      },
+      {
+        key: "progressInterval",
+        type: "number",
+        default: "30000",
+        desc: "Khoảng cách giữa các progress events (ms)",
+      },
     ],
   },
   {
@@ -138,7 +178,12 @@ const plugin = createWatermarkPlugin({
     options: [
       { key: "text", type: "string", default: "—", desc: "Nội dung watermark" },
       { key: "imageUrl", type: "string", default: "—", desc: "URL logo (thay cho text)" },
-      { key: "position", type: "string", default: '"top-right"', desc: "top-right | top-left | bottom-right | bottom-left | center" },
+      {
+        key: "position",
+        type: "string",
+        default: '"top-right"',
+        desc: "top-right | top-left | bottom-right | bottom-left | center",
+      },
       { key: "opacity", type: "number", default: "0.5", desc: "Độ mờ 0–1" },
     ],
   },
@@ -154,8 +199,18 @@ const plugin = createResumePositionPlugin({
   maxResumePercent: 0.95, // không resume nếu gần hết
 });`,
     options: [
-      { key: "storageKey", type: "string", default: '"f8p-resume"', desc: "Key trong localStorage" },
-      { key: "minResumeTime", type: "number", default: "5", desc: "Ngưỡng thời gian tối thiểu để lưu" },
+      {
+        key: "storageKey",
+        type: "string",
+        default: '"f8p-resume"',
+        desc: "Key trong localStorage",
+      },
+      {
+        key: "minResumeTime",
+        type: "number",
+        default: "5",
+        desc: "Ngưỡng thời gian tối thiểu để lưu",
+      },
     ],
   },
   {
@@ -171,8 +226,18 @@ const plugin = createAuthAwarePlugin({
 });`,
     options: [
       { key: "allowlist", type: "string[]", default: "[]", desc: "Domains kích hoạt auth check" },
-      { key: "pauseOnUnauthorized", type: "boolean", default: "true", desc: "Pause khi nhận 401/403" },
-      { key: "onUnauthorized", type: "() => void", default: "—", desc: "Callback khi unauthorized" },
+      {
+        key: "pauseOnUnauthorized",
+        type: "boolean",
+        default: "true",
+        desc: "Pause khi nhận 401/403",
+      },
+      {
+        key: "onUnauthorized",
+        type: "() => void",
+        default: "—",
+        desc: "Callback khi unauthorized",
+      },
     ],
   },
   {
@@ -197,9 +262,7 @@ const plugin = createFullscreenPlugin();`,
     desc: "Mobile touch: single tap (toggle controls), double-tap (seek ±10s), long press (pause).",
     example: `import { createTouchGesturesPlugin } from "@f8/player-plugin-touch-gestures";
 const plugin = createTouchGesturesPlugin({ seekStep: 10 });`,
-    options: [
-      { key: "seekStep", type: "number", default: "10", desc: "Giây seek khi double-tap" },
-    ],
+    options: [{ key: "seekStep", type: "number", default: "10", desc: "Giây seek khi double-tap" }],
   },
   {
     id: "story-gestures",
@@ -212,7 +275,12 @@ const plugin = createStoryGesturesPlugin({
   onPrev: () => goToPrevStory(),
 });`,
     options: [
-      { key: "onNext", type: "() => void", default: "—", desc: "Gọi khi swipe sang story tiếp theo" },
+      {
+        key: "onNext",
+        type: "() => void",
+        default: "—",
+        desc: "Gọi khi swipe sang story tiếp theo",
+      },
       { key: "onPrev", type: "() => void", default: "—", desc: "Gọi khi swipe về story trước" },
     ],
   },
@@ -225,8 +293,6 @@ const plugin = createStoryGesturesPlugin({
 const plugin = createSafariMp4FallbackPlugin({
   mp4Url: "https://cdn.example.com/video.mp4",
 });`,
-    options: [
-      { key: "mp4Url", type: "string", default: "—", desc: "URL MP4 fallback" },
-    ],
+    options: [{ key: "mp4Url", type: "string", default: "—", desc: "URL MP4 fallback" }],
   },
 ];

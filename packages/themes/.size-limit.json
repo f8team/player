@@ -1,6 +1,6 @@
 [
   { "name": "classroom.css", "path": "src/classroom.css", "limit": "4 KB" },
-  { "name": "story.css",     "path": "src/story.css",     "limit": "4 KB" },
-  { "name": "admin.css",     "path": "src/admin.css",     "limit": "4 KB" },
-  { "name": "minimal.css",   "path": "src/minimal.css",   "limit": "4 KB" }
+  { "name": "story.css", "path": "src/story.css", "limit": "4 KB" },
+  { "name": "admin.css", "path": "src/admin.css", "limit": "4 KB" },
+  { "name": "minimal.css", "path": "src/minimal.css", "limit": "4 KB" }
 ]

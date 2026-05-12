@@ -1,7 +1,7 @@
+import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createAuthAwarePlugin } from "./auth-aware.js";
-import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
 
 type Handler<K extends keyof PlayerEvents> = (payload: PlayerEvents[K]) => void;
 
@@ -12,18 +12,18 @@ function makePlayer(overrides: { src?: string; status?: "playing" | "idle" } = {
   return {
     getState: () => ({ status, currentTime: 0, duration: 0, source: null }),
     getSource: () => ({ src }),
-    on: vi.fn().mockImplementation(<K extends keyof PlayerEvents>(
-      event: K, handler: Handler<K>,
-    ) => {
-      if (!handlers[event]) (handlers as Record<string, unknown[]>)[event as string] = [];
-      (handlers[event] as Handler<K>[]).push(handler);
-      return () => {
-        const list = handlers[event] as Handler<K>[] | undefined;
-        if (!list) return;
-        const i = list.indexOf(handler);
-        if (i >= 0) list.splice(i, 1);
-      };
-    }),
+    on: vi
+      .fn()
+      .mockImplementation(<K extends keyof PlayerEvents>(event: K, handler: Handler<K>) => {
+        if (!handlers[event]) (handlers as Record<string, unknown[]>)[event as string] = [];
+        (handlers[event] as Handler<K>[]).push(handler);
+        return () => {
+          const list = handlers[event] as Handler<K>[] | undefined;
+          if (!list) return;
+          const i = list.indexOf(handler);
+          if (i >= 0) list.splice(i, 1);
+        };
+      }),
     fire: <K extends keyof PlayerEvents>(event: K, payload: PlayerEvents[K]) => {
       (handlers[event] as Handler<K>[] | undefined)?.forEach((h) => h(payload));
     },
@@ -35,10 +35,21 @@ function makePlayer(overrides: { src?: string; status?: "playing" | "idle" } = {
       has: vi.fn().mockReturnValue(true),
     },
     subscribe: vi.fn().mockReturnValue(() => undefined),
-    seekTo: vi.fn(), setPlaybackRate: vi.fn(), setVolume: vi.fn(), setMuted: vi.fn(),
-    setSource: vi.fn(), getBuffered: vi.fn(), getCurrentTime: vi.fn(), getDuration: vi.fn(),
-    paused: vi.fn(), off: vi.fn(), attach: vi.fn(), detach: vi.fn(), dispose: vi.fn(),
-    use: vi.fn(), removePlugin: vi.fn(),
+    seekTo: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    setSource: vi.fn(),
+    getBuffered: vi.fn(),
+    getCurrentTime: vi.fn(),
+    getDuration: vi.fn(),
+    paused: vi.fn(),
+    off: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
   } as unknown as Player & {
     fire: <K extends keyof PlayerEvents>(e: K, p: PlayerEvents[K]) => void;
   };
@@ -81,10 +92,7 @@ describe("createAuthAwarePlugin", () => {
     const player = makePlayer();
     createAuthAwarePlugin({ onUnauthorized: cb }).setup(player, makeHost());
     player.fire("error", { code: "unauthorized", message: "401", retryable: false });
-    expect(cb).toHaveBeenCalledWith(
-      "https://api-gateway.example.com/stream.m3u8",
-      401,
-    );
+    expect(cb).toHaveBeenCalledWith("https://api-gateway.example.com/stream.m3u8", 401);
   });
 
   it("detects 403 from error message", () => {

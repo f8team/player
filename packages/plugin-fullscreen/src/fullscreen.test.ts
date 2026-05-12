@@ -1,18 +1,31 @@
+import type { Player, PluginHost } from "@f8/player-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createFullscreenPlugin } from "./fullscreen.js";
-import type { Player, PluginHost } from "@f8/player-core";
 
 function makePlayer(): Player {
   return {
-    getState: vi.fn(), play: vi.fn(), pause: vi.fn(), paused: vi.fn(),
-    seekTo: vi.fn(), setPlaybackRate: vi.fn(), setVolume: vi.fn(), setMuted: vi.fn(),
-    setSource: vi.fn(), getSource: vi.fn(), getCurrentTime: vi.fn(),
-    getDuration: vi.fn(), getBuffered: vi.fn(),
+    getState: vi.fn(),
+    play: vi.fn(),
+    pause: vi.fn(),
+    paused: vi.fn(),
+    seekTo: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    setSource: vi.fn(),
+    getSource: vi.fn(),
+    getCurrentTime: vi.fn(),
+    getDuration: vi.fn(),
+    getBuffered: vi.fn(),
     subscribe: vi.fn().mockReturnValue(() => undefined),
-    on: vi.fn().mockReturnValue(() => undefined), off: vi.fn(),
-    attach: vi.fn().mockResolvedValue(undefined), detach: vi.fn(), dispose: vi.fn(),
-    use: vi.fn(), removePlugin: vi.fn(),
+    on: vi.fn().mockReturnValue(() => undefined),
+    off: vi.fn(),
+    attach: vi.fn().mockResolvedValue(undefined),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
     commands: { add: vi.fn().mockReturnValue(() => undefined), run: vi.fn(), has: vi.fn() },
   } as unknown as Player;
 }

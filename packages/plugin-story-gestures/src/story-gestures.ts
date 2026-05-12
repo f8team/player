@@ -47,14 +47,7 @@ const PLUGIN_NAME = "story-gestures";
 export function createStoryGesturesPlugin(
   options: StoryGesturesPluginOptions = {},
 ): PluginInstance {
-  const {
-    onPrev,
-    onNext,
-    onHold,
-    getContainer,
-    holdDuration = 300,
-    zoneRatio = 0.35,
-  } = options;
+  const { onPrev, onNext, onHold, getContainer, holdDuration = 300, zoneRatio = 0.35 } = options;
 
   return {
     name: PLUGIN_NAME,
@@ -149,7 +142,9 @@ export function createStoryGesturesPlugin(
 
       const el = getEl();
       if (el) {
-        (el as HTMLElement).addEventListener("touchstart", onTouchStart as EventListener, { passive: true });
+        (el as HTMLElement).addEventListener("touchstart", onTouchStart as EventListener, {
+          passive: true,
+        });
         (el as HTMLElement).addEventListener("touchend", onTouchEnd as EventListener);
       }
 

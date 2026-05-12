@@ -1,16 +1,27 @@
-import { describe, expect, it, vi, beforeEach } from "vitest";
+import type { Player, PluginHost } from "@f8/player-core";
+import { describe, expect, it, vi } from "vitest";
 
 import { createPipPlugin } from "./pip.js";
-import type { Player, PluginHost } from "@f8/player-core";
 
 function makePlayer(): Player {
   const handlers: Record<string, ((...args: unknown[]) => void)[]> = {};
   return {
     getState: vi.fn().mockReturnValue({
-      status: "idle", source: null, currentTime: 0, duration: 0,
-      buffered: [], playbackRate: 1, volume: 1, muted: false,
-      videoWidth: 0, videoHeight: 0, pip: false, fullscreen: false,
-      qualities: [], activeQuality: null, error: null,
+      status: "idle",
+      source: null,
+      currentTime: 0,
+      duration: 0,
+      buffered: [],
+      playbackRate: 1,
+      volume: 1,
+      muted: false,
+      videoWidth: 0,
+      videoHeight: 0,
+      pip: false,
+      fullscreen: false,
+      qualities: [],
+      activeQuality: null,
+      error: null,
     }),
     play: vi.fn().mockResolvedValue(undefined),
     pause: vi.fn(),
@@ -97,7 +108,7 @@ describe("createPipPlugin", () => {
     const host = makeHost();
     plugin.setup(player, host);
     // Should not throw
-    (host.commands.run as ReturnType<typeof vi.fn>)("pip:toggle");
+    (host.commands.run as (name: string) => void)("pip:toggle");
   });
 
   it("teardown calls offReady and disposeToggle", () => {

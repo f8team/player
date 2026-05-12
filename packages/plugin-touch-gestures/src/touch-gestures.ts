@@ -29,13 +29,10 @@ const PLUGIN_NAME = "touch-gestures";
  *
  * Golden case: G2 (mobile learning story / video tap controls).
  */
-export function createTouchGesturesPlugin(options: TouchGesturesPluginOptions = {}): PluginInstance {
-  const {
-    seekStep = 10,
-    holdDuration = 500,
-    zoneRatio = 0.3,
-    getContainer,
-  } = options;
+export function createTouchGesturesPlugin(
+  options: TouchGesturesPluginOptions = {},
+): PluginInstance {
+  const { seekStep = 10, holdDuration = 500, zoneRatio = 0.3, getContainer } = options;
 
   return {
     name: PLUGIN_NAME,
@@ -92,9 +89,7 @@ export function createTouchGesturesPlugin(options: TouchGesturesPluginOptions = 
           player.seekTo(Math.max(0, player.getState().currentTime - step));
           host.emit("touch-gestures:doubleTap", { direction: "back", seconds: step });
         } else if (zone === "right") {
-          player.seekTo(
-            Math.min(player.getState().duration, player.getState().currentTime + step),
-          );
+          player.seekTo(Math.min(player.getState().duration, player.getState().currentTime + step));
           host.emit("touch-gestures:doubleTap", { direction: "forward", seconds: step });
         }
       };
@@ -142,8 +137,12 @@ export function createTouchGesturesPlugin(options: TouchGesturesPluginOptions = 
 
       const el = getEl();
       if (el) {
-        (el as HTMLElement).addEventListener("touchstart", onTouchStart as EventListener, { passive: true });
-        (el as HTMLElement).addEventListener("touchend", onTouchEnd as EventListener, { passive: false });
+        (el as HTMLElement).addEventListener("touchstart", onTouchStart as EventListener, {
+          passive: true,
+        });
+        (el as HTMLElement).addEventListener("touchend", onTouchEnd as EventListener, {
+          passive: false,
+        });
       }
 
       return () => {

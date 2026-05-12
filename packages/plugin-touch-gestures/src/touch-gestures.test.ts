@@ -1,21 +1,35 @@
+import type { Player, PluginHost } from "@f8/player-core";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 import { createTouchGesturesPlugin } from "./touch-gestures.js";
-import type { Player, PluginHost } from "@f8/player-core";
 
 function makePlayer(overrides: { currentTime?: number; duration?: number; status?: string } = {}) {
   const { currentTime = 50, duration = 100, status = "playing" } = overrides;
   let _currentTime = currentTime;
   return {
     getState: () => ({ status, currentTime: _currentTime, duration }),
-    seekTo: vi.fn().mockImplementation((t: number) => { _currentTime = t; }),
+    seekTo: vi.fn().mockImplementation((t: number) => {
+      _currentTime = t;
+    }),
     play: vi.fn().mockResolvedValue(undefined),
     pause: vi.fn(),
-    paused: vi.fn(), setPlaybackRate: vi.fn(), setVolume: vi.fn(), setMuted: vi.fn(),
-    setSource: vi.fn(), getSource: vi.fn(), getCurrentTime: vi.fn(), getDuration: vi.fn(),
-    getBuffered: vi.fn(), subscribe: vi.fn().mockReturnValue(() => undefined),
-    on: vi.fn().mockReturnValue(() => undefined), off: vi.fn(),
-    attach: vi.fn(), detach: vi.fn(), dispose: vi.fn(), use: vi.fn(), removePlugin: vi.fn(),
+    paused: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    setSource: vi.fn(),
+    getSource: vi.fn(),
+    getCurrentTime: vi.fn(),
+    getDuration: vi.fn(),
+    getBuffered: vi.fn(),
+    subscribe: vi.fn().mockReturnValue(() => undefined),
+    on: vi.fn().mockReturnValue(() => undefined),
+    off: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
     commands: { add: vi.fn().mockReturnValue(() => undefined), run: vi.fn(), has: vi.fn() },
   } as unknown as Player;
 }
@@ -48,7 +62,12 @@ describe("createTouchGesturesPlugin", () => {
     container.setAttribute("data-f8-player", "");
     // Give the element a bounding rect.
     container.getBoundingClientRect = vi.fn().mockReturnValue({
-      left: 0, top: 0, width: 300, height: 200, right: 300, bottom: 200,
+      left: 0,
+      top: 0,
+      width: 300,
+      height: 200,
+      right: 300,
+      bottom: 200,
     } as DOMRect);
     document.body.appendChild(container);
   });

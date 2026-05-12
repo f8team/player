@@ -1,7 +1,6 @@
 import type { PlayerState } from "@f8/player-core";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-
 import { usePlayerContext } from "../context/PlayerContext.js";
 
 /**
@@ -19,14 +18,9 @@ export function usePlayerState<T>(selector: (state: PlayerState) => T): T {
   const selectorRef = useRef(selector);
   selectorRef.current = selector;
 
-  const stableSelector = useCallback(
-    (state: PlayerState) => selectorRef.current(state),
-    [],
-  );
+  const stableSelector = useCallback((state: PlayerState) => selectorRef.current(state), []);
 
-  const [value, setValue] = useState<T>(() =>
-    stableSelector(player.getState()),
-  );
+  const [value, setValue] = useState<T>(() => stableSelector(player.getState()));
 
   useEffect(() => {
     // Sync initial value in case the player state changed between the first

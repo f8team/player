@@ -1,7 +1,6 @@
 import type { Player, PlayerState } from "@f8/player-core";
 import { vi } from "vitest";
 
-
 export function makeInitialState(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
     status: "idle",

@@ -40,9 +40,7 @@ describe("useSourceType", () => {
       initialState: { source: { src: "https://example.com/video.mp4", tracks: [] } },
     });
     expect(screen.getByTestId("type").textContent).toBe("mp4");
-    act(() =>
-      mockSetState({ source: { src: "https://youtu.be/dQw4w9WgXcQ", tracks: [] } }),
-    );
+    act(() => mockSetState({ source: { src: "https://youtu.be/dQw4w9WgXcQ", tracks: [] } }));
     expect(screen.getByTestId("type").textContent).toBe("youtube");
   });
 });

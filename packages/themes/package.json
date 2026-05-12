@@ -12,9 +12,16 @@
     "./minimal.css": "./src/minimal.css",
     "./package.json": "./package.json"
   },
-  "files": ["src/**/*.css", "README.md"],
-  "engines": { "node": ">=20" },
-  "publishConfig": { "access": "public" },
+  "files": [
+    "src/**/*.css",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "echo 'CSS-only package — no build step'",
     "typecheck": "echo 'CSS-only — no TS'",
@@ -22,7 +29,13 @@
     "size": "size-limit",
     "clean": "echo 'nothing to clean'"
   },
-  "keywords": ["video", "player", "f8", "css", "theme"],
+  "keywords": [
+    "video",
+    "player",
+    "f8",
+    "css",
+    "theme"
+  ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
     "size-limit": "^11.1.6"

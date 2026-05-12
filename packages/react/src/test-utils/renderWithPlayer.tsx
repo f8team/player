@@ -6,7 +6,6 @@ import { PlayerContext, type PlayerContextValue } from "../context/PlayerContext
 
 import { makeMockPlayer } from "./mockPlayer.js";
 
-
 export interface RenderWithPlayerOptions {
   initialState?: Partial<PlayerState>;
   player?: Player;
@@ -34,9 +33,7 @@ export function renderWithPlayer(
     options: {},
   };
 
-  const result = render(
-    <PlayerContext.Provider value={ctx}>{ui}</PlayerContext.Provider>,
-  );
+  const result = render(<PlayerContext.Provider value={ctx}>{ui}</PlayerContext.Provider>);
 
   return { ...result, player, mockSetState };
 }

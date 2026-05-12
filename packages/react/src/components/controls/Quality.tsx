@@ -1,7 +1,6 @@
 import type { QualityLevel } from "@f8/player-core";
 import { type ChangeEvent } from "react";
 
-
 import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 

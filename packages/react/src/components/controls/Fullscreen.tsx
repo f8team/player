@@ -3,10 +3,7 @@ import { type ComponentPropsWithoutRef } from "react";
 import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 
-export type FullscreenProps = Omit<
-  ComponentPropsWithoutRef<"button">,
-  "onClick" | "aria-pressed"
->;
+export type FullscreenProps = Omit<ComponentPropsWithoutRef<"button">, "onClick" | "aria-pressed">;
 
 /**
  * `<Player.Controls.Fullscreen>` — toggles fullscreen on the player container.

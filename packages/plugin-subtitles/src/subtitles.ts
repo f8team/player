@@ -43,8 +43,7 @@ export function createSubtitlesPlugin(options: SubtitlesPluginOptions = {}): Plu
       let videoEl: HTMLVideoElement | null = null;
 
       const getVideo = (): HTMLVideoElement | null =>
-        videoEl ??
-        document.querySelector<HTMLVideoElement>("video[data-f8-player-video]");
+        videoEl ?? document.querySelector<HTMLVideoElement>("video[data-f8-player-video]");
 
       const getTracks = (): TextTrack[] => {
         const el = getVideo();

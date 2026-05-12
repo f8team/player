@@ -45,12 +45,7 @@ const PLUGIN_NAME = "keyboard";
  * Golden cases: G1 (course lesson keyboard nav), G16 (container-scoped).
  */
 export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): PluginInstance {
-  const {
-    scope = "global",
-    seekStep = 5,
-    longSeekStep = 10,
-    getContainer,
-  } = options;
+  const { scope = "global", seekStep = 5, longSeekStep = 10, getContainer } = options;
 
   return {
     name: PLUGIN_NAME,
@@ -79,9 +74,7 @@ export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): Plugi
 
           case "ArrowLeft":
             e.preventDefault();
-            player.seekTo(
-              Math.max(0, state.currentTime - (e.shiftKey ? longSeekStep : seekStep)),
-            );
+            player.seekTo(Math.max(0, state.currentTime - (e.shiftKey ? longSeekStep : seekStep)));
             break;
 
           case "ArrowRight":
@@ -131,9 +124,7 @@ export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): Plugi
         document.addEventListener("keydown", handler as EventListener);
       } else {
         // container scope — attach lazily once we know the container
-        const container =
-          getContainer?.() ??
-          (player.getState().source ? null : null); // placeholder
+        const container = getContainer?.() ?? (player.getState().source ? null : null); // placeholder
         if (container) {
           target = container;
           (container as HTMLElement).addEventListener("keydown", handler as EventListener);
@@ -149,7 +140,10 @@ export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): Plugi
 
       return () => {
         if (target) {
-          (target as HTMLElement | Document).removeEventListener("keydown", handler as EventListener);
+          (target as HTMLElement | Document).removeEventListener(
+            "keydown",
+            handler as EventListener,
+          );
         }
       };
     },

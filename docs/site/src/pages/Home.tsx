@@ -6,15 +6,22 @@ export default function HomePage() {
       {/* ─── Hero ─────────────────────────────────────────────────────────── */}
       <section className="hero">
         <div className="hero-badge">▶ v0.1.0 — Production ready</div>
-        <h1>Video player engine<br />for modern web apps</h1>
+        <h1>
+          Video player engine
+          <br />
+          for modern web apps
+        </h1>
         <p>
-          Headless, framework-agnostic, plugin-driven. Built on native{" "}
-          <code>HTMLMediaElement</code> and designed to last.
-          Zero runtime styling — bring your own theme.
+          Headless, framework-agnostic, plugin-driven. Built on native <code>HTMLMediaElement</code>{" "}
+          and designed to last. Zero runtime styling — bring your own theme.
         </p>
         <div className="hero-actions">
-          <Link to="/getting-started" className="btn-primary">Get started →</Link>
-          <Link to="/playground" className="btn-secondary">Live playground</Link>
+          <Link to="/getting-started" className="btn-primary">
+            Get started →
+          </Link>
+          <Link to="/playground" className="btn-secondary">
+            Live playground
+          </Link>
         </div>
       </section>
 
@@ -26,7 +33,9 @@ export default function HomePage() {
         <div className="feature-grid">
           {FEATURES.map((f) => (
             <div key={f.title} className="feature-card">
-              <h3>{f.icon} {f.title}</h3>
+              <h3>
+                {f.icon} {f.title}
+              </h3>
               <p>{f.desc}</p>
             </div>
           ))}
@@ -72,17 +81,23 @@ export default function MyPlayer() {
       <section className="prose">
         <h2>Plugin ecosystem</h2>
         <p>
-          Mỗi plugin là một <em>factory function</em> nhỏ, tree-shakeable, bundle riêng.
-          Chỉ ship những gì bạn dùng.
+          Mỗi plugin là một <em>factory function</em> nhỏ, tree-shakeable, bundle riêng. Chỉ ship
+          những gì bạn dùng.
         </p>
         <table>
           <thead>
-            <tr><th>Plugin</th><th>Bundle (gzip)</th><th>Mô tả</th></tr>
+            <tr>
+              <th>Plugin</th>
+              <th>Bundle (gzip)</th>
+              <th>Mô tả</th>
+            </tr>
           </thead>
           <tbody>
             {PLUGINS.map((p) => (
               <tr key={p.name}>
-                <td><code>{p.name}</code></td>
+                <td>
+                  <code>{p.name}</code>
+                </td>
                 <td>{p.size}</td>
                 <td>{p.desc}</td>
               </tr>
@@ -98,14 +113,46 @@ export default function MyPlayer() {
 }
 
 const FEATURES = [
-  { icon: "🎯", title: "Headless", desc: "Zero default styling. Compose Root, Video, Captions, Controls.* với bất kỳ design system nào." },
-  { icon: "🔌", title: "Plugin-driven", desc: "13 plugins sẵn sàng: subtitles, markers, keyboard, HLS quality, PiP, analytics, watermark, resume position, auth-aware..." },
-  { icon: "📦", title: "Tree-shakeable", desc: "Mỗi plugin là gói riêng. Bundle cuối chỉ chứa những gì bạn import." },
-  { icon: "🎨", title: "4 themes", desc: "Classroom, Story, Admin, Minimal — CSS variables, override bất kỳ token nào." },
-  { icon: "⚡", title: "HLS native", desc: "hls.js tích hợp sẵn. ABR tự động. Quality selector với createHlsQualityPlugin." },
-  { icon: "📱", title: "Mobile-first", desc: "Touch gestures, story gestures, PiP, hardware media session — hoạt động tốt trên iOS/Android." },
-  { icon: "♿", title: "Accessible", desc: "ARIA attributes, keyboard navigation, focus management theo WCAG 2.1 AA." },
-  { icon: "🔒", title: "Auth-aware", desc: "Intercept 401/403 từ allowlisted domains, tự pause và gọi onUnauthorized callback." },
+  {
+    icon: "🎯",
+    title: "Headless",
+    desc: "Zero default styling. Compose Root, Video, Captions, Controls.* với bất kỳ design system nào.",
+  },
+  {
+    icon: "🔌",
+    title: "Plugin-driven",
+    desc: "13 plugins sẵn sàng: subtitles, markers, keyboard, HLS quality, PiP, analytics, watermark, resume position, auth-aware...",
+  },
+  {
+    icon: "📦",
+    title: "Tree-shakeable",
+    desc: "Mỗi plugin là gói riêng. Bundle cuối chỉ chứa những gì bạn import.",
+  },
+  {
+    icon: "🎨",
+    title: "4 themes",
+    desc: "Classroom, Story, Admin, Minimal — CSS variables, override bất kỳ token nào.",
+  },
+  {
+    icon: "⚡",
+    title: "HLS native",
+    desc: "hls.js tích hợp sẵn. ABR tự động. Quality selector với createHlsQualityPlugin.",
+  },
+  {
+    icon: "📱",
+    title: "Mobile-first",
+    desc: "Touch gestures, story gestures, PiP, hardware media session — hoạt động tốt trên iOS/Android.",
+  },
+  {
+    icon: "♿",
+    title: "Accessible",
+    desc: "ARIA attributes, keyboard navigation, focus management theo WCAG 2.1 AA.",
+  },
+  {
+    icon: "🔒",
+    title: "Auth-aware",
+    desc: "Intercept 401/403 từ allowlisted domains, tự pause và gọi onUnauthorized callback.",
+  },
 ];
 
 const PLUGINS = [

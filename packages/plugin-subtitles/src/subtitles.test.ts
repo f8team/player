@@ -1,17 +1,31 @@
+import type { Player, PluginHost } from "@f8/player-core";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 import { createSubtitlesPlugin } from "./subtitles.js";
-import type { Player, PluginHost } from "@f8/player-core";
 
 function makePlayer(): Player {
   return {
-    getState: vi.fn(), on: vi.fn().mockReturnValue(() => undefined),
+    getState: vi.fn(),
+    on: vi.fn().mockReturnValue(() => undefined),
     subscribe: vi.fn().mockReturnValue(() => undefined),
-    play: vi.fn(), pause: vi.fn(), paused: vi.fn(), seekTo: vi.fn(),
-    setPlaybackRate: vi.fn(), setVolume: vi.fn(), setMuted: vi.fn(), setSource: vi.fn(),
-    getSource: vi.fn(), getCurrentTime: vi.fn(), getDuration: vi.fn(), getBuffered: vi.fn(),
-    off: vi.fn(), attach: vi.fn(), detach: vi.fn(), dispose: vi.fn(),
-    use: vi.fn(), removePlugin: vi.fn(),
+    play: vi.fn(),
+    pause: vi.fn(),
+    paused: vi.fn(),
+    seekTo: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    setSource: vi.fn(),
+    getSource: vi.fn(),
+    getCurrentTime: vi.fn(),
+    getDuration: vi.fn(),
+    getBuffered: vi.fn(),
+    off: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
     commands: { add: vi.fn().mockReturnValue(() => undefined), run: vi.fn(), has: vi.fn() },
   } as unknown as Player;
 }
@@ -23,7 +37,9 @@ function makeHost(): PluginHost & { _getCmds: () => Record<string, (p: unknown) 
     commands: {
       add: vi.fn().mockImplementation((name: string, h: (p: unknown) => void) => {
         cmds[name] = h;
-        return () => { delete cmds[name]; };
+        return () => {
+          delete cmds[name];
+        };
       }),
       run: vi.fn().mockImplementation((name: string, p?: unknown) => cmds[name]?.(p)),
       has: vi.fn(),
@@ -37,12 +53,17 @@ function makeHost(): PluginHost & { _getCmds: () => Record<string, (p: unknown) 
 function makeTrack(language: string, label: string): TextTrack {
   let _mode: TextTrackMode = "hidden";
   return {
-    language, label,
+    language,
+    label,
     kind: "subtitles",
     id: language,
     inBandMetadataTrackDispatchType: "",
-    get mode() { return _mode; },
-    set mode(v: TextTrackMode) { _mode = v; },
+    get mode() {
+      return _mode;
+    },
+    set mode(v: TextTrackMode) {
+      _mode = v;
+    },
     cues: null,
     activeCues: null,
     addCue: vi.fn(),
@@ -70,7 +91,10 @@ describe("createSubtitlesPlugin", () => {
       get: () => ({
         length: 2,
         item: (i: number) => [viTrack, enTrack][i],
-        [Symbol.iterator]: function* () { yield viTrack; yield enTrack; },
+        [Symbol.iterator]: function* () {
+          yield viTrack;
+          yield enTrack;
+        },
       }),
     });
     document.body.appendChild(videoEl);

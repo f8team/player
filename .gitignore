@@ -12,6 +12,7 @@ out/
 
 # Test artifacts
 coverage/
+.lighthouseci/
 .nyc_output/
 playwright-report/
 test-results/

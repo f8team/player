@@ -5,7 +5,15 @@ import { usePlayerState } from "../../hooks/usePlayerState.js";
 
 export type SeekBarProps = Omit<
   ComponentPropsWithoutRef<"input">,
-  "type" | "min" | "max" | "value" | "step" | "onChange" | "aria-valuenow" | "aria-valuemin" | "aria-valuemax"
+  | "type"
+  | "min"
+  | "max"
+  | "value"
+  | "step"
+  | "onChange"
+  | "aria-valuenow"
+  | "aria-valuemin"
+  | "aria-valuemax"
 >;
 
 /**

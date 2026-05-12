@@ -25,9 +25,14 @@ describe("<Fullscreen>", () => {
   });
 
   it("forwards custom children", () => {
-    renderWithPlayer(<Fullscreen><span>FS</span></Fullscreen>, {
-      initialState: { fullscreen: false },
-    });
+    renderWithPlayer(
+      <Fullscreen>
+        <span>FS</span>
+      </Fullscreen>,
+      {
+        initialState: { fullscreen: false },
+      },
+    );
     expect(screen.getByText("FS")).toBeDefined();
   });
 });

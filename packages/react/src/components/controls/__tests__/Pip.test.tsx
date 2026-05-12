@@ -6,7 +6,10 @@ import { renderWithPlayer } from "../../../test-utils/renderWithPlayer.js";
 import { Pip } from "../Pip.js";
 
 // jsdom does not implement PiP; enable it so the component renders.
-const originalEnabled = Object.getOwnPropertyDescriptor(Document.prototype, "pictureInPictureEnabled");
+const originalEnabled = Object.getOwnPropertyDescriptor(
+  Document.prototype,
+  "pictureInPictureEnabled",
+);
 beforeAll(() => {
   Object.defineProperty(document, "pictureInPictureEnabled", {
     configurable: true,
@@ -17,7 +20,6 @@ afterAll(() => {
   if (originalEnabled) {
     Object.defineProperty(document, "pictureInPictureEnabled", originalEnabled);
   } else {
-     
     delete (document as unknown as Record<string, unknown>)["pictureInPictureEnabled"];
   }
 });
@@ -42,7 +44,12 @@ describe("<Pip>", () => {
   });
 
   it("forwards custom children", () => {
-    renderWithPlayer(<Pip><span>PIP</span></Pip>, { initialState: { pip: false } });
+    renderWithPlayer(
+      <Pip>
+        <span>PIP</span>
+      </Pip>,
+      { initialState: { pip: false } },
+    );
     expect(screen.getByText("PIP")).toBeDefined();
   });
 });

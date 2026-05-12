@@ -1,19 +1,31 @@
+import type { Player, PluginHost } from "@f8/player-core";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 import { createStoryGesturesPlugin } from "./story-gestures.js";
-import type { Player, PluginHost } from "@f8/player-core";
 
 function makePlayer(status: "playing" | "paused" | "idle" = "playing") {
   return {
     getState: () => ({ status, currentTime: 30, duration: 100 }),
     play: vi.fn().mockResolvedValue(undefined),
     pause: vi.fn(),
-    paused: vi.fn(), seekTo: vi.fn(), setPlaybackRate: vi.fn(), setVolume: vi.fn(),
-    setMuted: vi.fn(), setSource: vi.fn(), getSource: vi.fn(), getCurrentTime: vi.fn(),
-    getDuration: vi.fn(), getBuffered: vi.fn(),
+    paused: vi.fn(),
+    seekTo: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    setSource: vi.fn(),
+    getSource: vi.fn(),
+    getCurrentTime: vi.fn(),
+    getDuration: vi.fn(),
+    getBuffered: vi.fn(),
     subscribe: vi.fn().mockReturnValue(() => undefined),
-    on: vi.fn().mockReturnValue(() => undefined), off: vi.fn(),
-    attach: vi.fn(), detach: vi.fn(), dispose: vi.fn(), use: vi.fn(), removePlugin: vi.fn(),
+    on: vi.fn().mockReturnValue(() => undefined),
+    off: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
     commands: { add: vi.fn().mockReturnValue(() => undefined), run: vi.fn(), has: vi.fn() },
   } as unknown as Player;
 }
@@ -45,7 +57,10 @@ describe("createStoryGesturesPlugin", () => {
     container = document.createElement("div");
     container.setAttribute("data-f8-player", "");
     container.getBoundingClientRect = vi.fn().mockReturnValue({
-      left: 0, width: 400, top: 0, height: 700,
+      left: 0,
+      width: 400,
+      top: 0,
+      height: 700,
     } as DOMRect);
     document.body.appendChild(container);
   });

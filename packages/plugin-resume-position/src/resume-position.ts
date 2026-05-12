@@ -69,7 +69,9 @@ function makeLocalStorage(prefix: string): ResumePositionStorage {
  *
  * The storage key is the source URL (`source.src`).
  */
-export function createResumePositionPlugin(options: ResumePositionPluginOptions = {}): PluginInstance {
+export function createResumePositionPlugin(
+  options: ResumePositionPluginOptions = {},
+): PluginInstance {
   const {
     storage,
     storagePrefix = "f8-player:resume:",

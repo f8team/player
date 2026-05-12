@@ -183,30 +183,30 @@ export default function PlaygroundPage() {
   return (
     <article className="prose">
       <h1>Playground</h1>
-      <p>
-        Chỉnh sửa code trực tiếp. Tất cả packages đã được cài sẵn trong sandbox.
-      </p>
+      <p>Chỉnh sửa code trực tiếp. Tất cả packages đã được cài sẵn trong sandbox.</p>
 
       <div style={{ display: "flex", gap: "0.8rem", marginBottom: "2rem", flexWrap: "wrap" }}>
-        {(Object.entries(RECIPES) as [keyof typeof RECIPES, { label: string }][]).map(([key, { label }]) => (
-          <button
-            key={key}
-            onClick={() => setRecipe(key)}
-            style={{
-              padding: "0.6rem 1.4rem",
-              borderRadius: "2rem",
-              border: recipe === key ? "none" : "1px solid #e5e7eb",
-              background: recipe === key ? "#f05123" : "#fff",
-              color: recipe === key ? "#fff" : "#374151",
-              fontSize: "1.4rem",
-              cursor: "pointer",
-              fontWeight: recipe === key ? 600 : 400,
-              transition: "all 0.15s",
-            }}
-          >
-            {label}
-          </button>
-        ))}
+        {(Object.entries(RECIPES) as [keyof typeof RECIPES, { label: string }][]).map(
+          ([key, { label }]) => (
+            <button
+              key={key}
+              onClick={() => setRecipe(key)}
+              style={{
+                padding: "0.6rem 1.4rem",
+                borderRadius: "2rem",
+                border: recipe === key ? "none" : "1px solid #e5e7eb",
+                background: recipe === key ? "#f05123" : "#fff",
+                color: recipe === key ? "#fff" : "#374151",
+                fontSize: "1.4rem",
+                cursor: "pointer",
+                fontWeight: recipe === key ? 600 : 400,
+                transition: "all 0.15s",
+              }}
+            >
+              {label}
+            </button>
+          ),
+        )}
       </div>
 
       <div className="playground-wrapper">

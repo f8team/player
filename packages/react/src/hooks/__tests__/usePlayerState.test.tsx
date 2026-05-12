@@ -9,7 +9,6 @@ function StatusDisplay(): JSX.Element {
   return <div data-testid="status">{status}</div>;
 }
 
-
 describe("usePlayerState", () => {
   it("renders the initial state value", () => {
     renderWithPlayer(<StatusDisplay />, { initialState: { status: "idle" } });

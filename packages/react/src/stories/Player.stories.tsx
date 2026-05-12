@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
+import React from "react";
+
 import { Root, Video, Captions, Controls } from "../index.js";
-import type { RootProps } from "../index.js";
 
 // ─── Decorators ──────────────────────────────────────────────────────────────
 
@@ -38,7 +39,9 @@ function PlayerShell({
       >
         {children}
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
-          <Video style={{ flex: 1, width: "100%", minHeight: 0, objectFit: "contain", display: "block" }} />
+          <Video
+            style={{ flex: 1, width: "100%", minHeight: 0, objectFit: "contain", display: "block" }}
+          />
           <Captions />
           <Controls.Bar
             style={{
@@ -87,7 +90,8 @@ type Story = StoryObj;
 // ─── Stories ──────────────────────────────────────────────────────────────────
 
 const DEMO_HLS = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
-const DEMO_MP4 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
+const DEMO_MP4 =
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 const DEMO_YT = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
 export const ClassroomTheme: Story = {

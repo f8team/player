@@ -30,13 +30,5 @@ export function Video({ className, style, ...rest }: VideoProps): JSX.Element {
     };
   }, [player]);
 
-  return (
-    <video
-      ref={ref}
-      className={className}
-      style={style}
-      data-f8-player-video=""
-      {...rest}
-    />
-  );
+  return <video ref={ref} className={className} style={style} data-f8-player-video="" {...rest} />;
 }

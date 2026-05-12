@@ -7,6 +7,7 @@ const NAV = [
       { to: "/", label: "Giới thiệu" },
       { to: "/getting-started", label: "Hướng dẫn cài đặt" },
       { to: "/playground", label: "Playground" },
+      { to: "/launch", label: "Public launch" },
     ],
   },
   {
@@ -28,7 +29,9 @@ const NAV = [
 export default function Sidebar() {
   return (
     <aside className="site-sidebar">
-      <a href="/" className="sidebar-logo">▶ @f8/player</a>
+      <a href="/" className="sidebar-logo">
+        ▶ @f8/player
+      </a>
       {NAV.map((group) => (
         <div key={group.section}>
           <div className="sidebar-section">{group.section}</div>
@@ -44,9 +47,18 @@ export default function Sidebar() {
           ))}
         </div>
       ))}
-      <div style={{ marginTop: "auto", paddingTop: "2.4rem", borderTop: "1px solid #e5e7eb", marginTop: "3.2rem" }}>
-        <a href="https://github.com/f8/player" className="sidebar-link" target="_blank" rel="noreferrer">GitHub →</a>
-        <a href="/storybook" className="sidebar-link" target="_blank" rel="noreferrer">Storybook →</a>
+      <div style={{ marginTop: "auto", paddingTop: "2.4rem", borderTop: "1px solid #e5e7eb" }}>
+        <a
+          href="https://github.com/f8/player"
+          className="sidebar-link"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub →
+        </a>
+        <a href="/storybook" className="sidebar-link" target="_blank" rel="noreferrer">
+          Storybook →
+        </a>
       </div>
     </aside>
   );

@@ -32,7 +32,11 @@ describe("<PlayPause>", () => {
   });
 
   it("forwards custom children", () => {
-    renderWithPlayer(<PlayPause><span>GO</span></PlayPause>);
+    renderWithPlayer(
+      <PlayPause>
+        <span>GO</span>
+      </PlayPause>,
+    );
     expect(screen.getByText("GO")).toBeDefined();
   });
 

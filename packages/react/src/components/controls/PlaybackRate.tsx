@@ -18,10 +18,7 @@ const DEFAULT_RATES = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
  *
  * Golden case: G7 (playback rate in course video lesson editor).
  */
-export function PlaybackRate({
-  rates = DEFAULT_RATES,
-  className,
-}: PlaybackRateProps): JSX.Element {
+export function PlaybackRate({ rates = DEFAULT_RATES, className }: PlaybackRateProps): JSX.Element {
   const player = usePlayer();
   const playbackRate = usePlayerState((s) => s.playbackRate);
 

@@ -40,7 +40,7 @@ describe("<Quality>", () => {
     });
     const select = screen.getByRole("combobox");
     await userEvent.selectOptions(select, "1");
-    expect((player.commands.run as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith(
+    expect(player.commands.run as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
       "hls-quality:set",
       expect.objectContaining({ id: "1" }),
     );
@@ -52,7 +52,7 @@ describe("<Quality>", () => {
     });
     const select = screen.getByRole("combobox");
     await userEvent.selectOptions(select, "auto");
-    expect((player.commands.run as ReturnType<typeof vi.fn>)).toHaveBeenCalledWith(
+    expect(player.commands.run as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
       "hls-quality:setAuto",
     );
   });

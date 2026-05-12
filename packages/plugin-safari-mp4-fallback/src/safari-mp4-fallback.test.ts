@@ -1,7 +1,7 @@
+import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createSafariMp4FallbackPlugin } from "./safari-mp4-fallback.js";
-import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
 
 type Handler<K extends keyof PlayerEvents> = (payload: PlayerEvents[K]) => void;
 
@@ -11,26 +11,38 @@ function makePlayer(src = "https://cdn.example.com/video.m3u8") {
     getSource: () => ({ src }),
     setSource: vi.fn(),
     getState: vi.fn().mockReturnValue({ status: "idle", source: null }),
-    on: vi.fn().mockImplementation(<K extends keyof PlayerEvents>(
-      event: K, handler: Handler<K>,
-    ) => {
-      if (!handlers[event]) (handlers as Record<string, unknown[]>)[event as string] = [];
-      (handlers[event] as Handler<K>[]).push(handler);
-      return () => {
-        const list = handlers[event] as Handler<K>[] | undefined;
-        if (!list) return;
-        const i = list.indexOf(handler);
-        if (i >= 0) list.splice(i, 1);
-      };
-    }),
+    on: vi
+      .fn()
+      .mockImplementation(<K extends keyof PlayerEvents>(event: K, handler: Handler<K>) => {
+        if (!handlers[event]) (handlers as Record<string, unknown[]>)[event as string] = [];
+        (handlers[event] as Handler<K>[]).push(handler);
+        return () => {
+          const list = handlers[event] as Handler<K>[] | undefined;
+          if (!list) return;
+          const i = list.indexOf(handler);
+          if (i >= 0) list.splice(i, 1);
+        };
+      }),
     fire: <K extends keyof PlayerEvents>(event: K, payload: PlayerEvents[K]) => {
       (handlers[event] as Handler<K>[] | undefined)?.forEach((h) => h(payload));
     },
-    play: vi.fn(), pause: vi.fn(), paused: vi.fn(), seekTo: vi.fn(),
-    setPlaybackRate: vi.fn(), setVolume: vi.fn(), setMuted: vi.fn(),
-    getCurrentTime: vi.fn(), getDuration: vi.fn(), getBuffered: vi.fn(),
-    subscribe: vi.fn().mockReturnValue(() => undefined), off: vi.fn(),
-    attach: vi.fn(), detach: vi.fn(), dispose: vi.fn(), use: vi.fn(), removePlugin: vi.fn(),
+    play: vi.fn(),
+    pause: vi.fn(),
+    paused: vi.fn(),
+    seekTo: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    getCurrentTime: vi.fn(),
+    getDuration: vi.fn(),
+    getBuffered: vi.fn(),
+    subscribe: vi.fn().mockReturnValue(() => undefined),
+    off: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
     commands: { add: vi.fn().mockReturnValue(() => undefined), run: vi.fn(), has: vi.fn() },
   } as unknown as Player & {
     fire: <K extends keyof PlayerEvents>(e: K, p: PlayerEvents[K]) => void;

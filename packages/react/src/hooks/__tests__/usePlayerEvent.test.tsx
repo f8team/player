@@ -54,10 +54,13 @@ describe("usePlayerEvent", () => {
 
     // Build a mock player where we can fire events manually.
     const { player, mockSetState } = makeMockPlayer();
-    let capturedTimeUpdateHandler: ((p: { currentTime: number; playedSeconds: number; duration: number }) => void) | null = null;
+    let capturedTimeUpdateHandler:
+      | ((p: { currentTime: number; playedSeconds: number; duration: number }) => void)
+      | null = null;
     (player.on as ReturnType<typeof vi.fn>).mockImplementation(
       (event: string, handler: (p: unknown) => void) => {
-        if (event === "timeupdate") capturedTimeUpdateHandler = handler as typeof capturedTimeUpdateHandler;
+        if (event === "timeupdate")
+          capturedTimeUpdateHandler = handler as typeof capturedTimeUpdateHandler;
         return () => undefined;
       },
     );

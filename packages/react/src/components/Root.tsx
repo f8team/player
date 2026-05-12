@@ -2,7 +2,6 @@ import { createPlayer } from "@f8/player-core";
 import type { PlayerOptions } from "@f8/player-core";
 import { type ReactNode, useEffect, useMemo, useRef } from "react";
 
-
 import { PlayerContext } from "../context/PlayerContext.js";
 
 export interface RootProps {

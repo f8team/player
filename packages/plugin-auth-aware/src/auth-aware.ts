@@ -33,11 +33,7 @@ const PLUGIN_NAME = "auth-aware";
  * Golden case: G13 (authenticated HLS stream via api-gateway).
  */
 export function createAuthAwarePlugin(options: AuthAwarePluginOptions = {}): PluginInstance {
-  const {
-    allowlist = [],
-    onUnauthorized,
-    pauseOnUnauthorized = true,
-  } = options;
+  const { allowlist = [], onUnauthorized, pauseOnUnauthorized = true } = options;
 
   return {
     name: PLUGIN_NAME,

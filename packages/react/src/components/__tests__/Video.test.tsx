@@ -26,9 +26,7 @@ describe("<Video>", () => {
   });
 
   it("forwards className and style", () => {
-    const { container } = renderWithPlayer(
-      <Video className="my-video" style={{ width: 640 }} />,
-    );
+    const { container } = renderWithPlayer(<Video className="my-video" style={{ width: 640 }} />);
     const video = container.querySelector("video");
     expect(video?.className).toBe("my-video");
     expect(video?.style.width).toBe("640px");

@@ -47,11 +47,7 @@ export function createMarkersPlugin(options: MarkersPluginOptions = {}): PluginI
 
         if (typeof indexOrTime === "number") {
           // Check if it could be an index (integer, < markers.length) or a time.
-          if (
-            Number.isInteger(indexOrTime) &&
-            indexOrTime >= 0 &&
-            indexOrTime < markers.length
-          ) {
+          if (Number.isInteger(indexOrTime) && indexOrTime >= 0 && indexOrTime < markers.length) {
             marker = markers[indexOrTime];
           } else {
             // Treat as a time value — find nearest marker.

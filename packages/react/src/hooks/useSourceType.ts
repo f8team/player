@@ -1,5 +1,6 @@
 import { detectSourceType } from "@f8/player-core";
 import type { SourceType } from "@f8/player-core";
+
 import { usePlayerState } from "./usePlayerState.js";
 
 /**

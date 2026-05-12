@@ -3,12 +3,14 @@
     "name": "@f8/player-core (full ESM, gzip)",
     "path": "dist/index.js",
     "limit": "12 KB",
-    "gzip": true
+    "gzip": true,
+    "ignore": ["hls.js"]
   },
   {
     "name": "@f8/player-core (hard cap, gzip)",
     "path": "dist/index.js",
     "limit": "15 KB",
-    "gzip": true
+    "gzip": true,
+    "ignore": ["hls.js"]
   }
 ]

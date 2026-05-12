@@ -50,11 +50,70 @@ jobs:
       - name: Size budget
         run: pnpm size
 
+      - name: Security audit (prod deps only)
+        run: pnpm audit --prod
+
+  storybook-axe:
+    name: Storybook build + axe smoke
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Storybook
+        run: pnpm build-storybook
+
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Run axe / test-runner
+        run: |
+          pnpm exec http-server storybook-static --host 127.0.0.1 --port 6006 --silent &
+          pnpm exec wait-on http://127.0.0.1:6006
+          pnpm storybook:test
+
+  lighthouse:
+    name: Lighthouse CI (docs site)
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enable corepack
+        run: corepack enable
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Build docs site
+        run: pnpm docs:build
+
+      - name: Run Lighthouse CI
+        run: pnpm lhci
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
   release:
     name: Release (Changesets)
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    needs: verify
+    needs: [verify, storybook-axe, lighthouse]
     permissions:
       contents: write
       pull-requests: write

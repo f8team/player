@@ -122,7 +122,8 @@ class YouTubeLoader implements SourceLoader {
     const host = document.createElement("div");
     host.setAttribute("data-f8-player-yt-host", "");
     // The host must fill the stage absolutely so the YT iframe stretches to 100%.
-    host.style.cssText = "position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#000;";
+    host.style.cssText =
+      "position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#000;";
     parent.appendChild(host);
     this.host = host;
 

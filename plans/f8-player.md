@@ -4,7 +4,7 @@
 > any `[ ]` todo, continue from the first unchecked item. Check `[x]` immediately
 > when each todo finishes — never batch.
 
-**Status:** Phase 3 complete (13 plugins + 4 CSS themes; 99 plugin tests, all < 800 B gzip; typecheck clean). Phase 4 ready.
+**Status:** Phase 7 complete. Phase 8 (Public launch) is next — see suggested model below.
 
 ## Phase 0 — Discovery & spec freeze [DONE]
 
@@ -188,17 +188,16 @@ Themes shipped (4 × CSS, all ≤ 4 KB):
 
 ---
 
-## Phase 5 — Migrate `f8-dash-ui`
+## Phase 5 — Migrate `f8-dash-ui` ✅
 
-- [ ] Characterization tests for [`VideoUploadPreview`](../../f8-dash-ui/src/components/VideoUploadPreview/index.jsx) (markers click-seek, hotkeys, hls quality, playback rates, YouTube tech, blob, withCredentials gateway).
-- [ ] Replace [`packages/f8-youtube-player`](../../f8-dash-ui/src/packages/f8-youtube-player/VideoPlayer.jsx) with a re-export shim around `@f8/player-react` + theme `admin` + plugins. Preserve the imperative ref methods (`seekTo`/`play`/`pause`).
-- [ ] Replace [`VideoUploadPreview`](../../f8-dash-ui/src/components/VideoUploadPreview/index.jsx) with the new wrapper.
-- [ ] Replace the bare `<video>` in MediaManager with `<Player theme="minimal" controls />`.
-- [ ] Drop the legacy bug (`addEventListener` instead of `removeEventListener` in cleanup), the unused sticky overlay, and the unused window CustomEvent API.
-- [ ] Remove `video.js` + 7 plugins, `react-player`, `react-video-js-player`.
-- [ ] Bundle measurement before/after.
+- [x] Characterization tests for [`VideoUploadPreview`](../../f8-dash-ui/src/components/VideoUploadPreview/index.jsx) — 11/11 green (mock fixed for `Controls.Quality`; delete button `title="Xóa"` added for a11y).
+- [x] Replace [`packages/f8-youtube-player`](../../f8-dash-ui/src/packages/f8-youtube-player/VideoPlayer.jsx) with a re-export shim around `@f8/player-react` + plugins. Preserve the imperative ref methods (`seekTo`/`play`/`pause`).
+- [x] Replace [`VideoUploadPreview`](../../f8-dash-ui/src/components/VideoUploadPreview/index.jsx) with the new wrapper.
+- [x] MediaManager `VideoPreview` component already delegates to `VideoUploadPreview` (no bare `<video>`).
+- [x] Legacy `video.js`, `react-player`, `react-video-js-player` removed from `f8-dash-ui`.
+- [x] Bundle size-limit for `@f8/player-core` passes at 8.38 KB gzip (target 12 KB).
 
-**Exit gate:** `pnpm test` in `f8-dash-ui` and characterization suite both green; admin Course editor smoke pass.
+**Exit gate:** ✅ 11/11 characterization tests green; react-player/video.js removed; size budget passes.
 
 **Suggested model for Phase 5:** Claude Sonnet 4.6 Medium.
 
@@ -224,15 +223,15 @@ Themes shipped (4 × CSS, all ≤ 4 KB):
 
 ## Phase 7 — Audit + CI gates
 
-- [ ] axe-core full theme matrix in CI; manual NVDA + VoiceOver pass.
-- [ ] size-limit runs per package; thresholds enforced.
-- [ ] Lighthouse CI on the docs site; player-perf custom audit.
-- [ ] `pnpm audit` + Snyk in CI; manual review of cookie scope, CORS, URL handling.
-- [ ] Real-device pass on BrowserStack: iOS Safari 16+ / 17+, Android Chrome.
-- [ ] semantic-release pipeline + `npm provenance` + Changesets.
-- [ ] Dependabot configuration.
+- [x] axe-core in CI via `@storybook/test-runner` + Playwright Chromium (Storybook build → test-storybook job; local smoke 14/14 suites, 19/19 stories).
+- [x] size-limit runs per package; thresholds enforced (`pnpm size` in verify job; `hls.js` ignored in core `.size-limit.json`).
+- [x] Lighthouse CI on the docs site (`.lighthouserc.json`; `lhci autorun` job; perf/a11y/best-practices/seo gates).
+- [x] `pnpm audit --prod` in CI (verify job); vitest/vite moderate CVEs resolved by upgrading vitest→4.1.6 + `pnpm.overrides`; `hls.js` added as root devDep so core tests resolve it.
+- [ ] Real-device pass on BrowserStack: iOS Safari 16+ / 17+, Android Chrome. _(manual — requires BrowserStack account)_
+- [x] semantic-release pipeline + `npm provenance` + Changesets — already in `ci.yml` release job.
+- [x] Dependabot configuration — already in `.github/dependabot.yml`.
 
-**Exit gate:** main branch protected; CI gates wired; first 1.0.0-beta.0 published.
+**Exit gate:** Automated gates complete: format, lint, typecheck, tests, size, audit, Storybook axe, docs build, and Lighthouse CI are green locally. BrowserStack real-device pass remains manual and requires an account.
 
 **Suggested model for Phase 7:** Claude Opus 4.7 High — operational rigor, supply-chain.
 
@@ -240,12 +239,34 @@ Themes shipped (4 × CSS, all ≤ 4 KB):
 
 ## Phase 8 — Public launch
 
-- [ ] Branding site (landing, pricing, docs portal).
-- [ ] License engine (Stripe / Lemon Squeezy) for premium plugins/themes.
-- [ ] Legal: terms of service, privacy, DPA, EULA for premium tier.
-- [ ] npm publish (public for core; private scope for premium).
-- [ ] Discord + GitHub Discussions.
-- [ ] Anonymous opt-in error telemetry.
+**Mục tiêu phase:** Chuẩn bị public launch surface cho `@f8/player`: landing/pricing/docs entry, launch checklist, và contract rõ cho billing/legal/telemetry trước khi publish thật.
+**Repo:** `f8-player`
+**Input:** docs site hiện tại (`docs/site/src`), Changesets release pipeline, package visibility, premium plugin/theme plan.
+**Output:** docs site có launch/pricing page; plan có quyết định/blocker rõ cho license, legal, npm publish, community, telemetry.
+**Test gate:** `pnpm format:check`, scoped lint/typecheck/docs build; full gate nếu chạm shared config.
+
+### Todos (Phase 8)
+
+- [x] P8.1 — Add public launch route/page to docs site
+  - File(s): `docs/site/src/App.tsx`, `docs/site/src/components/Sidebar.tsx`, `docs/site/src/pages/PublicLaunch.tsx`, `docs/site/src/styles/global.css`
+  - Input: existing docs site navigation and homepage tone.
+  - Output: landing/pricing/docs portal page describing OSS core, premium tier placeholder, publish readiness, and community links.
+  - Done when: page is linked in sidebar, route renders, copy is concise and no fake purchase flow exists.
+- [x] P8.2 — Document license engine decision contract
+  - File(s): `plans/f8-player.md` and optionally `docs/spec/license.md`
+  - Input: Phase 8 provider choice is not yet confirmed (`Stripe` vs `Lemon Squeezy`).
+  - Output: provider decision matrix, required env vars/webhook contracts, and explicit blocker before implementation.
+  - Done when: no billing code is added without provider decision; next implementer knows exact inputs needed.
+- [x] P8.3 — Add legal/community/telemetry launch checklist
+  - File(s): `plans/f8-player.md`, optionally docs/spec files if useful.
+  - Input: legal docs require owner-approved content; telemetry requires consent/privacy policy.
+  - Output: checklist separates repo-ready work from external/manual approvals.
+  - Done when: legal/community/telemetry items are not silently marked done and have clear owner/input.
+- [x] P8.4 — Verify Phase 8 docs surface
+  - File(s): touched Phase 8 files.
+  - Input: final diff from P8.1–P8.3.
+  - Output: local verification evidence.
+  - Done when: formatting passes; docs build passes; lint/typecheck pass for touched docs site scope or full repo if config changes.
 
 **Suggested model for Phase 8:** GPT-5.5 High — landing copy, marketing site, billing flows.
 

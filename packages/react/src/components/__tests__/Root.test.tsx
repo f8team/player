@@ -54,12 +54,20 @@ describe("<Root>", () => {
   });
 
   it("calls createPlayer once on mount", () => {
-    render(<Root options={{ muted: true }}><span /></Root>);
+    render(
+      <Root options={{ muted: true }}>
+        <span />
+      </Root>,
+    );
     expect((createPlayer as ReturnType<typeof vi.fn>).mock.calls.length).toBeGreaterThan(0);
   });
 
   it("disposes the player on unmount", () => {
-    const { unmount } = render(<Root><span /></Root>);
+    const { unmount } = render(
+      <Root>
+        <span />
+      </Root>,
+    );
     const player = (createPlayer as ReturnType<typeof vi.fn>).mock.results.at(-1)?.value;
     unmount();
     expect(player?.dispose).toHaveBeenCalled();
@@ -67,7 +75,11 @@ describe("<Root>", () => {
 
   it("invokes playerRef callback with the player instance", () => {
     const cb = vi.fn();
-    render(<Root playerRef={cb}><span /></Root>);
+    render(
+      <Root playerRef={cb}>
+        <span />
+      </Root>,
+    );
     expect(cb).toHaveBeenCalledWith(expect.objectContaining({ dispose: expect.any(Function) }));
   });
 });

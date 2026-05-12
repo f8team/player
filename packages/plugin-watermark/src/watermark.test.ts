@@ -1,18 +1,32 @@
+import type { Player, PluginHost } from "@f8/player-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createWatermarkPlugin } from "./watermark.js";
-import type { Player, PluginHost } from "@f8/player-core";
 
 function makePlayer(): Player {
   return {
-    getState: vi.fn(), on: vi.fn().mockReturnValue(() => undefined),
+    getState: vi.fn(),
+    on: vi.fn().mockReturnValue(() => undefined),
     subscribe: vi.fn().mockReturnValue(() => undefined),
     commands: { add: vi.fn().mockReturnValue(() => undefined), run: vi.fn(), has: vi.fn() },
-    play: vi.fn(), pause: vi.fn(), paused: vi.fn(), seekTo: vi.fn(),
-    setPlaybackRate: vi.fn(), setVolume: vi.fn(), setMuted: vi.fn(), setSource: vi.fn(),
-    getSource: vi.fn(), getCurrentTime: vi.fn(), getDuration: vi.fn(), getBuffered: vi.fn(),
-    off: vi.fn(), attach: vi.fn(), detach: vi.fn(), dispose: vi.fn(),
-    use: vi.fn(), removePlugin: vi.fn(),
+    play: vi.fn(),
+    pause: vi.fn(),
+    paused: vi.fn(),
+    seekTo: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    setSource: vi.fn(),
+    getSource: vi.fn(),
+    getCurrentTime: vi.fn(),
+    getDuration: vi.fn(),
+    getBuffered: vi.fn(),
+    off: vi.fn(),
+    attach: vi.fn(),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
   } as unknown as Player;
 }
 

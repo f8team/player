@@ -1,7 +1,7 @@
+import type { Player, PluginHost, PlayerState } from "@f8/player-core";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { createKeyboardPlugin } from "./keyboard.js";
-import type { Player, PluginHost, PlayerState } from "@f8/player-core";
 
 function makeState(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
