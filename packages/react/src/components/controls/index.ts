@@ -7,6 +7,9 @@ export type { PlayPauseProps } from "./PlayPause.js";
 export { SeekBar } from "./SeekBar.js";
 export type { SeekBarProps } from "./SeekBar.js";
 
+export { SeekOffset } from "./SeekOffset.js";
+export type { SeekOffsetProps } from "./SeekOffset.js";
+
 export { Time } from "./Time.js";
 export type { TimeProps } from "./Time.js";
 

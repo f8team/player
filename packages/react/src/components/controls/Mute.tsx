@@ -4,6 +4,8 @@ import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 import { useLabels } from "../../i18n.js";
 
+import { PlayerIcon } from "./icons.js";
+
 export type MuteProps = Omit<ComponentPropsWithoutRef<"button">, "onClick" | "aria-pressed">;
 
 /**
@@ -16,6 +18,7 @@ export function Mute({ children, ...rest }: MuteProps): JSX.Element {
   const player = usePlayer();
   const labels = useLabels();
   const muted = usePlayerState((s) => s.muted);
+  const volume = usePlayerState((s) => s.volume);
   const label = muted ? labels.unmute : labels.mute;
 
   return (
@@ -27,7 +30,7 @@ export function Mute({ children, ...rest }: MuteProps): JSX.Element {
       data-f8-player-control="mute"
       {...rest}
     >
-      {children ?? (muted ? "🔇" : "🔊")}
+      {children ?? <PlayerIcon name={muted || volume <= 0 ? "volumeMuted" : "volume"} />}
     </button>
   );
 }

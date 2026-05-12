@@ -4,6 +4,8 @@ import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 import { useLabels } from "../../i18n.js";
 
+import { PlayerIcon } from "./icons.js";
+
 export type FullscreenProps = Omit<ComponentPropsWithoutRef<"button">, "onClick" | "aria-pressed">;
 
 /**
@@ -30,7 +32,7 @@ export function Fullscreen({ children, ...rest }: FullscreenProps): JSX.Element 
       data-f8-player-control="fullscreen"
       {...rest}
     >
-      {children ?? (fullscreen ? "⛶" : "⛶")}
+      {children ?? <PlayerIcon name={fullscreen ? "minimize" : "maximize"} />}
     </button>
   );
 }

@@ -1,4 +1,4 @@
-import { type ChangeEvent, type ComponentPropsWithoutRef } from "react";
+import { type ChangeEvent, type ComponentPropsWithoutRef, type CSSProperties } from "react";
 
 import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
@@ -14,27 +14,34 @@ export type VolumeProps = Omit<
  *
  * ARIA: `role="slider"` with `aria-valuenow`, `aria-label` from `labels.volume`.
  */
-export function Volume(props: VolumeProps): JSX.Element {
+export function Volume({ style, ...props }: VolumeProps): JSX.Element {
   const player = usePlayer();
   const labels = useLabels();
   const volume = usePlayerState((s) => s.volume);
+  const safeVolume = Math.min(Math.max(volume, 0), 1);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
     player.setVolume(Number(e.target.value));
   };
 
+  const inputStyle = {
+    "--f8p-volume-progress": `${safeVolume * 100}%`,
+    ...(style as CSSProperties | undefined),
+  } as CSSProperties;
+
   return (
     <input
       {...props}
+      style={inputStyle}
       type="range"
       min={0}
       max={1}
       step={0.05}
-      value={volume}
+      value={safeVolume}
       onChange={handleChange}
       role="slider"
       aria-label={labels.volume}
-      aria-valuenow={volume}
+      aria-valuenow={safeVolume}
       aria-valuemin={0}
       aria-valuemax={1}
       data-f8-player-control="volume"

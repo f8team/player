@@ -4,6 +4,8 @@ import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 import { useLabels } from "../../i18n.js";
 
+import { PlayerIcon } from "./icons.js";
+
 export type PlayPauseProps = Omit<ComponentPropsWithoutRef<"button">, "onClick" | "aria-pressed">;
 
 /**
@@ -38,7 +40,7 @@ export function PlayPause({ children, ...rest }: PlayPauseProps): JSX.Element {
       data-f8-player-control="play-pause"
       {...rest}
     >
-      {children ?? (isPlaying ? "⏸" : "▶")}
+      {children ?? <PlayerIcon name={isPlaying ? "pause" : "play"} />}
     </button>
   );
 }

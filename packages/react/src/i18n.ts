@@ -32,6 +32,10 @@ export interface PlayerLabels {
   volume: string;
   /** Seek bar label. */
   seek: string;
+  /** Fixed-step backward seek button label. */
+  seekBackward: (seconds: number) => string;
+  /** Fixed-step forward seek button label. */
+  seekForward: (seconds: number) => string;
   /** Picture-in-Picture toggle entering PiP. */
   pipEnter: string;
   /** Picture-in-Picture toggle exiting PiP. */
@@ -65,6 +69,8 @@ export const defaultLabels: PlayerLabels = {
   unmute: "Unmute",
   volume: "Volume",
   seek: "Seek",
+  seekBackward: (seconds) => `Rewind ${seconds} seconds`,
+  seekForward: (seconds) => `Forward ${seconds} seconds`,
   pipEnter: "Picture-in-picture",
   pipExit: "Exit picture-in-picture",
   fullscreenEnter: "Fullscreen",
@@ -91,6 +97,8 @@ export const vietnameseLabels: PlayerLabels = {
   unmute: "Bật tiếng",
   volume: "Âm lượng",
   seek: "Vị trí phát",
+  seekBackward: (seconds) => `Tua lại ${seconds} giây`,
+  seekForward: (seconds) => `Tua tới ${seconds} giây`,
   pipEnter: "Hình trong hình",
   pipExit: "Thoát chế độ hình trong hình",
   fullscreenEnter: "Toàn màn hình",

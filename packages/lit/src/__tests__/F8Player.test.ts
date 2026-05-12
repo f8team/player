@@ -204,10 +204,10 @@ describe("<f8-player> default controls", () => {
     expect(el.getAttribute("data-theme")).toBe("classroom");
     expect(el.hasAttribute("data-controls-visible")).toBe(true);
     expect(el.querySelector("[data-f8-player-controls]")).toBeTruthy();
-    expect(el.querySelector('[data-f8-player-control="play-pause"]')?.textContent?.trim()).toBe(
-      "⏸",
-    );
+    expect(el.querySelector('[data-f8-player-control="play-pause"] [data-f8-player-icon="pause"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="seek-bar"]')).toBeTruthy();
+    expect(el.querySelector('[data-f8-player-control="seek-backward"]')).toBeTruthy();
+    expect(el.querySelector('[data-f8-player-control="seek-forward"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="quality"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="playback-rate"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="fullscreen"]')).toBeTruthy();
@@ -235,6 +235,12 @@ describe("<f8-player> default controls", () => {
     seek.value = "42";
     seek.dispatchEvent(new Event("input", { bubbles: true }));
     expect(mockPlayer.seekTo).toHaveBeenCalledWith(42);
+
+    const seekBackward = el.querySelector<HTMLButtonElement>(
+      '[data-f8-player-control="seek-backward"]',
+    )!;
+    seekBackward.click();
+    expect(mockPlayer.seekTo).toHaveBeenCalledWith(0);
 
     const volume = el.querySelector<HTMLInputElement>('[data-f8-player-control="volume"]')!;
     volume.value = "0.25";

@@ -22,8 +22,8 @@ describe("<Quality>", () => {
       initialState: { qualities: QUALITIES, activeQuality: null },
     });
     expect(screen.getByRole("combobox", { name: "Quality" })).toBeDefined();
-    expect(screen.getByText("360p")).toBeDefined();
-    expect(screen.getByText("720p")).toBeDefined();
+    expect(screen.getByText("360 HD")).toBeDefined();
+    expect(screen.getByText("720 HD")).toBeDefined();
     expect(screen.getByText("Auto")).toBeDefined();
   });
 

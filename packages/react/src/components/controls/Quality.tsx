@@ -9,6 +9,11 @@ export interface QualityProps {
   className?: string;
 }
 
+function formatQualityLabel(label: string): string {
+  const match = label.match(/^(\d+)p$/i);
+  return match ? `${match[1]} HD` : label;
+}
+
 /**
  * `<Player.Controls.Quality>` — a `<select>` for choosing the HLS quality
  * level. Hidden when no quality levels are available (e.g. MP4 sources).
@@ -49,7 +54,7 @@ export function Quality({ className }: QualityProps): JSX.Element | null {
       <option value="auto">{labels.qualityAuto}</option>
       {qualities.map((q: QualityLevel) => (
         <option key={q.id} value={q.id}>
-          {q.label}
+          {formatQualityLabel(q.label)}
         </option>
       ))}
     </select>

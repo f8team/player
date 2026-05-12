@@ -4,6 +4,8 @@ import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 import { useLabels } from "../../i18n.js";
 
+import { PlayerIcon } from "./icons.js";
+
 export type PipProps = Omit<ComponentPropsWithoutRef<"button">, "onClick" | "aria-pressed">;
 
 /**
@@ -36,7 +38,7 @@ export function Pip({ children, ...rest }: PipProps): JSX.Element | null {
       data-f8-player-control="pip"
       {...rest}
     >
-      {children ?? "⧉"}
+      {children ?? <PlayerIcon name="pip" />}
     </button>
   );
 }

@@ -70,7 +70,8 @@ export function SeekBar({ bufferedClassName, style, ...props }: SeekBarProps): J
   const draggingRef = useRef(false);
 
   const max = duration > 0 && Number.isFinite(duration) ? duration : 1;
-  const displayValue = dragValue ?? currentTime;
+  const liveValue = Math.min(Math.max(currentTime, 0), max);
+  const displayValue = Math.min(Math.max(dragValue ?? liveValue, 0), max);
 
   const handleChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>): void => {
@@ -116,13 +117,15 @@ export function SeekBar({ bufferedClassName, style, ...props }: SeekBarProps): J
   // with a percentage width. Themes can style the .buffered class.
   const bufferedEnd = buffered.reduce((acc, r) => Math.max(acc, r.end), 0);
   const bufferedPct = max > 0 ? Math.min(100, (bufferedEnd / max) * 100) : 0;
+  const playedPct = max > 0 ? Math.min(100, (displayValue / max) * 100) : 0;
 
   const wrapperStyle: CSSProperties = {
     position: "relative",
     display: "flex",
     alignItems: "center",
+    "--f8p-seek-progress": `${playedPct}%`,
     ...((style as CSSProperties) ?? {}),
-  };
+  } as CSSProperties;
   const bufferedStyle: CSSProperties = {
     position: "absolute",
     left: 0,
