@@ -9,9 +9,12 @@ export interface QualityProps {
   className?: string;
 }
 
-function formatQualityLabel(label: string): string {
+function getQualityParts(label: string): { text: string; badge: string | null; optionLabel: string } {
   const match = label.match(/^(\d+)p$/i);
-  return match ? `${match[1]} HD` : label;
+  if (!match) return { text: label, badge: null, optionLabel: label };
+
+  const text = `${match[1]}p`;
+  return { text, badge: "HD", optionLabel: `${text} HD` };
 }
 
 /**
@@ -43,20 +46,29 @@ export function Quality({ className }: QualityProps): JSX.Element | null {
     }
   };
 
+  const activeParts = activeQuality
+    ? getQualityParts(activeQuality.label)
+    : { text: labels.qualityAuto, badge: null };
+
   return (
-    <select
-      className={className}
-      value={activeQuality?.id ?? "auto"}
-      onChange={handleChange}
-      aria-label={labels.quality}
-      data-f8-player-control="quality"
-    >
-      <option value="auto">{labels.qualityAuto}</option>
-      {qualities.map((q: QualityLevel) => (
-        <option key={q.id} value={q.id}>
-          {formatQualityLabel(q.label)}
-        </option>
-      ))}
-    </select>
+    <span className={className} data-f8-player-control="quality">
+      <span data-f8-player-quality-value="" aria-hidden="true">
+        <span data-f8-player-quality-text="">{activeParts.text}</span>
+        {activeParts.badge ? <span data-f8-player-quality-badge="">{activeParts.badge}</span> : null}
+      </span>
+      <select
+        value={activeQuality?.id ?? "auto"}
+        onChange={handleChange}
+        aria-label={labels.quality}
+        data-f8-player-quality-select=""
+      >
+        <option value="auto">{labels.qualityAuto}</option>
+        {qualities.map((q: QualityLevel) => (
+          <option key={q.id} value={q.id}>
+            {getQualityParts(q.label).optionLabel}
+          </option>
+        ))}
+      </select>
+    </span>
   );
 }

@@ -32,12 +32,12 @@
   /* ─── Color tokens (neutral default — override via f8-brand.css) ───── */
   --f8p-bg: #0d0d0d;
   --f8p-ctrl-bg: linear-gradient(
-    to top,
-    rgba(0, 0, 0, 0.72) 0%,
-    rgba(0, 0, 0, 0.5) 58%,
-    rgba(0, 0, 0, 0) 100%
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.38) 48%,
+    rgba(0, 0, 0, 0.6) 100%
   );
-  --f8p-ctrl-height: 7.8rem;
+  --f8p-ctrl-height: 8.6rem;
   --f8p-accent: #3b82f6;
   --f8p-accent-hover: #60a5fa;
   --f8p-text: #ffffff;
@@ -54,7 +54,7 @@
   --f8p-font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --f8p-font-size: 1.3rem;
   --f8p-transition: 0.18s ease;
-  --f8p-volume-width: 7.2rem;
+  --f8p-volume-width: 8rem;
 
   /* ─── z-index contract ───────────────────────────────────────────── */
   --f8p-z-buffered: 0;
@@ -96,13 +96,13 @@
   inset-inline: 0;
   bottom: 0;
   min-height: var(--f8p-ctrl-height);
-  padding: 0.8rem 1.8rem 0.7rem;
+  padding: 1rem 2rem;
   background: var(--f8p-ctrl-bg);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   align-content: flex-end;
-  gap: 0.2rem 0.6rem;
+  gap: 1rem 1.6rem;
   transition: opacity var(--f8p-transition);
   z-index: var(--f8p-z-controls);
 }
@@ -115,13 +115,25 @@
 
 /* ─── Seek bar ──────────────────────────────────────────────────────── */
 [data-f8-player][data-theme="classroom"] [data-f8p-seek-wrapper] {
-  order: 1;
-  flex: 1;
+  order: 2;
+  flex: 1 1 calc(100% - 10.4rem);
   height: 1.8rem;
   min-width: 8rem;
   position: relative;
   display: flex;
   align-items: center;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-seek-wrapper]::before {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  height: 0.4rem;
+  transform: translateY(-50%);
+  background: var(--f8p-seek-track);
+  border-radius: 99px;
+  pointer-events: none;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8p-seek-buffered] {
@@ -152,7 +164,7 @@
   background: linear-gradient(
     to right,
     var(--f8p-seek-fill) 0 var(--f8p-seek-progress, 0%),
-    var(--f8p-seek-track) var(--f8p-seek-progress, 0%) 100%
+    transparent var(--f8p-seek-progress, 0%) 100%
   );
   height: 0.4rem;
   border-radius: 99px;
@@ -162,7 +174,7 @@
   background: linear-gradient(
     to right,
     var(--f8p-seek-fill) 0 var(--f8p-seek-progress, 0%),
-    var(--f8p-seek-track) var(--f8p-seek-progress, 0%) 100%
+    transparent var(--f8p-seek-progress, 0%) 100%
   );
   height: 0.4rem;
   border-radius: 99px;
@@ -170,30 +182,51 @@
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-bar"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
-  background: var(--f8p-seek-thumb);
-  margin-top: -0.4rem;
+  background: #ffffff;
+  margin-top: -0.3rem;
+  opacity: 0;
+  transform: scale(0.75);
   transition:
+    opacity var(--f8p-transition),
     transform var(--f8p-transition),
     box-shadow var(--f8p-transition);
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-bar"]::-moz-range-thumb {
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
-  background: var(--f8p-seek-thumb);
+  background: #ffffff;
   border: none;
+  opacity: 0;
+  transform: scale(0.75);
   transition:
+    opacity var(--f8p-transition),
     transform var(--f8p-transition),
     box-shadow var(--f8p-transition);
 }
 
 [data-f8-player][data-theme="classroom"]
   [data-f8-player-control="seek-bar"]:hover::-webkit-slider-thumb {
-  transform: scale(1.4);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+[data-f8-player][data-theme="classroom"]
+  [data-f8-player-control="seek-bar"]:focus-visible::-webkit-slider-thumb {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+[data-f8-player][data-theme="classroom"]
+  [data-f8-player-control="seek-bar"]:hover::-moz-range-thumb,
+[data-f8-player][data-theme="classroom"]
+  [data-f8-player-control="seek-bar"]:focus-visible::-moz-range-thumb {
+  opacity: 1;
+  transform: scale(1.1);
 }
 
 /* Focus replacement for `outline: none` — required so keyboard users still
@@ -212,6 +245,7 @@
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-backward"],
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-forward"],
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"],
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"],
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"],
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"] {
   order: 10;
@@ -228,7 +262,8 @@
   border-radius: var(--f8p-radius);
   transition:
     background var(--f8p-transition),
-    color var(--f8p-transition);
+    color var(--f8p-transition),
+    transform var(--f8p-transition);
   padding: 0;
 }
 
@@ -249,11 +284,24 @@
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"] {
-  order: 18;
+  order: 20;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"] {
+  order: 22;
+  position: relative;
+  overflow: hidden;
+  margin-left: auto;
+}
+
+[data-f8-player][data-theme="classroom"]
+  [data-f8-player-control="quality"]
+  + [data-f8-player-control="settings"] {
+  margin-left: 0;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"] {
-  order: 22;
+  order: 23;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-icon] {
@@ -272,15 +320,18 @@
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-backward"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-forward"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"]:hover,
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"]:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+  transform: scale(1.1);
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="play-pause"]:focus-visible,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-backward"]:focus-visible,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-forward"]:focus-visible,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"]:focus-visible,
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"]:focus-within,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"]:focus-visible,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"]:focus-visible {
   outline: 2px solid var(--f8p-accent);
@@ -292,18 +343,18 @@
   width: 4rem;
   font-variant-numeric: tabular-nums;
   color: var(--f8p-text);
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   line-height: 1.8rem;
   white-space: nowrap;
   text-shadow: 0 1px 0.2rem rgba(0, 0, 0, 0.55);
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="time"][data-variant="current"] {
-  order: 0;
+  order: 1;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="time"][data-variant="duration"] {
-  order: 2;
+  order: 3;
   text-align: right;
 }
 
@@ -312,6 +363,7 @@
   order: 13;
   width: var(--f8p-volume-width);
   height: 2rem;
+  margin-left: -0.8rem;
   -webkit-appearance: none;
   appearance: none;
   background: transparent;
@@ -322,10 +374,11 @@
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="volume"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 1.2rem;
-  height: 1.2rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
-  background: var(--f8p-seek-thumb);
+  background: #ffffff;
+  margin-top: -0.3rem;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="volume"]::-webkit-slider-runnable-track {
@@ -348,41 +401,77 @@
   border-radius: 99px;
 }
 
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="volume"]::-moz-range-thumb {
+  width: 1rem;
+  height: 1rem;
+  border: none;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
 [data-f8-player][data-theme="classroom"]
   [data-f8-player-control="volume"]:focus-visible::-webkit-slider-thumb {
   box-shadow: 0 0 0 0.4rem color-mix(in srgb, var(--f8p-accent) 40%, transparent);
 }
 
-/* ─── Select controls (quality / speed) ─────────────────────────────── */
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"],
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="playback-rate"] {
-  order: 20;
+/* ─── Select-backed controls (quality / settings) ───────────────────── */
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"] {
+  order: 21;
+  margin-left: auto;
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
   height: var(--f8p-btn-size);
   border: none;
   border-radius: var(--f8p-radius);
   background: transparent;
   color: var(--f8p-text);
   font: inherit;
-  font-size: 1.2rem;
-  min-width: 3.8rem;
-  padding: 0 0.4rem;
+  font-size: 1.4rem;
+  min-width: 5.8rem;
+  padding: 0 0.5rem;
   cursor: pointer;
-  outline: none;
 }
 
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"] {
-  order: 21;
+[data-f8-player][data-theme="classroom"] [data-f8-player-quality-value] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  pointer-events: none;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8-player-quality-badge] {
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.2rem;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:hover,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="playback-rate"]:hover {
-  background: rgba(255, 255, 255, 0.18);
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:focus-within {
+  background: rgba(255, 255, 255, 0.08);
 }
 
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:focus-visible,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="playback-rate"]:focus-visible {
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:focus-within {
   outline: 2px solid var(--f8p-accent);
   outline-offset: 2px;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8-player-quality-select],
+[data-f8-player][data-theme="classroom"] [data-f8-player-settings-select] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
 }
 
 /* ─── Watermark ─────────────────────────────────────────────────────── */
@@ -431,6 +520,7 @@
   [data-f8-player][data-theme="classroom"] [data-f8-player-controls],
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="play-pause"],
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"],
+  [data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"],
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"],
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"],
   [data-f8-player][data-theme="classroom"]
@@ -454,9 +544,11 @@
     width: 1.6rem;
     height: 1.6rem;
     margin-top: -0.6rem;
+    opacity: 1;
   }
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-bar"]::-moz-range-thumb {
     width: 1.6rem;
     height: 1.6rem;
+    opacity: 1;
   }
 }

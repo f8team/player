@@ -46,6 +46,8 @@ export interface PlayerLabels {
   fullscreenExit: string;
   /** Playback-rate selector. */
   playbackRate: string;
+  /** Compact settings control. */
+  settings: string;
   /** Quality selector. */
   quality: string;
   /** Auto quality option label (HLS ABR). */
@@ -76,6 +78,7 @@ export const defaultLabels: PlayerLabels = {
   fullscreenEnter: "Fullscreen",
   fullscreenExit: "Exit fullscreen",
   playbackRate: "Playback speed",
+  settings: "Settings",
   quality: "Quality",
   qualityAuto: "Auto",
   timeCurrent: (formatted) => `Current time ${formatted}`,
@@ -104,6 +107,7 @@ export const vietnameseLabels: PlayerLabels = {
   fullscreenEnter: "Toàn màn hình",
   fullscreenExit: "Thoát toàn màn hình",
   playbackRate: "Tốc độ phát",
+  settings: "Cài đặt",
   quality: "Chất lượng video",
   qualityAuto: "Tự động",
   timeCurrent: (formatted) => `Vị trí hiện tại: ${formatted}`,

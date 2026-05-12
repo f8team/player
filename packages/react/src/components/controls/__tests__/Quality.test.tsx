@@ -22,9 +22,17 @@ describe("<Quality>", () => {
       initialState: { qualities: QUALITIES, activeQuality: null },
     });
     expect(screen.getByRole("combobox", { name: "Quality" })).toBeDefined();
-    expect(screen.getByText("360 HD")).toBeDefined();
-    expect(screen.getByText("720 HD")).toBeDefined();
-    expect(screen.getByText("Auto")).toBeDefined();
+    expect(screen.getByText("360p HD")).toBeDefined();
+    expect(screen.getByText("720p HD")).toBeDefined();
+    expect(screen.getAllByText("Auto").length).toBeGreaterThan(0);
+  });
+
+  it("renders the active quality as resolution plus an HD badge", () => {
+    renderWithPlayer(<Quality />, {
+      initialState: { qualities: QUALITIES, activeQuality: QUALITIES[1] },
+    });
+    expect(screen.getByText("720p")).toBeDefined();
+    expect(screen.getByText("HD")).toBeDefined();
   });
 
   it("selects 'auto' when activeQuality is null", () => {

@@ -209,7 +209,8 @@ describe("<f8-player> default controls", () => {
     expect(el.querySelector('[data-f8-player-control="seek-backward"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="seek-forward"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="quality"]')).toBeTruthy();
-    expect(el.querySelector('[data-f8-player-control="playback-rate"]')).toBeTruthy();
+    expect(el.querySelector('[data-f8-player-quality-badge]')?.textContent).toBe("HD");
+    expect(el.querySelector('[data-f8-player-control="settings"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="fullscreen"]')).toBeTruthy();
   });
 
@@ -251,7 +252,7 @@ describe("<f8-player> default controls", () => {
     mute.click();
     expect(mockPlayer.setMuted).toHaveBeenCalledWith(true);
 
-    const quality = el.querySelector<HTMLSelectElement>('[data-f8-player-control="quality"]')!;
+    const quality = el.querySelector<HTMLSelectElement>("[data-f8-player-quality-select]")!;
     quality.value = "360";
     quality.dispatchEvent(new Event("change", { bubbles: true }));
     expect(mockPlayer.commands.run).toHaveBeenCalledWith(
@@ -259,7 +260,7 @@ describe("<f8-player> default controls", () => {
       expect.objectContaining({ id: "360" }),
     );
 
-    const rate = el.querySelector<HTMLSelectElement>('[data-f8-player-control="playback-rate"]')!;
+    const rate = el.querySelector<HTMLSelectElement>("[data-f8-player-settings-select]")!;
     rate.value = "1.5";
     rate.dispatchEvent(new Event("change", { bubbles: true }));
     expect(mockPlayer.setPlaybackRate).toHaveBeenCalledWith(1.5);

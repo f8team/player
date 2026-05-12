@@ -22,6 +22,9 @@ export type { MuteProps } from "./Mute.js";
 export { PlaybackRate } from "./PlaybackRate.js";
 export type { PlaybackRateProps } from "./PlaybackRate.js";
 
+export { Settings } from "./Settings.js";
+export type { SettingsProps } from "./Settings.js";
+
 export { Quality } from "./Quality.js";
 export type { QualityProps } from "./Quality.js";
 
