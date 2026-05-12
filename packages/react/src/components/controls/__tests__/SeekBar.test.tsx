@@ -33,4 +33,12 @@ describe("<SeekBar>", () => {
     const slider = screen.getByRole("slider");
     expect(slider.getAttribute("aria-valuemax")).toBe("1");
   });
+
+  it("applies wrapperClassName to [data-f8p-seek-wrapper]", () => {
+    const { container } = renderWithPlayer(<SeekBar wrapperClassName="grow-me" />, {
+      initialState: { currentTime: 0, duration: 60 },
+    });
+    const wrap = container.querySelector("[data-f8p-seek-wrapper]");
+    expect(wrap?.classList.contains("grow-me")).toBe(true);
+  });
 });

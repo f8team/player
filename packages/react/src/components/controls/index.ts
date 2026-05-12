@@ -1,6 +1,12 @@
 export { Bar } from "./Bar.js";
 export type { ControlsBarProps } from "./Bar.js";
 
+export { TimelineRow } from "./TimelineRow.js";
+export type { TimelineRowProps } from "./TimelineRow.js";
+
+export { ActionsRow } from "./ActionsRow.js";
+export type { ActionsRowProps } from "./ActionsRow.js";
+
 export { PlayPause } from "./PlayPause.js";
 export type { PlayPauseProps } from "./PlayPause.js";
 

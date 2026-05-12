@@ -265,129 +265,133 @@ export class F8PlayerElement extends LitElement {
         role="toolbar"
         aria-label="Điều khiển video"
         data-f8-player-controls
+        data-f8-player-controls-layout="two-row"
       >
-        <time
-          class="f8p-time"
-          aria-label=${`Vị trí hiện tại: ${this.formatTimeLabel(currentTime)}`}
-          datetime=${this.toDateTime(currentTime)}
-          data-f8-player-control="time"
-          data-variant="current"
-        >
-          ${this.formatTimeLabel(currentTime)}
-        </time>
+        <div data-f8-player-controls-row="timeline">
+          <time
+            class="f8p-time"
+            aria-label=${`Vị trí hiện tại: ${this.formatTimeLabel(currentTime)}`}
+            datetime=${this.toDateTime(currentTime)}
+            data-f8-player-control="time"
+            data-variant="current"
+          >
+            ${this.formatTimeLabel(currentTime)}
+          </time>
 
-        <div
-          class="f8p-seek"
-          data-f8p-seek-wrapper
-          style=${`--f8p-seek-progress: ${playedPct}%`}
-        >
           <div
-            data-f8p-seek-buffered
-            style=${`width: ${bufferedPct}%`}
-            aria-hidden="true"
-          ></div>
-          <input
-            type="range"
-            min="0"
-            max=${max}
-            step="0.1"
-            .value=${String(seekValue)}
-            role="slider"
-            aria-label="Vị trí phát"
-            aria-valuenow=${seekValue}
-            aria-valuemin="0"
-            aria-valuemax=${max}
-            data-f8-player-control="seek-bar"
-            @input=${this.handleSeekInput}
-          />
+            class="f8p-seek"
+            data-f8p-seek-wrapper
+            style=${`--f8p-seek-progress: ${playedPct}%`}
+          >
+            <div
+              data-f8p-seek-buffered
+              style=${`width: ${bufferedPct}%`}
+              aria-hidden="true"
+            ></div>
+            <input
+              type="range"
+              min="0"
+              max=${max}
+              step="0.1"
+              .value=${String(seekValue)}
+              role="slider"
+              aria-label="Vị trí phát"
+              aria-valuenow=${seekValue}
+              aria-valuemin="0"
+              aria-valuemax=${max}
+              data-f8-player-control="seek-bar"
+              @input=${this.handleSeekInput}
+            />
+          </div>
+
+          <time
+            class="f8p-time"
+            aria-label=${`Thời lượng: ${this.formatTimeLabel(duration)}`}
+            datetime=${this.toDateTime(duration)}
+            data-f8-player-control="time"
+            data-variant="duration"
+          >
+            ${this.formatTimeLabel(duration)}
+          </time>
         </div>
 
-        <time
-          class="f8p-time"
-          aria-label=${`Thời lượng: ${this.formatTimeLabel(duration)}`}
-          datetime=${this.toDateTime(duration)}
-          data-f8-player-control="time"
-          data-variant="duration"
-        >
-          ${this.formatTimeLabel(duration)}
-        </time>
-
-        <button
-          type="button"
-          class="f8p-btn"
-          aria-label="Tua lại 10 giây"
-          data-f8-player-control="seek-backward"
-          data-seek-offset="-10"
-          @click=${this.handleSeekBackwardClick}
-        >
-          ${this.renderIcon("rewind")}
-        </button>
-
-        <button
-          type="button"
-          class="f8p-btn"
-          aria-label=${isPlaying ? "Tạm dừng" : "Phát"}
-          aria-pressed=${isPlaying}
-          data-f8-player-control="play-pause"
-          @click=${this.handlePlayPauseClick}
-        >
-          ${this.renderIcon(isPlaying ? "pause" : "play")}
-        </button>
-
-        <button
-          type="button"
-          class="f8p-btn"
-          aria-label="Tua tới 10 giây"
-          data-f8-player-control="seek-forward"
-          data-seek-offset="10"
-          @click=${this.handleSeekForwardClick}
-        >
-          ${this.renderIcon("forward")}
-        </button>
-
-        ${this.renderQualityControl(state)} ${this.renderSettingsControl(state)}
-
-        <div class="f8p-volume">
+        <div data-f8-player-controls-row="actions">
           <button
             type="button"
             class="f8p-btn"
-            aria-label=${muted ? "Bật tiếng" : "Tắt tiếng"}
-            aria-pressed=${muted}
-            data-f8-player-control="mute"
-            @click=${this.handleMuteClick}
+            aria-label="Tua lại 10 giây"
+            data-f8-player-control="seek-backward"
+            data-seek-offset="-10"
+            @click=${this.handleSeekBackwardClick}
           >
-            ${this.renderIcon(muted || volume <= 0 ? "volumeMuted" : "volume")}
+            ${this.renderIcon("rewind")}
           </button>
-          <input
-            class="f8p-volume-slider"
-            style=${`--f8p-volume-progress: ${Math.min(Math.max(volume, 0), 1) * 100}%`}
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            .value=${String(volume)}
-            role="slider"
-            aria-label="Âm lượng"
-            aria-valuenow=${volume}
-            aria-valuemin="0"
-            aria-valuemax="1"
-            data-f8-player-control="volume"
-            @input=${this.handleVolumeInput}
-          />
+
+          <button
+            type="button"
+            class="f8p-btn"
+            aria-label=${isPlaying ? "Tạm dừng" : "Phát"}
+            aria-pressed=${isPlaying}
+            data-f8-player-control="play-pause"
+            @click=${this.handlePlayPauseClick}
+          >
+            ${this.renderIcon(isPlaying ? "pause" : "play")}
+          </button>
+
+          <button
+            type="button"
+            class="f8p-btn"
+            aria-label="Tua tới 10 giây"
+            data-f8-player-control="seek-forward"
+            data-seek-offset="10"
+            @click=${this.handleSeekForwardClick}
+          >
+            ${this.renderIcon("forward")}
+          </button>
+
+          <div class="f8p-volume">
+            <button
+              type="button"
+              class="f8p-btn"
+              aria-label=${muted ? "Bật tiếng" : "Tắt tiếng"}
+              aria-pressed=${muted}
+              data-f8-player-control="mute"
+              @click=${this.handleMuteClick}
+            >
+              ${this.renderIcon(muted || volume <= 0 ? "volumeMuted" : "volume")}
+            </button>
+            <input
+              class="f8p-volume-slider"
+              style=${`--f8p-volume-progress: ${Math.min(Math.max(volume, 0), 1) * 100}%`}
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              .value=${String(volume)}
+              role="slider"
+              aria-label="Âm lượng"
+              aria-valuenow=${volume}
+              aria-valuemin="0"
+              aria-valuemax="1"
+              data-f8-player-control="volume"
+              @input=${this.handleVolumeInput}
+            />
+          </div>
+
+          ${this.renderQualityControl(state)} ${this.renderSettingsControl(state)}
+          ${this.renderPipButton(state)}
+
+          <button
+            type="button"
+            class="f8p-btn"
+            aria-label=${fullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
+            aria-pressed=${fullscreen}
+            data-f8-player-control="fullscreen"
+            @click=${this.handleFullscreenClick}
+          >
+            ${this.renderIcon(fullscreen ? "minimize" : "maximize")}
+          </button>
         </div>
-
-        ${this.renderPipButton(state)}
-
-        <button
-          type="button"
-          class="f8p-btn"
-          aria-label=${fullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
-          aria-pressed=${fullscreen}
-          data-f8-player-control="fullscreen"
-          @click=${this.handleFullscreenClick}
-        >
-          ${this.renderIcon(fullscreen ? "minimize" : "maximize")}
-        </button>
       </div>
     `;
   }

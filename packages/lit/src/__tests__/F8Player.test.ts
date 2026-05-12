@@ -204,6 +204,9 @@ describe("<f8-player> default controls", () => {
     expect(el.getAttribute("data-theme")).toBe("classroom");
     expect(el.hasAttribute("data-controls-visible")).toBe(true);
     expect(el.querySelector("[data-f8-player-controls]")).toBeTruthy();
+    expect(el.querySelector('[data-f8-player-controls-layout="two-row"]')).toBeTruthy();
+    expect(el.querySelector('[data-f8-player-controls-row="timeline"]')).toBeTruthy();
+    expect(el.querySelector('[data-f8-player-controls-row="actions"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="play-pause"] [data-f8-player-icon="pause"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="seek-bar"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="seek-backward"]')).toBeTruthy();

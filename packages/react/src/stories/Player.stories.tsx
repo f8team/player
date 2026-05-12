@@ -44,23 +44,24 @@ function PlayerShell({
           />
           <Captions />
           <Controls.Bar
+            layout="two-row"
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "0.6rem",
               padding: "0.8rem 1.2rem",
               background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
             }}
           >
-            <Controls.PlayPause />
-            <Controls.SeekBar style={{ flex: 1 }} />
-            <Controls.Time variant="current" />
-            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "1.2rem" }}>/</span>
-            <Controls.Time variant="duration" />
-            <Controls.Mute />
-            <Controls.Volume style={{ width: "8rem" }} />
-            <Controls.PlaybackRate />
-            <Controls.Fullscreen />
+            <Controls.TimelineRow style={{ gap: "0.6rem" }}>
+              <Controls.Time variant="current" />
+              <Controls.SeekBar style={{ flex: 1, minWidth: 0 }} />
+              <Controls.Time variant="duration" />
+            </Controls.TimelineRow>
+            <Controls.ActionsRow style={{ alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
+              <Controls.PlayPause />
+              <Controls.Mute />
+              <Controls.Volume style={{ width: "8rem" }} />
+              <Controls.PlaybackRate />
+              <Controls.Fullscreen />
+            </Controls.ActionsRow>
           </Controls.Bar>
         </div>
       </Root>

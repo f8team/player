@@ -113,6 +113,49 @@
   pointer-events: auto;
 }
 
+/* ─── Two-row controls (timeline + actions) ─────────────────────────── */
+[data-f8-player][data-theme="classroom"] [data-f8-player-controls][data-f8-player-controls-layout="two-row"] {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  align-content: stretch;
+  gap: 1rem;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8-player-controls-row="timeline"] {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 1.2rem;
+  box-sizing: border-box;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8-player-controls-row="actions"] {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  width: 100%;
+  gap: 1rem 1.6rem;
+  box-sizing: border-box;
+}
+
+[data-f8-player][data-theme="classroom"]
+  [data-f8-player-controls-layout="two-row"]
+  [data-f8-player-controls-row="timeline"]
+  [data-f8p-seek-wrapper] {
+  order: 0;
+  flex: 1 1 0%;
+  min-width: 0;
+  height: 1.8rem;
+}
+
+[data-f8-player][data-theme="classroom"]
+  [data-f8-player-controls-layout="two-row"]
+  [data-f8-player-controls-row="timeline"]
+  [data-f8-player-control="time"] {
+  order: 0;
+}
+
 /* ─── Seek bar ──────────────────────────────────────────────────────── */
 [data-f8-player][data-theme="classroom"] [data-f8p-seek-wrapper] {
   order: 2;
@@ -281,6 +324,21 @@
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"] {
   order: 12;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-volume {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  order: 12;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-volume [data-f8-player-control="mute"] {
+  order: 0;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-volume [data-f8-player-control="volume"] {
+  order: 1;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"] {

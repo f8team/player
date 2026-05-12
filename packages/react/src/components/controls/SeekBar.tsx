@@ -28,6 +28,13 @@ export type SeekBarProps = Omit<
 > & {
   /** Override the inline width of the buffered overlay; rarely needed. */
   bufferedClassName?: string;
+  /**
+   * CSS class on `[data-f8p-seek-wrapper]` — use for flex-grow, min-width, etc.
+   * The native `<input type="range">` receives `className`.
+   */
+  wrapperClassName?: string;
+  /** Inline styles merged onto the range input after player defaults (`width: 100%`, stacking context). */
+  inputStyle?: CSSProperties;
 };
 
 /**
@@ -37,11 +44,14 @@ export type SeekBarProps = Omit<
  * The render output is now a small wrapper:
  *
  * ```html
- * <div data-f8p-seek-wrapper>
+ * <div data-f8p-seek-wrapper class="(wrapperClassName)">
  *   <div data-f8p-seek-buffered style="width: 42%"></div>
- *   <input type="range" data-f8-player-control="seek-bar" />
+ *   <input type="range" data-f8-player-control="seek-bar" class="(className)" />
  * </div>
  * ```
+ *
+ * Styling: put layout/flex on `wrapperClassName`; thumb/track styling stays on
+ * the native range via `className`.
  *
  * The wrapper lets themes draw a buffered-progress bar behind the range
  * thumb (B4) without changing the JS contract. The buffered span uses the
@@ -57,7 +67,14 @@ export type SeekBarProps = Omit<
  * formatted time so screen readers announce "01:23 of 05:00" rather than
  * raw seconds.
  */
-export function SeekBar({ bufferedClassName, style, ...props }: SeekBarProps): JSX.Element {
+export function SeekBar({
+  bufferedClassName,
+  wrapperClassName,
+  style,
+  inputStyle,
+  className,
+  ...props
+}: SeekBarProps): JSX.Element {
   const player = usePlayer();
   const labels = useLabels();
   const currentTime = usePlayerState((s) => s.currentTime);
@@ -139,8 +156,15 @@ export function SeekBar({ bufferedClassName, style, ...props }: SeekBarProps): J
   const formatted = formatTime(displayValue);
   const total = formatTime(max);
 
+  const mergedInputStyle = {
+    position: "relative" as const,
+    width: "100%",
+    zIndex: 1,
+    ...(inputStyle as CSSProperties | undefined),
+  };
+
   return (
-    <div data-f8p-seek-wrapper="" style={wrapperStyle}>
+    <div data-f8p-seek-wrapper="" className={wrapperClassName} style={wrapperStyle}>
       <div
         data-f8p-seek-buffered=""
         className={bufferedClassName}
@@ -149,6 +173,7 @@ export function SeekBar({ bufferedClassName, style, ...props }: SeekBarProps): J
       />
       <input
         {...props}
+        className={className}
         type="range"
         min={0}
         max={max}
@@ -163,7 +188,7 @@ export function SeekBar({ bufferedClassName, style, ...props }: SeekBarProps): J
         aria-valuemax={max}
         aria-valuetext={`${formatted} / ${total}`}
         data-f8-player-control="seek-bar"
-        style={{ position: "relative", width: "100%", zIndex: 1 }}
+        style={mergedInputStyle}
       />
     </div>
   );

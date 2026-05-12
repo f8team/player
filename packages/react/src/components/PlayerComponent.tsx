@@ -5,6 +5,7 @@ import type React from "react";
 import { usePlayer } from "../hooks/usePlayer.js";
 
 import { Captions } from "./Captions.js";
+import { ActionsRow } from "./controls/ActionsRow.js";
 import { Bar } from "./controls/Bar.js";
 import { Fullscreen } from "./controls/Fullscreen.js";
 import { Mute } from "./controls/Mute.js";
@@ -12,6 +13,7 @@ import { PlaybackRate } from "./controls/PlaybackRate.js";
 import { PlayPause } from "./controls/PlayPause.js";
 import { Quality } from "./controls/Quality.js";
 import { SeekBar } from "./controls/SeekBar.js";
+import { TimelineRow } from "./controls/TimelineRow.js";
 import { Time } from "./controls/Time.js";
 import { Volume } from "./controls/Volume.js";
 import { Root } from "./Root.js";
@@ -132,16 +134,20 @@ export const PlayerComponent = forwardRef<PlayerHandle, PlayerComponentProps>(
           <Video className={className} style={style} />
           <Captions />
           {controls && (
-            <Bar>
-              <PlayPause />
-              <SeekBar />
-              <Time variant="current" />
-              <Time variant="duration" />
-              <Volume />
-              <Mute />
-              <PlaybackRate />
-              <Quality />
-              <Fullscreen />
+            <Bar layout="two-row">
+              <TimelineRow>
+                <Time variant="current" />
+                <SeekBar />
+                <Time variant="duration" />
+              </TimelineRow>
+              <ActionsRow>
+                <PlayPause />
+                <Volume />
+                <Mute />
+                <PlaybackRate />
+                <Quality />
+                <Fullscreen />
+              </ActionsRow>
             </Bar>
           )}
           {children}

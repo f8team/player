@@ -7,14 +7,24 @@ import { useLabels } from "../../i18n.js";
 
 export interface QualityProps {
   className?: string;
+  /**
+   * Text shown beside numeric heights like `720p`. Default `"HD"`.
+   * Pass `null` to hide the badge entirely.
+   */
+  resolutionBadge?: string | null;
 }
 
-function getQualityParts(label: string): { text: string; badge: string | null; optionLabel: string } {
+function getQualityParts(
+  label: string,
+  resolutionBadge: string | null | undefined,
+): { text: string; badge: string | null; optionLabel: string } {
   const match = label.match(/^(\d+)p$/i);
   if (!match) return { text: label, badge: null, optionLabel: label };
 
   const text = `${match[1]}p`;
-  return { text, badge: "HD", optionLabel: `${text} HD` };
+  const badge = resolutionBadge === null ? null : (resolutionBadge ?? "HD");
+  const optionLabel = badge ? `${text} ${badge}` : text;
+  return { text, badge, optionLabel };
 }
 
 /**
@@ -26,7 +36,7 @@ function getQualityParts(label: string): { text: string; badge: string | null; o
  *
  * Golden case: G7 (quality selection in video lesson editor).
  */
-export function Quality({ className }: QualityProps): JSX.Element | null {
+export function Quality({ className, resolutionBadge }: QualityProps): JSX.Element | null {
   const player = usePlayer();
   const labels = useLabels();
   const qualities = usePlayerState((s) => s.qualities);
@@ -47,7 +57,7 @@ export function Quality({ className }: QualityProps): JSX.Element | null {
   };
 
   const activeParts = activeQuality
-    ? getQualityParts(activeQuality.label)
+    ? getQualityParts(activeQuality.label, resolutionBadge)
     : { text: labels.qualityAuto, badge: null };
 
   return (
@@ -65,7 +75,7 @@ export function Quality({ className }: QualityProps): JSX.Element | null {
         <option value="auto">{labels.qualityAuto}</option>
         {qualities.map((q: QualityLevel) => (
           <option key={q.id} value={q.id}>
-            {getQualityParts(q.label).optionLabel}
+            {getQualityParts(q.label, resolutionBadge).optionLabel}
           </option>
         ))}
       </select>
