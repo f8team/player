@@ -1,11 +1,36 @@
 import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
 
+/**
+ * Matcher for the auth-aware allowlist. Three forms are accepted so
+ * consumers can pick the one with the least ambiguity (A12 in the
+ * 2026-05-12 review):
+ *
+ * - **`string`** — treated as a **prefix** match on the URL
+ *   (`source.src.startsWith(prefix)`). Does NOT implicitly treat a
+ *   trailing dot as a separator; `"https://api-gateway"` matches both
+ *   `https://api-gateway.example.com/...` and `https://api-gateway-v2/...`.
+ * - **`RegExp`** — `.test(url)`. Use this when a prefix isn't precise
+ *   enough (e.g. you want the dot to matter: `/^https:\/\/api-gateway\.\w/`).
+ * - **function** — `(url: string) => boolean`. Use for fully custom logic.
+ */
+export type AuthAwareAllowlistEntry = string | RegExp | ((url: string) => boolean);
+
 export interface AuthAwarePluginOptions {
   /**
-   * List of URL prefixes that require `withCredentials: true`.
-   * e.g. `["https://api-gateway.f8.edu.vn"]`.
+   * List of URL matchers for sources that require credentials / session
+   * cookies. Each entry may be a string prefix, a `RegExp`, or a function.
+   *
+   * Two consumer snippets that confused each other in the past:
+   *
+   * ```ts
+   * // f8-ui — prefix match, includes subdomains starting with "api-gateway":
+   * allowlist: ["https://api-gateway"]
+   *
+   * // f8-dash-ui — regex match, requires the dot after "api-gateway":
+   * allowlist: [/^https:\/\/api-gateway\./]
+   * ```
    */
-  allowlist?: string[];
+  allowlist?: AuthAwareAllowlistEntry[];
   /**
    * Callback invoked when a 401 / 403 is received from the media server.
    * Use this to show a "login required" modal or refresh the token.
@@ -19,6 +44,15 @@ export interface AuthAwarePluginOptions {
 }
 
 const PLUGIN_NAME = "auth-aware";
+
+/** Test a url against one allowlist entry with explicit string-prefix semantics. */
+function matches(entry: AuthAwareAllowlistEntry, url: string): boolean {
+  if (typeof entry === "string") return url.startsWith(entry);
+  if (typeof entry === "function") return entry(url);
+  return entry.test(url);
+}
+
+let trailingDotWarned = false;
 
 /**
  * Auth-aware plugin.
@@ -35,6 +69,29 @@ const PLUGIN_NAME = "auth-aware";
 export function createAuthAwarePlugin(options: AuthAwarePluginOptions = {}): PluginInstance {
   const { allowlist = [], onUnauthorized, pauseOnUnauthorized = true } = options;
 
+  // A12 consistency guard — warn once per page if the caller passed a
+  // string entry ending with "." (a common mistake we've seen in f8-ui
+  // vs f8-dash-ui where the two callsites disagreed on the trailing dot).
+  for (const entry of allowlist) {
+    if (
+      typeof entry === "string" &&
+      entry.length > 12 &&
+      entry.endsWith(".") &&
+      !trailingDotWarned
+    ) {
+      trailingDotWarned = true;
+      console.warn(
+        "[@f8/player-plugin-auth-aware] allowlist entry ends with '.': `" +
+          entry +
+          "`. String entries are treated as literal prefixes — if you want " +
+          "to require the dot as a separator use a RegExp instead, e.g. " +
+          "`/^" +
+          entry.replace(/\./g, "\\.") +
+          "\\w/`.",
+      );
+    }
+  }
+
   return {
     name: PLUGIN_NAME,
 
@@ -42,7 +99,7 @@ export function createAuthAwarePlugin(options: AuthAwarePluginOptions = {}): Plu
       // Apply withCredentials for matching sources.
       const applyCredentials = (): void => {
         const src = player.getSource()?.src ?? "";
-        const needs = allowlist.some((prefix) => src.startsWith(prefix));
+        const needs = allowlist.some((entry) => matches(entry, src));
         if (needs && player.commands.has("hls:setWithCredentials")) {
           player.commands.run("hls:setWithCredentials", true);
         }
@@ -74,4 +131,9 @@ export function createAuthAwarePlugin(options: AuthAwarePluginOptions = {}): Plu
       };
     },
   };
+}
+
+/** @internal — test helper to reset the one-shot warn guard. */
+export function __resetTrailingDotWarnForTests(): void {
+  trailingDotWarned = false;
 }

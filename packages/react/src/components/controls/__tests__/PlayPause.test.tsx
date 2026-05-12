@@ -6,28 +6,28 @@ import { renderWithPlayer } from "../../../test-utils/renderWithPlayer.js";
 import { PlayPause } from "../PlayPause.js";
 
 describe("<PlayPause>", () => {
-  it("renders with aria-label='Phát' when idle", () => {
+  it("renders with aria-label='Play' when idle", () => {
     renderWithPlayer(<PlayPause />, { initialState: { status: "idle" } });
-    const btn = screen.getByRole("button", { name: "Phát" });
+    const btn = screen.getByRole("button", { name: "Play" });
     expect(btn).toBeDefined();
     expect(btn.getAttribute("aria-pressed")).toBe("false");
   });
 
-  it("renders with aria-label='Tạm dừng' when playing", () => {
+  it("renders with aria-label='Pause' when playing", () => {
     renderWithPlayer(<PlayPause />, { initialState: { status: "playing" } });
-    const btn = screen.getByRole("button", { name: "Tạm dừng" });
+    const btn = screen.getByRole("button", { name: "Pause" });
     expect(btn.getAttribute("aria-pressed")).toBe("true");
   });
 
   it("calls player.play() when clicked while paused", async () => {
     const { player } = renderWithPlayer(<PlayPause />, { initialState: { status: "idle" } });
-    await userEvent.click(screen.getByRole("button", { name: "Phát" }));
+    await userEvent.click(screen.getByRole("button", { name: "Play" }));
     expect(player.play).toHaveBeenCalled();
   });
 
   it("calls player.pause() when clicked while playing", async () => {
     const { player } = renderWithPlayer(<PlayPause />, { initialState: { status: "playing" } });
-    await userEvent.click(screen.getByRole("button", { name: "Tạm dừng" }));
+    await userEvent.click(screen.getByRole("button", { name: "Pause" }));
     expect(player.pause).toHaveBeenCalled();
   });
 

@@ -29,6 +29,18 @@ export interface Player {
   setSource(source: SourceDescriptor | null): void;
   /** Snapshot of the active source. */
   getSource(): SourceDescriptor | null;
+  /**
+   * Re-attempt loading the current source. No-op if no source is set.
+   *
+   * Internally equivalent to `setSource(getSource())`: the state machine
+   * detaches the failed loader, clears the error, and starts a fresh
+   * `loading → ready` cycle. Use this from a "Try again" button on an
+   * error overlay.
+   *
+   * @returns `true` when retry was dispatched, `false` when there was
+   *  nothing to retry.
+   */
+  retry(): boolean;
 
   /* ---------------------------------------------------------------------- */
   /* Playback                                                               */

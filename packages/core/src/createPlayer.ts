@@ -169,6 +169,19 @@ export function createPlayer(
   registry.register(
     createYouTubeProvider({
       onError: (err) => applyError(createPlayerError({ ...err, code: "source" })),
+      // Bridge YouTube's polled time/duration into the same store fields and
+      // bus events that hls.js / native engines populate. Without this, the
+      // seek bar, transcripts, resume-position and analytics plugins would
+      // never tick on YouTube sources (A3).
+      onTimeUpdate: (currentTime) => {
+        const duration = store.getState().duration;
+        store.setState({ currentTime });
+        bus.emit("timeupdate", { currentTime, playedSeconds: currentTime, duration });
+      },
+      onDuration: (duration) => {
+        store.setState({ duration });
+        bus.emit("durationchange", { duration });
+      },
     }),
   );
   registry.register(nativeProvider);
@@ -237,6 +250,14 @@ export function createPlayer(
   /* ---------------------------------------------------------------- */
 
   function runAttachSource(source: SourceDescriptor): void {
+    // Cancel any prior in-flight loader BEFORE we replace activeLoader so a
+    // rapid setSource(A) → setSource(B) sequence cannot let A's resolved
+    // metadata leak into B's state. detach() will be invoked by the next
+    // detachSource effect (state machine emits detachSource before
+    // attachSource on every source switch).
+    pendingAttachAbort?.();
+    pendingAttachAbort = null;
+
     store.setState({ source, currentTime: 0, duration: 0, buffered: [], qualities: [] });
     if (!video) return; // attach happens once a <video> is provided
     const provider = registry.resolve(source);
@@ -256,6 +277,14 @@ export function createPlayer(
     let aborted = false;
     pendingAttachAbort = () => {
       aborted = true;
+      // Tell the loader to cancel its in-flight network work. The loader
+      // implementation is responsible for being idempotent and safe across
+      // detach() ordering (see SourceLoader.abort docstring).
+      try {
+        loader.abort?.();
+      } catch (err) {
+        console.error("[@f8/player-core] loader.abort() threw:", err);
+      }
     };
 
     loader
@@ -444,6 +473,36 @@ export function createPlayer(
     initialOptionsApplied = true;
   }
 
+  // Per-attach disposers (autoplay / startTime listeners + post-ready
+  // immediate work) so that re-attach after detach doesn't leak listeners
+  // and does fire autoplay/startTime even when the player is already in
+  // the `ready` state on the second attach (A5).
+  const attachDisposers: Array<() => void> = [];
+
+  function flushAttachDisposers(): void {
+    while (attachDisposers.length) {
+      try {
+        attachDisposers.pop()?.();
+      } catch {
+        // ignore
+      }
+    }
+  }
+
+  function applyStartTimeNow(): void {
+    if (video && typeof options.startTime === "number" && options.startTime > 0) {
+      video.currentTime = options.startTime;
+    }
+  }
+
+  function applyAutoplayNow(): void {
+    if (!options.autoplay || options.autoplay === "off") return;
+    if (options.autoplay === "muted" && video) video.muted = true;
+    playerRef.play().catch(() => {
+      /* swallow — surfaced via runtimeError */
+    });
+  }
+
   async function attach(el: HTMLVideoElement): Promise<void> {
     if (disposed) throw new Error("[@f8/player-core] cannot attach: player disposed");
     if (video === el) return;
@@ -452,30 +511,38 @@ export function createPlayer(
     bindNativeEvents(el);
     applyInitialOptions();
     if (options.source) dispatch({ type: "setSource", source: options.source });
-    if (typeof options.startTime === "number" && options.startTime > 0) {
-      // Seek once metadata is ready.
-      const onceReady = bus.on("ready", () => {
-        if (video && typeof options.startTime === "number") {
-          video.currentTime = options.startTime;
-        }
-        onceReady();
-      });
-    }
-    // Autoplay
-    if (options.autoplay && options.autoplay !== "off" && options.source) {
-      const onceReady = bus.on("ready", () => {
-        if (options.autoplay === "muted" && video) video.muted = true;
-        playerRef.play().catch(() => {
-          /* swallow — surfaced via runtimeError */
+
+    const wantStartTime = typeof options.startTime === "number" && options.startTime > 0;
+    const wantAutoplay = !!options.autoplay && options.autoplay !== "off" && !!options.source;
+
+    // If the engine has already reached ready (e.g. second attach to the
+    // same already-loaded source), apply autoplay/startTime synchronously
+    // so the second mount behaves identically to the first.
+    if (status === "ready") {
+      if (wantStartTime) applyStartTimeNow();
+      if (wantAutoplay) applyAutoplayNow();
+    } else {
+      if (wantStartTime) {
+        const off = bus.on("ready", () => {
+          applyStartTimeNow();
+          off();
         });
-        onceReady();
-      });
+        attachDisposers.push(off);
+      }
+      if (wantAutoplay) {
+        const off = bus.on("ready", () => {
+          applyAutoplayNow();
+          off();
+        });
+        attachDisposers.push(off);
+      }
     }
   }
 
   function detach(): void {
     pendingAttachAbort?.();
     pendingAttachAbort = null;
+    flushAttachDisposers();
     unbindNativeEvents();
     if (activeLoader) {
       try {
@@ -505,6 +572,18 @@ export function createPlayer(
 
   function getSource(): SourceDescriptor | null {
     return store.getState().source;
+  }
+
+  // Retry replays the most recent source through the state machine. We do
+  // this at the orchestrator layer (rather than inside the reducer) because
+  // the reducer is pure and the source is owned by the store. Calling
+  // `setSource(currentSource)` re-emits detachSource → clearError →
+  // attachSource which gives us the same cycle as a fresh load (C1).
+  function retry(): boolean {
+    const current = store.getState().source;
+    if (!current) return false;
+    dispatch({ type: "setSource", source: current });
+    return true;
   }
 
   async function play(): Promise<void> {
@@ -600,6 +679,7 @@ export function createPlayer(
   Object.assign(playerRef, {
     setSource,
     getSource,
+    retry,
     play,
     pause,
     paused,

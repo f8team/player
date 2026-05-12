@@ -10,6 +10,7 @@
     "./story.css": "./src/story.css",
     "./admin.css": "./src/admin.css",
     "./minimal.css": "./src/minimal.css",
+    "./f8-brand.css": "./src/f8-brand.css",
     "./package.json": "./package.json"
   },
   "files": [

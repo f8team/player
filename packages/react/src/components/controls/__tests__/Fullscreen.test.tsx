@@ -6,15 +6,15 @@ import { renderWithPlayer } from "../../../test-utils/renderWithPlayer.js";
 import { Fullscreen } from "../Fullscreen.js";
 
 describe("<Fullscreen>", () => {
-  it("renders with aria-label='Toàn màn hình' when not in fullscreen", () => {
+  it("renders with aria-label='Fullscreen' when not in fullscreen", () => {
     renderWithPlayer(<Fullscreen />, { initialState: { fullscreen: false } });
-    const btn = screen.getByRole("button", { name: "Toàn màn hình" });
+    const btn = screen.getByRole("button", { name: "Fullscreen" });
     expect(btn.getAttribute("aria-pressed")).toBe("false");
   });
 
-  it("renders with aria-label='Thoát toàn màn hình' when in fullscreen", () => {
+  it("renders with aria-label='Exit fullscreen' when in fullscreen", () => {
     renderWithPlayer(<Fullscreen />, { initialState: { fullscreen: true } });
-    const btn = screen.getByRole("button", { name: "Thoát toàn màn hình" });
+    const btn = screen.getByRole("button", { name: "Exit fullscreen" });
     expect(btn.getAttribute("aria-pressed")).toBe("true");
   });
 

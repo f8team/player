@@ -4,6 +4,7 @@
  * `@f8/player-core` is mocked so tests run in jsdom without HLS or a real
  * `HTMLVideoElement`. The mock exposes the same `createPlayer` factory shape.
  */
+import * as core from "@f8/player-core";
 import { LitElement, html } from "lit";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -141,5 +142,16 @@ describe("PlayerController", () => {
     const el = document.createElement(TAG) as Host;
     const video = document.createElement("video");
     await expect(el.controller.attach(video)).rejects.toThrow(/before hostConnected/);
+  });
+
+  it("does not call createPlayer during construction (SSR-safety / C5)", () => {
+    const createPlayerMock = core.createPlayer as unknown as ReturnType<typeof vi.fn>;
+    createPlayerMock.mockClear();
+    // Construct the element — this triggers the `controller = new PlayerController(...)`
+    // class field initializer in Host. The controller MUST NOT call
+    // createPlayer (which touches DOM via the source providers) until the
+    // host actually connects to the document.
+    document.createElement(TAG);
+    expect(createPlayerMock).not.toHaveBeenCalled();
   });
 });

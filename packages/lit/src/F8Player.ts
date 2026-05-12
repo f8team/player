@@ -228,7 +228,12 @@ export class F8PlayerElement extends LitElement {
         />
       </div>
 
-      <div class="f8p-controls" role="toolbar" aria-label="Điều khiển video" data-f8-player-controls>
+      <div
+        class="f8p-controls"
+        role="toolbar"
+        aria-label="Điều khiển video"
+        data-f8-player-controls
+      >
         <button
           type="button"
           class="f8p-btn"
@@ -243,7 +248,7 @@ export class F8PlayerElement extends LitElement {
         <time
           class="f8p-time"
           aria-label=${`Vị trí hiện tại: ${this.formatTimeLabel(currentTime)}`}
-          dateTime=${this.toDateTime(currentTime)}
+          datetime=${this.toDateTime(currentTime)}
           data-f8-player-control="time"
           data-variant="current"
         >
@@ -253,7 +258,7 @@ export class F8PlayerElement extends LitElement {
         <time
           class="f8p-time"
           aria-label=${`Thời lượng: ${this.formatTimeLabel(duration)}`}
-          dateTime=${this.toDateTime(duration)}
+          datetime=${this.toDateTime(duration)}
           data-f8-player-control="time"
           data-variant="duration"
         >
@@ -262,8 +267,7 @@ export class F8PlayerElement extends LitElement {
 
         <div class="f8p-spacer"></div>
 
-        ${this.renderQualityControl(state)}
-        ${this.renderPlaybackRateControl(state)}
+        ${this.renderQualityControl(state)} ${this.renderPlaybackRateControl(state)}
 
         <div class="f8p-volume">
           <button
@@ -338,7 +342,9 @@ export class F8PlayerElement extends LitElement {
         data-f8-player-control="playback-rate"
         @change=${this.handlePlaybackRateChange}
       >
-        ${rates.map((rate) => html`<option value=${rate}>${rate === 1 ? "Bình thường" : `${rate}×`}</option>`)}
+        ${rates.map(
+          (rate) => html`<option value=${rate}>${rate === 1 ? "Bình thường" : `${rate}×`}</option>`,
+        )}
       </select>
     `;
   }
@@ -397,7 +403,8 @@ export class F8PlayerElement extends LitElement {
       return;
     }
     const quality = player.getState().qualities.find((item) => item.id === value);
-    if (quality) player.commands.run("hls-quality:set", quality as unknown as Record<string, unknown>);
+    if (quality)
+      player.commands.run("hls-quality:set", quality as unknown as Record<string, unknown>);
   }
 
   private handlePlaybackRateChange(event: Event): void {

@@ -84,6 +84,21 @@ export interface SourceLoader {
   attach(video: HTMLVideoElement, source: SourceDescriptor): Promise<void>;
   /** Detach the source. Called before the next `attach` and on `dispose`. */
   detach(): void;
+  /**
+   * Optional: cancel any in-flight network work without tearing down the
+   * already-attached media element. The core calls this on rapid
+   * `setSource(A) → setSource(B)` transitions so the pending A loader can
+   * stop firing callbacks before `detach()` executes.
+   *
+   * Implementations should:
+   *   - Abort outstanding XHRs / `fetch` requests.
+   *   - Reject the pending `attach()` Promise with an `AbortError`.
+   *   - Remove any listeners whose only purpose is to resolve that Promise.
+   *
+   * `abort()` MUST be safe to call before `detach()`, after `detach()`, and
+   * multiple times. Leave actual media-element / runtime cleanup to `detach()`.
+   */
+  abort?(): void;
   /** Optional: enumerate available quality levels (HLS, DASH). */
   getQualities?(): QualityLevel[];
   /** Optional: switch quality. `"auto"` re-enables ABR. */

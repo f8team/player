@@ -1,0 +1,35 @@
+/**
+ * @f8/player-themes — F8 brand override
+ *
+ * Layer over any base theme to apply F8 orange (`#f05123`) and the F8
+ * typography. Generic OSS consumers should NOT import this file — the
+ * default themes are neutral (B2 in the 2026-05-12 review).
+ *
+ * Usage (F8 consumers only):
+ *
+ * ```ts
+ * import "@f8/player-themes/classroom.css";
+ * import "@f8/player-themes/f8-brand.css";   // apply F8 orange on top
+ * ```
+ *
+ * The override targets every theme so a single import re-skins all four
+ * presets to F8 colors at once.
+ */
+
+[data-f8-player][data-theme="classroom"],
+[data-f8-player][data-theme="story"],
+[data-f8-player][data-theme="admin"],
+[data-f8-player][data-theme="minimal"] {
+  /* F8 brand orange + warm hover state. */
+  --f8p-accent: #f05123;
+  --f8p-accent-hover: #ff6a3e;
+  --f8p-seek-fill: var(--f8p-accent);
+  --f8p-seek-thumb: var(--f8p-accent);
+}
+
+/* Optional F8 typography (only enabled when the brand layer is imported). */
+[data-f8-player][data-theme="classroom"],
+[data-f8-player][data-theme="admin"] {
+  --f8p-font:
+    "Inter", "Be Vietnam Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}

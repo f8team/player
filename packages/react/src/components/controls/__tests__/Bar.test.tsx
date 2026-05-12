@@ -5,9 +5,9 @@ import { renderWithPlayer } from "../../../test-utils/renderWithPlayer.js";
 import { Bar } from "../Bar.js";
 
 describe("<Bar>", () => {
-  it("renders a toolbar with aria-label='Điều khiển video'", () => {
+  it("renders a toolbar with aria-label='Video controls'", () => {
     renderWithPlayer(<Bar />);
-    const toolbar = screen.getByRole("toolbar", { name: "Điều khiển video" });
+    const toolbar = screen.getByRole("toolbar", { name: "Video controls" });
     expect(toolbar).toBeDefined();
   });
 

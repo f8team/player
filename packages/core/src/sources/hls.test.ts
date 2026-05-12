@@ -379,7 +379,9 @@ describe("createHlsProvider — loader lifecycle", () => {
   it("detach swallows errors from hls.detachMedia / hls.destroy", async () => {
     const provider = createHlsProvider({ loadRuntime: () => Promise.resolve(runtime) });
     const loader = provider.createLoader();
-    void loader.attach(video, { src: "https://x.com/master.m3u8" });
+    // attach() may reject with AbortError once detach() runs before
+    // MANIFEST_PARSED — swallow it so vitest doesn't see an unhandled rejection.
+    void loader.attach(video, { src: "https://x.com/master.m3u8" }).catch(() => undefined);
     await Promise.resolve();
     await Promise.resolve();
     const instance = (loader as unknown as { hls: MockHlsInstance }).hls;
@@ -395,7 +397,7 @@ describe("createHlsProvider — loader lifecycle", () => {
   it("detach swallows errors from video.load() during cleanup", async () => {
     const provider = createHlsProvider({ loadRuntime: () => Promise.resolve(runtime) });
     const loader = provider.createLoader();
-    void loader.attach(video, { src: "https://x.com/master.m3u8" });
+    void loader.attach(video, { src: "https://x.com/master.m3u8" }).catch(() => undefined);
     await Promise.resolve();
     await Promise.resolve();
     Object.defineProperty(video, "load", {
@@ -405,6 +407,105 @@ describe("createHlsProvider — loader lifecycle", () => {
       },
     });
     expect(() => loader.detach()).not.toThrow();
+  });
+
+  it("removes the readystatechange watcher when the XHR completes (A1)", async () => {
+    const provider = createHlsProvider({ loadRuntime: () => Promise.resolve(runtime) });
+    const loader = provider.createLoader();
+    void loader.attach(video, { src: "https://x.com/master.m3u8" }).catch(() => undefined);
+    await Promise.resolve();
+    await Promise.resolve();
+    const instance = (loader as unknown as { hls: MockHlsInstance }).hls;
+
+    const xhr = new XMLHttpRequest();
+    Object.defineProperty(xhr, "readyState", { configurable: true, value: 0 });
+    Object.defineProperty(xhr, "status", { configurable: true, value: 0 });
+    const removeSpy = vi.spyOn(xhr, "removeEventListener");
+    instance.config.xhrSetup?.(xhr, "https://x.com/seg-1.ts");
+
+    // Simulate the XHR completing without 401/403.
+    Object.defineProperty(xhr, "readyState", { configurable: true, value: 4 });
+    Object.defineProperty(xhr, "status", { configurable: true, value: 200 });
+    xhr.dispatchEvent(new Event("readystatechange"));
+
+    expect(removeSpy).toHaveBeenCalledWith("readystatechange", expect.any(Function));
+    expect((loader as unknown as { liveXhrs: Set<XMLHttpRequest> }).liveXhrs.has(xhr)).toBe(false);
+  });
+
+  it("aborts in-flight XHRs and rejects pending attach on abort() (A1)", async () => {
+    const provider = createHlsProvider({ loadRuntime: () => Promise.resolve(runtime) });
+    const loader = provider.createLoader();
+    const attachPromise = loader.attach(video, { src: "https://x.com/master.m3u8" });
+    await Promise.resolve();
+    await Promise.resolve();
+    const instance = (loader as unknown as { hls: MockHlsInstance }).hls;
+
+    const xhr = new XMLHttpRequest();
+    const abortSpy = vi.spyOn(xhr, "abort").mockImplementation(() => undefined);
+    instance.config.xhrSetup?.(xhr, "https://x.com/seg-1.ts");
+
+    loader.abort?.();
+    expect(abortSpy).toHaveBeenCalled();
+    await expect(attachPromise).rejects.toThrow(/aborted/i);
+    abortSpy.mockRestore();
+  });
+
+  it("rejects on manifest timeout (A2)", async () => {
+    vi.useFakeTimers();
+    try {
+      const onError = vi.fn();
+      const provider = createHlsProvider({
+        loadRuntime: () => Promise.resolve(runtime),
+        onError,
+        manifestTimeoutMs: 50,
+      });
+      const loader = provider.createLoader();
+      const attachPromise = loader.attach(video, { src: "https://x.com/master.m3u8" });
+      // Let the runtime resolve and Hls instance get constructed.
+      await vi.advanceTimersByTimeAsync(0);
+      vi.advanceTimersByTime(60);
+      await expect(attachPromise).rejects.toThrow(/timeout/i);
+      expect(onError).toHaveBeenCalledWith(
+        expect.objectContaining({ message: expect.stringMatching(/timeout/i) }),
+      );
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("rejects on non-fatal HTTP 4xx error (A2)", async () => {
+    const onError = vi.fn();
+    const provider = createHlsProvider({
+      loadRuntime: () => Promise.resolve(runtime),
+      onError,
+    });
+    const loader = provider.createLoader();
+    const attachPromise = loader.attach(video, { src: "https://x.com/master.m3u8" });
+    await Promise.resolve();
+    await Promise.resolve();
+    const instance = (loader as unknown as { hls: MockHlsInstance }).hls;
+    instance.emit(HLS_EVENTS.ERROR, "hlsError", {
+      fatal: false,
+      type: "networkError",
+      response: { code: 404, url: "https://x.com/master.m3u8" },
+    });
+    await expect(attachPromise).rejects.toThrow(/HTTP 404/);
+    expect(onError).toHaveBeenCalledWith(expect.objectContaining({ status: 404 }));
+  });
+
+  it("native fallback removes listeners on early detach (C3)", async () => {
+    const nativeRuntime = makeMockRuntime({ isSupported: false });
+    const provider = createHlsProvider({ loadRuntime: () => Promise.resolve(nativeRuntime) });
+    const loader = provider.createLoader();
+    const removeSpy = vi.spyOn(video, "removeEventListener");
+    const attachPromise = loader
+      .attach(video, { src: "https://x.com/master.m3u8" })
+      .catch(() => undefined);
+    await Promise.resolve();
+    loader.detach();
+    await attachPromise;
+    expect(removeSpy).toHaveBeenCalledWith("loadedmetadata", expect.any(Function));
+    expect(removeSpy).toHaveBeenCalledWith("error", expect.any(Function));
   });
 
   it("_getInternalState exposes source + qualities for debugging", async () => {

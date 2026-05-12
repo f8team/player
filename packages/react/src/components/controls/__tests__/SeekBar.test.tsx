@@ -7,7 +7,7 @@ import { SeekBar } from "../SeekBar.js";
 describe("<SeekBar>", () => {
   it("renders with role=slider and correct aria attributes", () => {
     renderWithPlayer(<SeekBar />, { initialState: { currentTime: 10, duration: 100 } });
-    const slider = screen.getByRole("slider", { name: "Vị trí phát" });
+    const slider = screen.getByRole("slider", { name: "Seek" });
     expect(slider.getAttribute("aria-valuenow")).toBe("10");
     expect(slider.getAttribute("aria-valuemin")).toBe("0");
     expect(slider.getAttribute("aria-valuemax")).toBe("100");

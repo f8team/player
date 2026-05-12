@@ -198,15 +198,19 @@ describe("createYouTubeProvider — loader lifecycle", () => {
     expect(host.style.height).toBe("100%");
   });
 
-  it("hides the underlying <video> while YT owns playback and restores on detach", async () => {
+  it("marks the underlying <video> via data-attribute (not inline style) while YT owns playback (B6)", async () => {
     const provider = createYouTubeProvider({
       loadRuntime: () => Promise.resolve(makeRuntime().runtime),
     });
     const loader = provider.createLoader();
     await loader.attach(video, { src: "https://youtube.com/watch?v=abc" });
-    expect(video.style.visibility).toBe("hidden");
-    loader.detach();
+    // CSS theme contract owns the actual visibility rule; the loader only
+    // toggles the data-attribute so host CSS / dark mode / transitions are
+    // never overwritten by inline styles (B6).
+    expect(video.hasAttribute("data-f8-player-yt-hidden")).toBe(true);
     expect(video.style.visibility).toBe("");
+    loader.detach();
+    expect(video.hasAttribute("data-f8-player-yt-hidden")).toBe(false);
   });
 
   it("rejects + onError when YT fires onError", async () => {
@@ -343,6 +347,110 @@ describe("createYouTubeProvider — loader lifecycle", () => {
     await expect(loader.attach(video, { src: "https://youtube.com/watch?v=abc" })).rejects.toThrow(
       /YT ctor blew up/,
     );
+  });
+
+  it("bridges polled getCurrentTime via onTimeUpdate (A3)", async () => {
+    vi.useFakeTimers();
+    try {
+      const onTimeUpdate = vi.fn();
+      const { runtime, instances } = makeRuntime();
+      const provider = createYouTubeProvider({
+        loadRuntime: () => Promise.resolve(runtime),
+        onTimeUpdate,
+        timeBridgeIntervalMs: 50,
+      });
+      const loader = provider.createLoader();
+      const attachP = loader.attach(video, { src: "https://youtube.com/watch?v=abc" });
+      await vi.advanceTimersByTimeAsync(0);
+      await attachP;
+      const inst = instances[0] as unknown as { _setNow(t: number): void };
+      inst._setNow(7.5);
+      vi.advanceTimersByTime(60);
+      expect(onTimeUpdate).toHaveBeenCalledWith(7.5);
+      inst._setNow(8.25);
+      vi.advanceTimersByTime(60);
+      expect(onTimeUpdate).toHaveBeenLastCalledWith(8.25);
+      loader.detach();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("emits onDuration once duration becomes available (A3)", async () => {
+    vi.useFakeTimers();
+    try {
+      const onDuration = vi.fn();
+      const PlayerState = { ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3 } as const;
+      class WithDurationCtor {
+        private _now = 0;
+        constructor(
+          _el: HTMLElement,
+          options: { events?: { onReady?: (e: { target: WithDurationCtor }) => void } },
+        ) {
+          queueMicrotask(() => options.events?.onReady?.({ target: this }));
+        }
+        playVideo() {}
+        pauseVideo() {}
+        seekTo() {}
+        getCurrentTime() {
+          return this._now;
+        }
+        getDuration() {
+          return 120;
+        }
+        getPlayerState() {
+          return PlayerState.PAUSED;
+        }
+        destroy() {}
+      }
+      const runtime: YouTubeRuntime = {
+        Player: WithDurationCtor as unknown as YouTubeRuntime["Player"],
+        PlayerState,
+      };
+      const provider = createYouTubeProvider({
+        loadRuntime: () => Promise.resolve(runtime),
+        onDuration,
+      });
+      const loader = provider.createLoader();
+      const attachP = loader.attach(video, { src: "https://youtube.com/watch?v=abc" });
+      await vi.advanceTimersByTimeAsync(0);
+      await attachP;
+      expect(onDuration).toHaveBeenCalledWith(120);
+      loader.detach();
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("rejects pending attach Promise on abort() (A4 contract)", async () => {
+    const PlayerState = { ENDED: 0, PLAYING: 1, PAUSED: 2, BUFFERING: 3 } as const;
+    // A constructor that NEVER fires onReady so the attach Promise stays pending.
+    class HangingCtor {
+      constructor() {}
+      playVideo() {}
+      pauseVideo() {}
+      seekTo() {}
+      getCurrentTime() {
+        return 0;
+      }
+      getDuration() {
+        return 0;
+      }
+      getPlayerState() {
+        return 0;
+      }
+      destroy() {}
+    }
+    const runtime: YouTubeRuntime = {
+      Player: HangingCtor as unknown as YouTubeRuntime["Player"],
+      PlayerState,
+    };
+    const provider = createYouTubeProvider({ loadRuntime: () => Promise.resolve(runtime) });
+    const loader = provider.createLoader();
+    const attachP = loader.attach(video, { src: "https://youtube.com/watch?v=abc" });
+    await Promise.resolve();
+    loader.abort?.();
+    await expect(attachP).rejects.toThrow(/aborted/i);
   });
 
   it("exposes the underlying YT instance via _instance() escape hatch", async () => {

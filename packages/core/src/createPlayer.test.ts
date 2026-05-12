@@ -249,6 +249,43 @@ describe("createPlayer — setSource", () => {
     player.dispose();
   });
 
+  it("retry() replays the last source through loading → ready (C1)", async () => {
+    let attachCalls = 0;
+    const provider: SourceProvider = {
+      name: "test",
+      canHandle: () => true,
+      createLoader: () => {
+        attachCalls += 1;
+        if (attachCalls === 1) {
+          return {
+            attach: () => Promise.reject(new Error("first attempt failed")),
+            detach: () => undefined,
+          };
+        }
+        return { attach: () => Promise.resolve(), detach: () => undefined };
+      },
+    };
+    const player = createPlayer({}, { extraProviders: [provider] });
+    await player.attach(video);
+    player.setSource({ src: "https://x.com/a.mp4" });
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(player.getState().status).toBe("error");
+
+    expect(player.retry()).toBe(true);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(player.getState().status).toBe("ready");
+    expect(attachCalls).toBe(2);
+    player.dispose();
+  });
+
+  it("retry() returns false when there is no source to replay (C1)", () => {
+    const player = createPlayer();
+    expect(player.retry()).toBe(false);
+    player.dispose();
+  });
+
   it("loader rejection moves to error state", async () => {
     const provider: SourceProvider = {
       name: "test",
@@ -297,6 +334,69 @@ describe("createPlayer — setSource", () => {
     await Promise.resolve();
     expect(player.getState().source?.src).toBe("https://x.com/b.mp4");
     player.dispose();
+  });
+
+  it("invokes loader.abort() when the source is replaced mid-flight (A4)", async () => {
+    const abortSpy = vi.fn();
+    let resolveFirst: (() => void) | null = null;
+    let createLoaderCalls = 0;
+    const provider: SourceProvider = {
+      name: "test-with-abort",
+      canHandle: () => true,
+      createLoader: () => {
+        createLoaderCalls += 1;
+        if (createLoaderCalls === 1) {
+          return {
+            attach: () =>
+              new Promise<void>((resolve) => {
+                resolveFirst = resolve;
+              }),
+            detach: () => undefined,
+            abort: abortSpy,
+          };
+        }
+        return { attach: () => Promise.resolve(), detach: () => undefined };
+      },
+    };
+    const player = createPlayer({}, { extraProviders: [provider] });
+    await player.attach(video);
+    player.setSource({ src: "https://x.com/a.mp4" });
+    await Promise.resolve();
+    expect(abortSpy).not.toHaveBeenCalled();
+
+    player.setSource({ src: "https://x.com/b.mp4" });
+    expect(abortSpy).toHaveBeenCalledTimes(1);
+
+    // Late resolution from loader A must NOT flip state to "ready" for source B.
+    (resolveFirst as unknown as (() => void) | null)?.();
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(player.getState().source?.src).toBe("https://x.com/b.mp4");
+    player.dispose();
+  });
+
+  it("survives a throwing loader.abort() without crashing the player (A4)", async () => {
+    const errSpy = vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const provider: SourceProvider = {
+      name: "throwing-abort",
+      canHandle: () => true,
+      createLoader: () => ({
+        attach: () => new Promise<void>(() => undefined),
+        detach: () => undefined,
+        abort: () => {
+          throw new Error("abort exploded");
+        },
+      }),
+    };
+    const player = createPlayer({}, { extraProviders: [provider] });
+    await player.attach(video);
+    player.setSource({ src: "https://x.com/a.mp4" });
+    await Promise.resolve();
+    // Replacing must not throw despite the throwing abort.
+    expect(() => player.setSource({ src: "https://x.com/b.mp4" })).not.toThrow();
+    expect(errSpy).toHaveBeenCalled();
+    player.dispose();
+    errSpy.mockRestore();
   });
 });
 
@@ -639,6 +739,54 @@ describe("createPlayer — autoplay + detach resilience", () => {
     await Promise.resolve();
     await Promise.resolve();
     expect(() => player.dispose()).not.toThrow();
+  });
+
+  it("autoplay still fires after detach + re-attach (A5)", async () => {
+    const playSpy = vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue();
+    const player = createPlayer(
+      { source: { src: "https://x.com/file.mp4" }, autoplay: "muted" },
+      { extraProviders: [readyProvider()] },
+    );
+    await player.attach(video);
+    await Promise.resolve();
+    await Promise.resolve();
+    expect(playSpy).toHaveBeenCalledTimes(1);
+
+    // Simulate component remount: detach then attach the same player to a
+    // fresh <video>. Without the A5 fix, the second attach would NOT trigger
+    // autoplay because `bus.emit("ready")` only fires on transition.
+    player.detach();
+    const video2 = document.createElement("video");
+    parent.appendChild(video2);
+    await player.attach(video2);
+    expect(playSpy).toHaveBeenCalledTimes(2);
+
+    playSpy.mockRestore();
+    player.dispose();
+  });
+
+  it("does not leak ready-listeners across re-attach cycles (A5)", async () => {
+    const playSpy = vi.spyOn(HTMLMediaElement.prototype, "play").mockResolvedValue();
+    const player = createPlayer(
+      { source: { src: "https://x.com/file.mp4" }, autoplay: "muted" },
+      { extraProviders: [readyProvider()] },
+    );
+    await player.attach(video);
+    await Promise.resolve();
+    await Promise.resolve();
+
+    // Cycle attach/detach multiple times. autoplay should fire exactly once
+    // per attach — never N+1 times due to leaked listeners.
+    for (let i = 0; i < 3; i++) {
+      const v = document.createElement("video");
+      parent.appendChild(v);
+      player.detach();
+      await player.attach(v);
+    }
+    // 1 initial + 3 cycles = 4 calls.
+    expect(playSpy).toHaveBeenCalledTimes(4);
+    playSpy.mockRestore();
+    player.dispose();
   });
 });
 

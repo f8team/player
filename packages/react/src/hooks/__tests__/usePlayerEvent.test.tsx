@@ -2,6 +2,7 @@ import { act } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { PlayerContext } from "../../context/PlayerContext.js";
+import { LabelsProvider } from "../../i18n.js";
 import { makeMockPlayer } from "../../test-utils/mockPlayer.js";
 import { renderWithPlayer } from "../../test-utils/renderWithPlayer.js";
 import { usePlayerEvent } from "../usePlayerEvent.js";
@@ -29,11 +30,15 @@ describe("usePlayerEvent", () => {
     const firstCount = (player.on as ReturnType<typeof vi.fn>).mock.calls.filter(
       (c: unknown[]) => c[0] === "play",
     ).length;
-    // Rerender with same context wrapper — player.on should NOT be called again.
+    // Rerender with same context tree — player.on should NOT be called again.
+    // Must mirror the wrapper renderWithPlayer used (PlayerContext + LabelsProvider)
+    // otherwise the React tree changes shape and the inner hook re-mounts.
     const ctx = { player, options: {} };
     rerender(
       <PlayerContext.Provider value={ctx}>
-        <EventCounter eventName="play" />
+        <LabelsProvider>
+          <EventCounter eventName="play" />
+        </LabelsProvider>
       </PlayerContext.Provider>,
     );
     const secondCount = (player.on as ReturnType<typeof vi.fn>).mock.calls.filter(
@@ -75,7 +80,9 @@ describe("usePlayerEvent", () => {
 
     rerender(
       <PlayerContext.Provider value={ctx}>
-        <DynamicHandler prefix="v2" />
+        <LabelsProvider>
+          <DynamicHandler prefix="v2" />
+        </LabelsProvider>
       </PlayerContext.Provider>,
     );
     act(() => capturedTimeUpdateHandler?.({ currentTime: 10, playedSeconds: 10, duration: 100 }));

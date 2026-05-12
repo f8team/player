@@ -3,6 +3,7 @@ import type { PlayerOptions } from "@f8/player-core";
 import { type ReactNode, useEffect, useMemo, useRef } from "react";
 
 import { PlayerContext } from "../context/PlayerContext.js";
+import { LabelsProvider, type PlayerLabels } from "../i18n.js";
 
 export interface RootProps {
   /**
@@ -11,6 +12,12 @@ export interface RootProps {
    * reactive updates).
    */
   options?: PlayerOptions;
+  /**
+   * Override the user-visible labels for the built-in controls. Defaults
+   * to English (`defaultLabels`). Pass `vietnameseLabels` from
+   * `@f8/player-react` for the Vietnamese preset, or any partial override.
+   */
+  labels?: Partial<PlayerLabels>;
   children?: ReactNode;
   /** Optional ref-style callback to access the player instance imperatively. */
   playerRef?: ((player: ReturnType<typeof createPlayer>) => void) | null;
@@ -22,7 +29,7 @@ export interface RootProps {
  *
  * All hooks and primitives must be rendered inside this component.
  */
-export function Root({ options = {}, children, playerRef }: RootProps): JSX.Element {
+export function Root({ options = {}, labels, children, playerRef }: RootProps): JSX.Element {
   // Options are read once on mount; subsequent changes are silently ignored.
   // This is intentional: the player is a long-lived imperative object.
   const optionsRef = useRef(options);
@@ -40,5 +47,9 @@ export function Root({ options = {}, children, playerRef }: RootProps): JSX.Elem
 
   const ctx = useMemo(() => ({ player, options: optionsRef.current }), [player]);
 
-  return <PlayerContext.Provider value={ctx}>{children}</PlayerContext.Provider>;
+  return (
+    <PlayerContext.Provider value={ctx}>
+      <LabelsProvider labels={labels}>{children}</LabelsProvider>
+    </PlayerContext.Provider>
+  );
 }

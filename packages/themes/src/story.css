@@ -7,24 +7,26 @@
  * Usage: import "@f8/player-themes/story.css";
  */
 
-[data-f8-player][data-theme="story"],
-.f8-player-story {
+[data-f8-player][data-theme="story"] {
   --f8p-bg: #000;
   --f8p-accent: #ffffff;
   --f8p-text: #ffffff;
-  --f8p-text-secondary: rgba(255,255,255,.75);
-  --f8p-ctrl-bg: linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 100%);
+  --f8p-text-secondary: rgba(255, 255, 255, 0.75);
+  --f8p-ctrl-bg: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
   --f8p-ctrl-height: 8rem;
   --f8p-btn-size: 4rem;
   --f8p-icon-size: 2.2rem;
   --f8p-radius: 0;
   --f8p-transition: 0.15s ease;
   --f8p-progress-height: 0.3rem;
-}
 
-/* ─── Container ─────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"],
-.f8-player-story {
+  /* z-index contract */
+  --f8p-z-buffered: 0;
+  --f8p-z-controls: 5;
+  --f8p-z-watermark: 10;
+  --f8p-z-overlay: 20;
+} /* ─── Container ─────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="story"] {
   position: relative;
   background: var(--f8p-bg);
   overflow: hidden;
@@ -32,40 +34,29 @@
   height: 100%;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* ─── Video — cover fill ─────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] video,
-.f8-player-story video {
+} /* ─── Video — cover fill ─────────────────────────────────────────────────── */
+[data-f8-player][data-theme="story"] video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-/* ─── Story progress bar (top) ───────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8p-story-progress,
-.f8-player-story .f8p-story-progress {
+} /* ─── Story progress bar (top) ───────────────────────────────────────────── */
+[data-f8-player][data-theme="story"] .f8p-story-progress {
   position: absolute;
   top: 0.8rem;
   inset-inline: 0.8rem;
   height: var(--f8p-progress-height);
-  background: rgba(255,255,255,.3);
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 99px;
   overflow: hidden;
 }
-
-[data-f8-player][data-theme="story"] .f8p-story-progress-fill,
-.f8-player-story .f8p-story-progress-fill {
+[data-f8-player][data-theme="story"] .f8p-story-progress-fill {
   height: 100%;
   background: var(--f8p-accent);
   border-radius: 99px;
   transition: width 0.5s linear;
-}
-
-/* ─── Controls bar (bottom) ──────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8p-controls,
-.f8-player-story .f8p-controls {
+} /* ─── Controls bar (bottom) ──────────────────────────────────────────────── */
+[data-f8-player][data-theme="story"] .f8p-controls {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
@@ -76,11 +67,8 @@
   align-items: center;
   gap: 0.8rem;
   transition: opacity var(--f8p-transition);
-}
-
-/* ─── Buttons ────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8p-btn,
-.f8-player-story .f8p-btn {
+} /* ─── Buttons ────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="story"] .f8p-btn {
   width: var(--f8p-btn-size);
   height: var(--f8p-btn-size);
   min-width: 4.4rem;
@@ -95,18 +83,12 @@
   padding: 0;
   border-radius: 50%;
 }
-
-[data-f8-player][data-theme="story"] .f8p-btn:focus-visible,
-.f8-player-story .f8p-btn:focus-visible {
+[data-f8-player][data-theme="story"] .f8p-btn:focus-visible {
   outline: 2px solid #fff;
   outline-offset: 2px;
-}
-
-/* ─── Left/Right tap zones (visual hint, transparent) ───────────────────── */
+} /* ─── Left/Right tap zones (visual hint, transparent) ───────────────────── */
 [data-f8-player][data-theme="story"] .f8p-zone-left,
-[data-f8-player][data-theme="story"] .f8p-zone-right,
-.f8-player-story .f8p-zone-left,
-.f8-player-story .f8p-zone-right {
+[data-f8-player][data-theme="story"] .f8p-zone-right {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -118,28 +100,18 @@
   opacity: 0;
   transition: opacity var(--f8p-transition);
 }
-
-[data-f8-player][data-theme="story"] .f8p-zone-left,
-.f8-player-story .f8p-zone-left {
+[data-f8-player][data-theme="story"] .f8p-zone-left {
   left: 0;
 }
-
-[data-f8-player][data-theme="story"] .f8p-zone-right,
-.f8-player-story .f8p-zone-right {
+[data-f8-player][data-theme="story"] .f8p-zone-right {
   right: 0;
-}
-
-/* ─── Time text ──────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8p-time,
-.f8-player-story .f8p-time {
+} /* ─── Time text ──────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="story"] .f8p-time {
   font-variant-numeric: tabular-nums;
   color: var(--f8p-text-secondary);
   font-size: 1.3rem;
-}
-
-/* ─── Watermark ──────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8-watermark,
-.f8-player-story .f8-watermark {
+} /* ─── Watermark ──────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="story"] .f8-watermark {
   position: absolute;
   top: 2.4rem;
   right: 1.6rem;
@@ -148,4 +120,20 @@
   font-size: 1.1rem;
   color: #fff;
   user-select: none;
+}
+
+/* ─── Native <video> hidden while YouTube iframe owns playback (B6) ── */
+[data-f8-player][data-theme="story"] video[data-f8-player-yt-hidden] {
+  visibility: hidden;
+}
+
+/* ─── Reduced motion — disable transitions + animations (C6) ─── */
+@media (prefers-reduced-motion: reduce) {
+  [data-f8-player][data-theme="story"] *,
+  [data-f8-player][data-theme="story"] *::before,
+  [data-f8-player][data-theme="story"] *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

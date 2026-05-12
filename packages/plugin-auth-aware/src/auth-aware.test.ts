@@ -1,7 +1,7 @@
 import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
 import { describe, expect, it, vi } from "vitest";
 
-import { createAuthAwarePlugin } from "./auth-aware.js";
+import { createAuthAwarePlugin, __resetTrailingDotWarnForTests } from "./auth-aware.js";
 
 type Handler<K extends keyof PlayerEvents> = (payload: PlayerEvents[K]) => void;
 
@@ -132,5 +132,62 @@ describe("createAuthAwarePlugin", () => {
     teardown?.();
     player.fire("error", { code: "unauthorized", message: "401", retryable: false });
     expect(cb).not.toHaveBeenCalled();
+  });
+
+  it("allowlist accepts RegExp matchers (A12)", () => {
+    const player = makePlayer({ src: "https://api-gateway.example.com/stream.m3u8" });
+    createAuthAwarePlugin({
+      allowlist: [/^https:\/\/api-gateway\./],
+    }).setup(player, makeHost());
+    player.fire("ready", { duration: 100 });
+    expect(player.commands.run).toHaveBeenCalledWith("hls:setWithCredentials", true);
+  });
+
+  it("allowlist RegExp that requires a dot rejects literal-prefix domains (A12)", () => {
+    // /^https:\/\/api-gateway\./ should NOT match "api-gateway-v2" (no dot).
+    const player = makePlayer({ src: "https://api-gateway-v2.cdn.net/video.m3u8" });
+    createAuthAwarePlugin({
+      allowlist: [/^https:\/\/api-gateway\./],
+    }).setup(player, makeHost());
+    player.fire("ready", { duration: 100 });
+    expect(player.commands.run).not.toHaveBeenCalledWith("hls:setWithCredentials", true);
+  });
+
+  it("allowlist accepts predicate functions (A12)", () => {
+    const player = makePlayer({ src: "https://cdn.example.com/secret.m3u8" });
+    const hostnames = new Set(["cdn.example.com"]);
+    createAuthAwarePlugin({
+      allowlist: [(url) => hostnames.has(new URL(url).hostname)],
+    }).setup(player, makeHost());
+    player.fire("ready", { duration: 100 });
+    expect(player.commands.run).toHaveBeenCalledWith("hls:setWithCredentials", true);
+  });
+
+  it("string allowlist is literal prefix — trailing dot is part of the match (A12)", () => {
+    // "https://api-gateway." as a literal prefix DOES match URLs that start
+    // exactly with that (including the dot). But because the matcher uses
+    // startsWith with no magic, it does NOT match "https://api-gatewayxxx/...".
+    const matching = makePlayer({ src: "https://api-gateway.example.com/stream.m3u8" });
+    createAuthAwarePlugin({ allowlist: ["https://api-gateway."] }).setup(matching, makeHost());
+    matching.fire("ready", { duration: 100 });
+    expect(matching.commands.run).toHaveBeenCalledWith("hls:setWithCredentials", true);
+
+    const nonMatching = makePlayer({ src: "https://api-gatewayxxx.example.com/v.m3u8" });
+    __resetTrailingDotWarnForTests(); // second plugin instance — let the warn fire again in its own test
+    createAuthAwarePlugin({ allowlist: ["https://api-gateway."] }).setup(nonMatching, makeHost());
+    nonMatching.fire("ready", { duration: 100 });
+    expect(nonMatching.commands.run).not.toHaveBeenCalledWith("hls:setWithCredentials", true);
+  });
+
+  it("warns once when a string entry ends with '.' (A12 migration aid)", () => {
+    __resetTrailingDotWarnForTests();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    // First instantiation — warn fires.
+    createAuthAwarePlugin({ allowlist: ["https://api-gateway."] });
+    expect(warn).toHaveBeenCalledTimes(1);
+    // Second instantiation with the same mistake — guarded by module flag.
+    createAuthAwarePlugin({ allowlist: ["https://another-gateway."] });
+    expect(warn).toHaveBeenCalledTimes(1);
+    warn.mockRestore();
   });
 });

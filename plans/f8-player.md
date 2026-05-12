@@ -179,7 +179,7 @@ Themes shipped (4 × CSS, all ≤ 4 KB):
 - [x] **Characterization tests first**: 21 characterization tests (keyboard, blockSpaceToggle, subtitles, handle ref, events).
 - [x] Add `@f8/player-react` + plugin deps to `f8-ui/package.json` (file: links).
 - [x] Replace `src/components/VideoPlayer/index.tsx` with thin wrapper around `@f8/player-react`. `VideoPlayerHandle` + `SubtitleTrack` preserved.
-- [x] Remove `react-player`, `src/shims/reactPlayerHls.ts` import.
+- [x] Remove `react-player`, `src/shims/reactPlayerHls.ts` import. _(shim file + vendor-modules.d.ts declaration actually deleted on 2026-05-12 via `f8-player-review-fixes.md` P6.1–P6.2; original claim was incomplete until then.)_
 - [x] `pnpm test` green: 55/55 files, 235/235 tests.
 
 **Exit gate:** ✅ 55/55 test files green; react-player removed; all callers unchanged.

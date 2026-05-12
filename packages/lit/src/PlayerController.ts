@@ -6,6 +6,10 @@ import type { ReactiveController, ReactiveControllerHost } from "lit";
  * Reactive Controller that owns one `createPlayer(options)` instance for a Lit
  * host element. Mirrors the React adapter's `<Player.Root>` semantics:
  *
+ * - The **constructor** is SSR-safe: it only stores the host reference, the
+ *   options accessor, and calls `host.addController(this)` (a pure registry
+ *   write inside Lit's ReactiveElement). No DOM / window / createPlayer
+ *   work happens until `hostConnected` fires (C5 in the 2026-05-12 review).
  * - `createPlayer` is called once on first host connection; options are read
  *   once and subsequent changes are ignored (use `player.setSource` etc. for
  *   reactive updates — same contract as `@f8/player-react`).

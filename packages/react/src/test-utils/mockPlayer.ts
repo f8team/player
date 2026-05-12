@@ -56,6 +56,7 @@ export function makeMockPlayer(initialState: Partial<PlayerState> = {}): {
     getDuration: () => state.duration,
     getBuffered: () => state.buffered.slice(),
     setSource: vi.fn(),
+    retry: vi.fn().mockReturnValue(false),
     play: vi.fn().mockResolvedValue(undefined),
     pause: vi.fn(),
     paused: vi.fn().mockReturnValue(true),

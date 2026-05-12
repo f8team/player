@@ -7,45 +7,41 @@
  * Usage: import "@f8/player-themes/minimal.css";
  */
 
-[data-f8-player][data-theme="minimal"],
-.f8-player-minimal {
+[data-f8-player][data-theme="minimal"] {
   --f8p-bg: #000;
-  --f8p-ctrl-bg: linear-gradient(to top, rgba(0,0,0,.6) 0%, transparent 100%);
+  --f8p-ctrl-bg: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
   --f8p-ctrl-height: 4.8rem;
   --f8p-accent: #ffffff;
   --f8p-text: #ffffff;
-  --f8p-text-secondary: rgba(255,255,255,.7);
-  --f8p-seek-track: rgba(255,255,255,.3);
+  --f8p-text-secondary: rgba(255, 255, 255, 0.7);
+  --f8p-seek-track: rgba(255, 255, 255, 0.3);
   --f8p-seek-fill: #fff;
   --f8p-seek-thumb: #fff;
   --f8p-radius: 0.6rem;
   --f8p-btn-size: 3.2rem;
   --f8p-transition: 0.2s ease;
-}
 
-/* ─── Container ─────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"],
-.f8-player-minimal {
+  /* z-index contract */
+  --f8p-z-buffered: 0;
+  --f8p-z-controls: 5;
+  --f8p-z-watermark: 10;
+  --f8p-z-overlay: 20;
+} /* ─── Container ─────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="minimal"] {
   position: relative;
   background: var(--f8p-bg);
   border-radius: var(--f8p-radius);
   overflow: hidden;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-}
-
-/* ─── Video ──────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] video,
-.f8-player-minimal video {
+} /* ─── Video ──────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="minimal"] video {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
-}
-
-/* ─── Controls — show on hover/focus only ────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-controls,
-.f8-player-minimal .f8p-controls {
+} /* ─── Controls — show on hover/focus only ────────────────────────────────── */
+[data-f8-player][data-theme="minimal"] .f8p-controls {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
@@ -58,22 +54,14 @@
   opacity: 0;
   transition: opacity var(--f8p-transition);
 }
-
 [data-f8-player][data-theme="minimal"]:hover .f8p-controls,
-[data-f8-player][data-theme="minimal"]:focus-within .f8p-controls,
-.f8-player-minimal:hover .f8p-controls,
-.f8-player-minimal:focus-within .f8p-controls {
+[data-f8-player][data-theme="minimal"]:focus-within .f8p-controls {
   opacity: 1;
-}
-
-/* ─── Seek bar ───────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-seek,
-.f8-player-minimal .f8p-seek {
+} /* ─── Seek bar ───────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="minimal"] .f8p-seek {
   flex: 1;
 }
-
-[data-f8-player][data-theme="minimal"] .f8p-seek input[type="range"],
-.f8-player-minimal .f8p-seek input[type="range"] {
+[data-f8-player][data-theme="minimal"] .f8p-seek input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
@@ -83,9 +71,7 @@
   border-radius: 99px;
   outline: none;
 }
-
-[data-f8-player][data-theme="minimal"] .f8p-seek input[type="range"]::-webkit-slider-thumb,
-.f8-player-minimal .f8p-seek input[type="range"]::-webkit-slider-thumb {
+[data-f8-player][data-theme="minimal"] .f8p-seek input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 1rem;
   height: 1rem;
@@ -94,15 +80,10 @@
   opacity: 0;
   transition: opacity var(--f8p-transition);
 }
-
-[data-f8-player][data-theme="minimal"]:hover .f8p-seek input[type="range"]::-webkit-slider-thumb,
-.f8-player-minimal:hover .f8p-seek input[type="range"]::-webkit-slider-thumb {
+[data-f8-player][data-theme="minimal"]:hover .f8p-seek input[type="range"]::-webkit-slider-thumb {
   opacity: 1;
-}
-
-/* ─── Buttons ────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-btn,
-.f8-player-minimal .f8p-btn {
+} /* ─── Buttons ────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="minimal"] .f8p-btn {
   width: var(--f8p-btn-size);
   height: var(--f8p-btn-size);
   min-width: 4.4rem;
@@ -119,34 +100,56 @@
   padding: 0;
   transition: background var(--f8p-transition);
 }
-
-[data-f8-player][data-theme="minimal"] .f8p-btn:hover,
-.f8-player-minimal .f8p-btn:hover {
-  background: rgba(255,255,255,.15);
+[data-f8-player][data-theme="minimal"] .f8p-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
-
-[data-f8-player][data-theme="minimal"] .f8p-btn:focus-visible,
-.f8-player-minimal .f8p-btn:focus-visible {
-  outline: 2px solid rgba(255,255,255,.8);
+[data-f8-player][data-theme="minimal"] .f8p-btn:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.8);
   outline-offset: 2px;
-}
-
-/* ─── Spacer ─────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-spacer,
-.f8-player-minimal .f8p-spacer {
+} /* ─── Spacer ─────────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="minimal"] .f8p-spacer {
   flex: 1;
-}
-
-/* ─── Muted badge ────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-muted-badge,
-.f8-player-minimal .f8p-muted-badge {
+} /* ─── Muted badge ────────────────────────────────────────────────────────── */
+[data-f8-player][data-theme="minimal"] .f8p-muted-badge {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(0,0,0,.5);
+  background: rgba(0, 0, 0, 0.5);
   color: #fff;
   font-size: 1rem;
   padding: 0.3rem 0.8rem;
   border-radius: 99px;
   pointer-events: none;
+}
+
+/* ─── Native <video> hidden while YouTube iframe owns playback (B6) ── */
+[data-f8-player][data-theme="minimal"] video[data-f8-player-yt-hidden] {
+  visibility: hidden;
+}
+
+/* ─── Reduced motion — disable transitions + animations (C6) ─── */
+@media (prefers-reduced-motion: reduce) {
+  [data-f8-player][data-theme="minimal"] *,
+  [data-f8-player][data-theme="minimal"] *::before,
+  [data-f8-player][data-theme="minimal"] *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+/* ─── Mobile / coarse-pointer — ≥ 44px + always-visible thumb/controls (B3) ─── */
+@media (pointer: coarse), (max-width: 48rem) {
+  [data-f8-player][data-theme="minimal"] {
+    --f8p-btn-size: 4.4rem;
+  }
+  [data-f8-player][data-theme="minimal"] [data-f8-player-control="seek-bar"]::-webkit-slider-thumb {
+    opacity: 1;
+    width: 1.6rem;
+    height: 1.6rem;
+  }
+  /* :hover is broken on touch — always show the controls overlay. */
+  [data-f8-player][data-theme="minimal"] [data-f8-player-controls] {
+    opacity: 1;
+  }
 }

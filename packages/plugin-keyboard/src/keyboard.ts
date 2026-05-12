@@ -65,9 +65,22 @@ export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): Plugi
 
       const handler = (e: KeyboardEvent): void => {
         if (!enabled) return;
-        // Ignore when focus is inside an interactive element.
-        const tag = (e.target as Element | null)?.tagName?.toLowerCase();
+        // Ignore when focus is inside an interactive element. Beyond
+        // form controls we also need to skip:
+        //   - `contenteditable` regions (rich-text editors, comments,
+        //     quiz overlays) — without this the user typing Space
+        //     toggles play/pause from inside their text composer (A7).
+        //   - IME composition (`isComposing` / keyCode 229) — Vietnamese,
+        //     Japanese, Korean, Chinese input methods send keystrokes
+        //     through a composition session that should NEVER trigger
+        //     player commands (A7).
+        //   - Elements with `role="textbox"` (custom inputs).
+        const target = e.target as (Element & { isContentEditable?: boolean }) | null;
+        const tag = target?.tagName?.toLowerCase();
         if (tag === "input" || tag === "textarea" || tag === "select") return;
+        if (target?.isContentEditable) return;
+        if (target?.getAttribute?.("role") === "textbox") return;
+        if (e.isComposing || e.keyCode === 229) return;
 
         const state = player.getState();
 
@@ -128,24 +141,32 @@ export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): Plugi
         }
       };
 
-      let target: Element | Document | null = null;
+      // Track every element we've attached to so install/uninstall stays
+      // correct even if `keyboard:installOnContainer` is called multiple
+      // times or the same plugin handles both an initial container and a
+      // later one (modal opens, then closes, then opens again — A6).
+      const attached: Set<Element | Document> = new Set();
+      const attach = (el: Element | Document): void => {
+        if (attached.has(el)) return;
+        attached.add(el);
+        (el as HTMLElement | Document).addEventListener("keydown", handler as EventListener);
+      };
 
       if (scope === "global") {
-        target = document;
-        document.addEventListener("keydown", handler as EventListener);
+        attach(document);
       } else {
-        // container scope — attach lazily once we know the container
-        const container = getContainer?.() ?? (player.getState().source ? null : null); // placeholder
-        if (container) {
-          target = container;
-          (container as HTMLElement).addEventListener("keydown", handler as EventListener);
-        }
-        // Also register via the command so the adapter can call install() after mount.
+        // container scope — try the user-provided getContainer first. If
+        // it returns null we wait for the consumer to call
+        // `keyboard:installOnContainer` after mount. Previously this
+        // branch contained a `(player.getState().source ? null : null)`
+        // placeholder that ALWAYS evaluated to null, so the listener was
+        // never attached even when getContainer was provided (A6).
+        const initial = getContainer?.() ?? null;
+        if (initial) attach(initial);
+
+        // Also register via the command so adapters can install after mount.
         host.commands.add("keyboard:installOnContainer", (el: unknown) => {
-          if (el instanceof Element) {
-            target = el;
-            (el as HTMLElement).addEventListener("keydown", handler as EventListener);
-          }
+          if (el instanceof Element) attach(el);
         });
       }
 
@@ -160,12 +181,14 @@ export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): Plugi
       });
 
       return () => {
-        if (target) {
-          (target as HTMLElement | Document).removeEventListener(
-            "keydown",
-            handler as EventListener,
-          );
+        for (const el of attached) {
+          try {
+            (el as HTMLElement | Document).removeEventListener("keydown", handler as EventListener);
+          } catch {
+            // ignore — element may have been removed from the DOM
+          }
         }
+        attached.clear();
       };
     },
   };

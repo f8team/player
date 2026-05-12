@@ -211,6 +211,115 @@ describe("createKeyboardPlugin", () => {
     );
   });
 
+  it("container scope honors getContainer() factory at setup time (A6)", () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const player = makePlayer();
+    const plugin = createKeyboardPlugin({
+      scope: "container",
+      getContainer: () => container,
+    });
+    plugin.setup(player, makeHost());
+
+    const ev = new KeyboardEvent("keydown", { key: " ", bubbles: true });
+    Object.defineProperty(ev, "target", { value: container, configurable: true });
+    container.dispatchEvent(ev);
+    expect(player.play).toHaveBeenCalled();
+
+    document.body.removeChild(container);
+  });
+
+  it("container scope: installOnContainer does not double-attach the same element (A6)", () => {
+    const container = document.createElement("div");
+    document.body.appendChild(container);
+    const player = makePlayer();
+
+    type CommandHandler = (...args: unknown[]) => void;
+    const commands = new Map<string, CommandHandler>();
+    const host = {
+      controls: { contribute: vi.fn().mockReturnValue(() => undefined) },
+      commands: {
+        add: vi.fn((name: string, fn: CommandHandler) => {
+          commands.set(name, fn);
+          return () => commands.delete(name);
+        }),
+        run: vi.fn(),
+        has: vi.fn().mockReturnValue(false),
+      },
+      store: {
+        getState: vi.fn(),
+        subscribe: vi.fn().mockReturnValue(() => undefined),
+      },
+      emit: vi.fn(),
+    } as unknown as PluginHost;
+
+    createKeyboardPlugin({ scope: "container" }).setup(player, host);
+    const install = commands.get("keyboard:installOnContainer");
+    install?.(container);
+    install?.(container); // second install — should be a no-op
+
+    const ev = new KeyboardEvent("keydown", { key: " ", bubbles: true });
+    Object.defineProperty(ev, "target", { value: container, configurable: true });
+    container.dispatchEvent(ev);
+    // play should fire exactly once, not twice (no double-listener leak).
+    expect(player.play).toHaveBeenCalledTimes(1);
+
+    document.body.removeChild(container);
+  });
+
+  it("ignores keys while a contenteditable region is focused (A7)", () => {
+    const editable = document.createElement("div");
+    editable.contentEditable = "true";
+    // jsdom does not compute `isContentEditable` from the attribute, so we
+    // pin it explicitly to match real browser behavior.
+    Object.defineProperty(editable, "isContentEditable", {
+      value: true,
+      configurable: true,
+    });
+    document.body.appendChild(editable);
+    const player = makePlayer();
+    createKeyboardPlugin().setup(player, makeHost());
+
+    const ev = new KeyboardEvent("keydown", { key: " ", bubbles: true });
+    Object.defineProperty(ev, "target", { value: editable, configurable: true });
+    document.dispatchEvent(ev);
+    expect(player.play).not.toHaveBeenCalled();
+
+    document.body.removeChild(editable);
+  });
+
+  it("ignores keys with role=textbox (A7)", () => {
+    const fakeInput = document.createElement("div");
+    fakeInput.setAttribute("role", "textbox");
+    document.body.appendChild(fakeInput);
+    const player = makePlayer();
+    createKeyboardPlugin().setup(player, makeHost());
+
+    const ev = new KeyboardEvent("keydown", { key: " ", bubbles: true });
+    Object.defineProperty(ev, "target", { value: fakeInput, configurable: true });
+    document.dispatchEvent(ev);
+    expect(player.play).not.toHaveBeenCalled();
+
+    document.body.removeChild(fakeInput);
+  });
+
+  it("ignores keys during IME composition (A7)", () => {
+    const player = makePlayer();
+    createKeyboardPlugin().setup(player, makeHost());
+
+    // isComposing flag (modern browsers).
+    const ev1 = new KeyboardEvent("keydown", { key: " ", bubbles: true });
+    Object.defineProperty(ev1, "isComposing", { value: true, configurable: true });
+    document.dispatchEvent(ev1);
+    expect(player.play).not.toHaveBeenCalled();
+
+    // keyCode 229 fallback (older Safari / Korean IME).
+    const ev2 = new KeyboardEvent("keydown", { key: " ", bubbles: true });
+    Object.defineProperty(ev2, "keyCode", { value: 229, configurable: true });
+    document.dispatchEvent(ev2);
+    expect(player.play).not.toHaveBeenCalled();
+  });
+
   describe("keyboard:disable / keyboard:enable commands", () => {
     type CommandHandler = (...args: unknown[]) => void;
 

@@ -27,13 +27,13 @@ afterAll(() => {
 describe("<Pip>", () => {
   it("renders a PiP toggle button with correct aria-label when not in PiP", () => {
     renderWithPlayer(<Pip />, { initialState: { pip: false } });
-    const btn = screen.getByRole("button", { name: "Hình trong hình" });
+    const btn = screen.getByRole("button", { name: "Picture-in-picture" });
     expect(btn.getAttribute("aria-pressed")).toBe("false");
   });
 
-  it("shows 'Thoát chế độ hình trong hình' when PiP is active", () => {
+  it("shows 'Exit picture-in-picture' when PiP is active", () => {
     renderWithPlayer(<Pip />, { initialState: { pip: true } });
-    const btn = screen.getByRole("button", { name: "Thoát chế độ hình trong hình" });
+    const btn = screen.getByRole("button", { name: "Exit picture-in-picture" });
     expect(btn.getAttribute("aria-pressed")).toBe("true");
   });
 

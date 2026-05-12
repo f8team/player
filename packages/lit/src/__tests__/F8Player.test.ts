@@ -204,7 +204,9 @@ describe("<f8-player> default controls", () => {
     expect(el.getAttribute("data-theme")).toBe("classroom");
     expect(el.hasAttribute("data-controls-visible")).toBe(true);
     expect(el.querySelector("[data-f8-player-controls]")).toBeTruthy();
-    expect(el.querySelector('[data-f8-player-control="play-pause"]')?.textContent?.trim()).toBe("⏸");
+    expect(el.querySelector('[data-f8-player-control="play-pause"]')?.textContent?.trim()).toBe(
+      "⏸",
+    );
     expect(el.querySelector('[data-f8-player-control="seek-bar"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="quality"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="playback-rate"]')).toBeTruthy();
@@ -256,7 +258,9 @@ describe("<f8-player> default controls", () => {
     rate.dispatchEvent(new Event("change", { bubbles: true }));
     expect(mockPlayer.setPlaybackRate).toHaveBeenCalledWith(1.5);
 
-    const fullscreen = el.querySelector<HTMLButtonElement>('[data-f8-player-control="fullscreen"]')!;
+    const fullscreen = el.querySelector<HTMLButtonElement>(
+      '[data-f8-player-control="fullscreen"]',
+    )!;
     fullscreen.click();
     expect(mockPlayer.commands.run).toHaveBeenCalledWith("fullscreen:toggle");
   });

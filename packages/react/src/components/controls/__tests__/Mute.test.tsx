@@ -6,15 +6,15 @@ import { renderWithPlayer } from "../../../test-utils/renderWithPlayer.js";
 import { Mute } from "../Mute.js";
 
 describe("<Mute>", () => {
-  it("shows 'Tắt tiếng' when not muted", () => {
+  it("shows 'Mute' when not muted", () => {
     renderWithPlayer(<Mute />, { initialState: { muted: false } });
-    const btn = screen.getByRole("button", { name: "Tắt tiếng" });
+    const btn = screen.getByRole("button", { name: "Mute" });
     expect(btn.getAttribute("aria-pressed")).toBe("false");
   });
 
-  it("shows 'Bật tiếng' when muted", () => {
+  it("shows 'Unmute' when muted", () => {
     renderWithPlayer(<Mute />, { initialState: { muted: true } });
-    const btn = screen.getByRole("button", { name: "Bật tiếng" });
+    const btn = screen.getByRole("button", { name: "Unmute" });
     expect(btn.getAttribute("aria-pressed")).toBe("true");
   });
 

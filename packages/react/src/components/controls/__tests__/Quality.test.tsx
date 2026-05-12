@@ -21,10 +21,10 @@ describe("<Quality>", () => {
     renderWithPlayer(<Quality />, {
       initialState: { qualities: QUALITIES, activeQuality: null },
     });
-    expect(screen.getByRole("combobox", { name: "Chất lượng video" })).toBeDefined();
+    expect(screen.getByRole("combobox", { name: "Quality" })).toBeDefined();
     expect(screen.getByText("360p")).toBeDefined();
     expect(screen.getByText("720p")).toBeDefined();
-    expect(screen.getByText("Tự động")).toBeDefined();
+    expect(screen.getByText("Auto")).toBeDefined();
   });
 
   it("selects 'auto' when activeQuality is null", () => {
@@ -46,7 +46,7 @@ describe("<Quality>", () => {
     );
   });
 
-  it("calls commands.run('hls-quality:setAuto') when 'Tự động' is chosen", async () => {
+  it("calls commands.run('hls-quality:setAuto') when 'Auto' is chosen", async () => {
     const { player } = renderWithPlayer(<Quality />, {
       initialState: { qualities: QUALITIES, activeQuality: QUALITIES[0] },
     });

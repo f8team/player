@@ -1,5 +1,7 @@
 import { type ComponentPropsWithoutRef } from "react";
 
+import { useLabels } from "../../i18n.js";
+
 export type ControlsBarProps = ComponentPropsWithoutRef<"div">;
 
 /**
@@ -8,12 +10,22 @@ export type ControlsBarProps = ComponentPropsWithoutRef<"div">;
  *
  * Place inside `<Player.Root>` alongside `<Player.Video>`. The children are
  * your control atoms (`<Player.Controls.PlayPause>`, etc.).
+ *
+ * ARIA: `role="toolbar"`, `aria-label` reads `labels.controlsBar`. Pass a
+ * custom `aria-label` prop to override per-instance.
  */
-export function Bar({ children, className, style, ...rest }: ControlsBarProps): JSX.Element {
+export function Bar({
+  children,
+  className,
+  style,
+  "aria-label": ariaLabel,
+  ...rest
+}: ControlsBarProps): JSX.Element {
+  const labels = useLabels();
   return (
     <div
       role="toolbar"
-      aria-label="Điều khiển video"
+      aria-label={ariaLabel ?? labels.controlsBar}
       className={className}
       style={style}
       data-f8-player-controls=""

@@ -48,6 +48,22 @@ export interface YouTubeProviderOptions {
   onStateChange?: (state: "playing" | "paused" | "ended" | "buffering" | "ready") => void;
   /** Surface load errors to the core. */
   onError?: (error: { message: string; cause?: unknown }) => void;
+  /**
+   * Bridge YouTube's polled `getCurrentTime()` value back into the core
+   * store / event bus. Without this callback, seek bars and time-aware
+   * plugins (markers, resume-position, analytics) would never tick on
+   * YouTube sources (A3 in the 2026-05-12 review).
+   */
+  onTimeUpdate?: (currentTime: number) => void;
+  /**
+   * Bridge YouTube's `getDuration()` once the player is ready. Fires once
+   * per attach.
+   */
+  onDuration?: (duration: number) => void;
+  /**
+   * Polling interval for the time bridge in milliseconds. Defaults to 250.
+   */
+  timeBridgeIntervalMs?: number;
 }
 
 const YT_SCRIPT_SRC = "https://www.youtube.com/iframe_api";
@@ -96,17 +112,30 @@ export function extractYouTubeId(url: string): string | null {
   return m?.[1] ?? null;
 }
 
+/**
+ * Marker attribute applied to the underlying `<video>` element while the
+ * YouTube iframe owns playback. CSS theme contracts hide the native element
+ * via `[data-f8-player-yt-hidden] { visibility: hidden; }` (B6 — replaces
+ * the inline-style mutation that fought host CSS).
+ */
+const YT_HIDDEN_ATTR = "data-f8-player-yt-hidden";
+
+let staticParentWarned = false;
+
 class YouTubeLoader implements SourceLoader {
   private yt: YouTubePlayerInstance | null = null;
   private video: HTMLVideoElement | null = null;
   private host: HTMLElement | null = null;
   private timeIntervalId: ReturnType<typeof setInterval> | null = null;
-  private currentTime = 0;
+  private duration = 0;
+  private rejectAttach: ((err: Error) => void) | null = null;
+  private aborted = false;
 
   constructor(private readonly options: YouTubeProviderOptions) {}
 
   async attach(video: HTMLVideoElement, source: SourceDescriptor): Promise<void> {
     this.detach();
+    this.aborted = false;
     const id = extractYouTubeId(source.src);
     if (!id) {
       throw new Error(`Cannot extract YouTube videoId from "${source.src}"`);
@@ -114,11 +143,37 @@ class YouTubeLoader implements SourceLoader {
     this.video = video;
 
     const YT = await (this.options.loadRuntime ?? defaultLoad)();
+    if (this.aborted) {
+      throw makeYtAbortError();
+    }
 
     const parent = video.parentElement;
     if (!parent) {
       throw new Error("YouTube source provider requires <video> to be attached to the DOM");
     }
+
+    // The YouTube iframe relies on `position: absolute; inset: 0` on the
+    // host, which only works when an ancestor is a positioned offsetParent.
+    // Warn (once per page) so consumers know to set `position: relative` on
+    // the player container (B6 part 2).
+    /* c8 ignore start — getComputedStyle is a no-op in jsdom for parents that aren't styled */
+    if (typeof window !== "undefined" && !staticParentWarned) {
+      try {
+        const computed = window.getComputedStyle(parent).position;
+        if (computed === "static") {
+          staticParentWarned = true;
+          console.warn(
+            "[@f8/player-core] YouTube source: <video>'s parent has `position: static`. " +
+              "Set the player container to `position: relative` (or absolute/fixed) so " +
+              "the YouTube iframe can fill the stage.",
+          );
+        }
+      } catch {
+        // ignore — happens in non-browser test environments
+      }
+    }
+    /* c8 ignore stop */
+
     const host = document.createElement("div");
     host.setAttribute("data-f8-player-yt-host", "");
     // The host must fill the stage absolutely so the YT iframe stretches to 100%.
@@ -127,10 +182,20 @@ class YouTubeLoader implements SourceLoader {
     parent.appendChild(host);
     this.host = host;
 
-    // Hide the underlying <video> while YT owns playback.
-    video.style.visibility = "hidden";
+    // Hide the underlying <video> via a data attribute instead of inline
+    // style — host CSS owns the actual `visibility` rule. This avoids
+    // fighting the host's CSS transitions / dark-mode overrides (B6).
+    video.setAttribute(YT_HIDDEN_ATTR, "");
 
     return new Promise<void>((resolve, reject) => {
+      this.rejectAttach = reject;
+      let settled = false;
+      const settle = (run: () => void): void => {
+        if (settled) return;
+        settled = true;
+        run();
+      };
+
       try {
         this.yt = new YT.Player(host, {
           videoId: id,
@@ -152,9 +217,17 @@ class YouTubeLoader implements SourceLoader {
               if (iframe) {
                 iframe.style.cssText = "width:100%;height:100%;border:none;display:block;";
               }
+              try {
+                this.duration = this.yt?.getDuration() ?? 0;
+                if (this.duration > 0) {
+                  this.options.onDuration?.(this.duration);
+                }
+              } catch {
+                // ignore
+              }
               this.startTimeBridge();
               this.options.onStateChange?.("ready");
-              resolve();
+              settle(() => resolve());
             },
             onStateChange: ({ data }) => {
               switch (data) {
@@ -177,17 +250,26 @@ class YouTubeLoader implements SourceLoader {
             onError: ({ data }) => {
               const err = { message: `YouTube error code=${data}`, cause: { code: data } };
               this.options.onError?.(err);
-              reject(new Error(err.message));
+              settle(() => reject(new Error(err.message)));
             },
           },
         });
       } catch (err) {
-        reject(err);
+        settle(() => reject(err instanceof Error ? err : new Error(String(err))));
       }
     });
   }
 
+  abort(): void {
+    if (this.aborted) return;
+    this.aborted = true;
+    const reject = this.rejectAttach;
+    this.rejectAttach = null;
+    reject?.(makeYtAbortError());
+  }
+
   detach(): void {
+    this.abort();
     if (this.timeIntervalId !== null) {
       clearInterval(this.timeIntervalId);
       this.timeIntervalId = null;
@@ -209,28 +291,44 @@ class YouTubeLoader implements SourceLoader {
     }
     this.host = null;
     if (this.video) {
-      this.video.style.visibility = "";
+      this.video.removeAttribute(YT_HIDDEN_ATTR);
       this.video = null;
     }
-    this.currentTime = 0;
+    this.duration = 0;
+    this.aborted = false;
   }
 
   private startTimeBridge(): void {
     if (this.timeIntervalId !== null) return;
+    const interval = this.options.timeBridgeIntervalMs ?? 250;
     this.timeIntervalId = setInterval(() => {
       if (!this.yt) return;
       try {
-        this.currentTime = this.yt.getCurrentTime();
+        const currentTime = this.yt.getCurrentTime();
+        this.options.onTimeUpdate?.(currentTime);
+        // Cache duration in case it became known after onReady (rare but
+        // possible for live YouTube streams).
+        const duration = this.yt.getDuration();
+        if (duration > 0 && duration !== this.duration) {
+          this.duration = duration;
+          this.options.onDuration?.(duration);
+        }
       } catch {
         // ignore
       }
-    }, 250);
+    }, interval);
   }
 
   /** @internal */
   _instance(): YouTubePlayerInstance | null {
     return this.yt;
   }
+}
+
+function makeYtAbortError(): Error {
+  const err = new Error("YouTube loader aborted");
+  err.name = "AbortError";
+  return err;
 }
 
 /**

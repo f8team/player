@@ -6,15 +6,15 @@ import { renderWithPlayer } from "../../../test-utils/renderWithPlayer.js";
 import { PlaybackRate } from "../PlaybackRate.js";
 
 describe("<PlaybackRate>", () => {
-  it("renders a select with aria-label='Tốc độ phát'", () => {
+  it("renders a select with aria-label='Playback speed'", () => {
     renderWithPlayer(<PlaybackRate />, { initialState: { playbackRate: 1 } });
-    expect(screen.getByRole("combobox", { name: "Tốc độ phát" })).toBeDefined();
+    expect(screen.getByRole("combobox", { name: "Playback speed" })).toBeDefined();
   });
 
-  it("shows 'Bình thường' for rate 1", () => {
+  it("shows '1×' for rate 1", () => {
     renderWithPlayer(<PlaybackRate />, { initialState: { playbackRate: 1 } });
     expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe("1");
-    expect(screen.getByText("Bình thường")).toBeDefined();
+    expect(screen.getByText("1×")).toBeDefined();
   });
 
   it("calls player.setPlaybackRate on change", async () => {

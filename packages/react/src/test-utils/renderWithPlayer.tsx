@@ -3,12 +3,18 @@ import { render, type RenderResult } from "@testing-library/react";
 import { type ReactNode } from "react";
 
 import { PlayerContext, type PlayerContextValue } from "../context/PlayerContext.js";
+import { LabelsProvider, type PlayerLabels } from "../i18n.js";
 
 import { makeMockPlayer } from "./mockPlayer.js";
 
 export interface RenderWithPlayerOptions {
   initialState?: Partial<PlayerState>;
   player?: Player;
+  /**
+   * Override the label context for tests that need to assert localized
+   * output. Defaults to English (LabelsProvider with `labels=undefined`).
+   */
+  labels?: Partial<PlayerLabels>;
 }
 
 export interface RenderWithPlayerResult extends RenderResult {
@@ -22,7 +28,7 @@ export interface RenderWithPlayerResult extends RenderResult {
  */
 export function renderWithPlayer(
   ui: ReactNode,
-  { initialState = {}, player: externalPlayer }: RenderWithPlayerOptions = {},
+  { initialState = {}, player: externalPlayer, labels }: RenderWithPlayerOptions = {},
 ): RenderWithPlayerResult {
   const { player, mockSetState } = externalPlayer
     ? { player: externalPlayer, mockSetState: () => undefined }
@@ -33,7 +39,11 @@ export function renderWithPlayer(
     options: {},
   };
 
-  const result = render(<PlayerContext.Provider value={ctx}>{ui}</PlayerContext.Provider>);
+  const result = render(
+    <PlayerContext.Provider value={ctx}>
+      <LabelsProvider labels={labels}>{ui}</LabelsProvider>
+    </PlayerContext.Provider>,
+  );
 
   return { ...result, player, mockSetState };
 }

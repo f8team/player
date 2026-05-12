@@ -2,6 +2,7 @@ import { type ChangeEvent, type ComponentPropsWithoutRef } from "react";
 
 import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
+import { useLabels } from "../../i18n.js";
 
 export type VolumeProps = Omit<
   ComponentPropsWithoutRef<"input">,
@@ -11,10 +12,11 @@ export type VolumeProps = Omit<
 /**
  * `<Player.Controls.Volume>` — range slider controlling the volume on [0, 1].
  *
- * ARIA: `role="slider"` with `aria-valuenow`, `aria-label`.
+ * ARIA: `role="slider"` with `aria-valuenow`, `aria-label` from `labels.volume`.
  */
 export function Volume(props: VolumeProps): JSX.Element {
   const player = usePlayer();
+  const labels = useLabels();
   const volume = usePlayerState((s) => s.volume);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>): void => {
@@ -31,7 +33,7 @@ export function Volume(props: VolumeProps): JSX.Element {
       value={volume}
       onChange={handleChange}
       role="slider"
-      aria-label="Âm lượng"
+      aria-label={labels.volume}
       aria-valuenow={volume}
       aria-valuemin={0}
       aria-valuemax={1}

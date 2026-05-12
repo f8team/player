@@ -25,20 +25,25 @@ function makePlayer(
     currentTime?: number;
     duration?: number;
     src?: string;
+    status?: "idle" | "loading" | "ready" | "playing" | "paused" | "ended" | "error";
+    source?: { src: string } | null;
   } = {},
 ) {
   const {
     currentTime = 30,
     duration = 100,
     src = "https://cdn.example.com/video.m3u8",
+    status = "idle" as const,
+    source,
   } = overrides;
+  const effectiveSource = source !== undefined ? source : { src };
   const handlers: Partial<{ [K in keyof PlayerEvents]: Handler<K>[] }> = {};
   const state = { currentTime, duration };
 
   const player = {
     getState: () => ({
-      status: "idle" as const,
-      source: { src },
+      status,
+      source: effectiveSource,
       currentTime: state.currentTime,
       duration: state.duration,
       buffered: [],
@@ -53,7 +58,7 @@ function makePlayer(
       activeQuality: null,
       error: null,
     }),
-    getSource: () => ({ src }),
+    getSource: () => effectiveSource,
     on: vi
       .fn()
       .mockImplementation(<K extends keyof PlayerEvents>(event: K, handler: Handler<K>) => {
@@ -170,5 +175,149 @@ describe("createResumePositionPlugin", () => {
     teardown?.();
     player.fire("pause", undefined);
     expect(storage._data.size).toBe(0);
+  });
+
+  it("saves position on pagehide / visibilitychange (iOS Safari) (A8)", () => {
+    const storage = makeStorage();
+    const player = makePlayer({ currentTime: 55, duration: 100 });
+    createResumePositionPlugin({ storage }).setup(player as unknown as Player, makeHost());
+
+    // pagehide is fired by iOS Safari when the user swipes the tab away.
+    window.dispatchEvent(new Event("pagehide"));
+    expect(storage._data.get("https://cdn.example.com/video.m3u8")).toBe(55);
+
+    storage._data.clear();
+
+    // visibilitychange with state=hidden also persists.
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "hidden",
+    });
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(storage._data.get("https://cdn.example.com/video.m3u8")).toBe(55);
+
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "visible",
+    });
+  });
+
+  it("periodically saves while playing (A8)", () => {
+    vi.useFakeTimers();
+    try {
+      const storage = makeStorage();
+      const player = makePlayer({ currentTime: 42, duration: 100 });
+      createResumePositionPlugin({ storage, saveIntervalMs: 1_000 }).setup(
+        player as unknown as Player,
+        makeHost(),
+      );
+
+      // Periodic save only runs after "play" fires.
+      player.fire("play", undefined);
+      vi.advanceTimersByTime(2_500);
+      expect(storage._data.get("https://cdn.example.com/video.m3u8")).toBe(42);
+
+      // Pause stops the interval — no more writes while paused.
+      storage._data.clear();
+      player.fire("pause", undefined);
+      vi.advanceTimersByTime(5_000);
+      // Only the synchronous "pause" save counts, not interval ticks.
+      expect(storage._data.get("https://cdn.example.com/video.m3u8")).toBe(42);
+      const beforeAdvance = storage._data.get("https://cdn.example.com/video.m3u8");
+      vi.advanceTimersByTime(5_000);
+      expect(storage._data.get("https://cdn.example.com/video.m3u8")).toBe(beforeAdvance);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("saveIntervalMs=0 disables periodic saves (A8)", () => {
+    vi.useFakeTimers();
+    try {
+      const storage = makeStorage();
+      const player = makePlayer({ currentTime: 10, duration: 100 });
+      createResumePositionPlugin({ storage, saveIntervalMs: 0 }).setup(
+        player as unknown as Player,
+        makeHost(),
+      );
+      player.fire("play", undefined);
+      vi.advanceTimersByTime(60_000);
+      expect(storage._data.size).toBe(0);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("seeks immediately when registered after the player is ready (A9)", () => {
+    const storage = makeStorage();
+    storage.set("https://cdn.example.com/video.m3u8", 25);
+    const player = makePlayer({ status: "ready" });
+    createResumePositionPlugin({ storage }).setup(player as unknown as Player, makeHost());
+    // No "ready" event was fired — we mounted after the transition.
+    expect(player.seekTo).toHaveBeenCalledWith(25);
+  });
+
+  it("seeks immediately when registered after playing/paused/ended status (A9)", () => {
+    for (const status of ["playing", "paused", "ended"] as const) {
+      const storage = makeStorage();
+      storage.set("https://cdn.example.com/video.m3u8", 17);
+      const player = makePlayer({ status });
+      createResumePositionPlugin({ storage }).setup(player as unknown as Player, makeHost());
+      expect(player.seekTo).toHaveBeenCalledWith(17);
+    }
+  });
+
+  it("uses keyFn instead of source.src when provided (C4)", () => {
+    const storage = makeStorage();
+    storage.set("course:42:lesson:7", 88);
+
+    // Simulate a signed S3 URL that changes between requests.
+    const player = makePlayer({
+      src: "https://cdn.example.com/video.m3u8?Expires=1234&Signature=abc",
+      status: "ready",
+    });
+
+    createResumePositionPlugin({
+      storage,
+      keyFn: () => "course:42:lesson:7",
+    }).setup(player as unknown as Player, makeHost());
+
+    expect(player.seekTo).toHaveBeenCalledWith(88);
+  });
+
+  it("keyFn returning null disables persistence for that source (C4)", () => {
+    const storage = makeStorage();
+    const player = makePlayer({ currentTime: 50, duration: 100 });
+    createResumePositionPlugin({
+      storage,
+      keyFn: () => null,
+    }).setup(player as unknown as Player, makeHost());
+
+    player.fire("pause", undefined);
+    expect(storage._data.size).toBe(0);
+  });
+
+  it("teardown removes window + document listeners (A8)", () => {
+    const storage = makeStorage();
+    const player = makePlayer({ currentTime: 20, duration: 100 });
+    const teardown = createResumePositionPlugin({ storage }).setup(
+      player as unknown as Player,
+      makeHost(),
+    );
+    teardown?.();
+
+    // After teardown, neither pagehide nor visibilitychange should write.
+    window.dispatchEvent(new Event("pagehide"));
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "hidden",
+    });
+    document.dispatchEvent(new Event("visibilitychange"));
+    expect(storage._data.size).toBe(0);
+
+    Object.defineProperty(document, "visibilityState", {
+      configurable: true,
+      value: "visible",
+    });
   });
 });
