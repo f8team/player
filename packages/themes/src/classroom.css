@@ -194,6 +194,11 @@
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-bar"] {
   -webkit-appearance: none;
   appearance: none;
+  /* Lit default controls omit React SeekBar inline width — match @f8/player-react mergedInputStyle. */
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  z-index: 1;
   height: 1.8rem;
   background: transparent;
   cursor: pointer;
