@@ -186,6 +186,32 @@
   width: var(--f8p-volume-width);
 }
 
+/* ─── Select controls (quality / speed) ──────────────────────────────────── */
+[data-f8-player][data-theme="classroom"] .f8p-select,
+.f8-player-classroom .f8p-select {
+  height: var(--f8p-btn-size);
+  border: none;
+  border-radius: var(--f8p-radius);
+  background: rgba(255,255,255,.12);
+  color: var(--f8p-text);
+  font: inherit;
+  font-size: 1.2rem;
+  padding: 0 0.8rem;
+  cursor: pointer;
+  outline: none;
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-select:hover,
+.f8-player-classroom .f8p-select:hover {
+  background: rgba(255,255,255,.18);
+}
+
+[data-f8-player][data-theme="classroom"] .f8p-select:focus-visible,
+.f8-player-classroom .f8p-select:focus-visible {
+  outline: 2px solid var(--f8p-accent);
+  outline-offset: 2px;
+}
+
 /* ─── Watermark ──────────────────────────────────────────────────────────── */
 [data-f8-player][data-theme="classroom"] .f8-watermark,
 .f8-player-classroom .f8-watermark {

@@ -1,0 +1,18 @@
+[
+  {
+    "name": "@f8/player-lit adapter only (gzip)",
+    "path": "dist/index.js",
+    "import": "*",
+    "ignore": ["@f8/player-core", "lit"],
+    "limit": "4 KB",
+    "gzip": true
+  },
+  {
+    "name": "@f8/player-lit adapter hard cap (gzip)",
+    "path": "dist/index.js",
+    "import": "*",
+    "ignore": ["@f8/player-core", "lit"],
+    "limit": "5 KB",
+    "gzip": true
+  }
+]

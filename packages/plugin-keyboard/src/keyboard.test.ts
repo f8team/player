@@ -210,4 +210,77 @@ describe("createKeyboardPlugin", () => {
       expect.any(Function),
     );
   });
+
+  describe("keyboard:disable / keyboard:enable commands", () => {
+    type CommandHandler = (...args: unknown[]) => void;
+
+    function setupCapturingHost(): { host: PluginHost; commands: Map<string, CommandHandler> } {
+      const commands = new Map<string, CommandHandler>();
+      const host = {
+        controls: { contribute: vi.fn().mockReturnValue(() => undefined) },
+        commands: {
+          add: vi.fn((name: string, fn: CommandHandler) => {
+            commands.set(name, fn);
+            return () => commands.delete(name);
+          }),
+          run: vi.fn(),
+          has: vi.fn().mockReturnValue(false),
+        },
+        store: {
+          getState: vi.fn(),
+          subscribe: vi.fn().mockReturnValue(() => undefined),
+        },
+        emit: vi.fn(),
+      } as unknown as PluginHost;
+      return { host, commands };
+    }
+
+    it("registers both commands on global scope", () => {
+      const player = makePlayer();
+      const { host, commands } = setupCapturingHost();
+      createKeyboardPlugin().setup(player, host);
+      expect(commands.has("keyboard:disable")).toBe(true);
+      expect(commands.has("keyboard:enable")).toBe(true);
+    });
+
+    it("disable swallows the handler; enable restores it", () => {
+      const player = makePlayer();
+      const { host, commands } = setupCapturingHost();
+      createKeyboardPlugin().setup(player, host);
+
+      // Pre-disable — Space toggles play.
+      document.dispatchEvent(key(" "));
+      expect(player.play).toHaveBeenCalledTimes(1);
+
+      // Disable — Space is a no-op.
+      commands.get("keyboard:disable")?.();
+      document.dispatchEvent(key(" "));
+      expect(player.play).toHaveBeenCalledTimes(1);
+
+      // Enable — Space works again.
+      commands.get("keyboard:enable")?.();
+      document.dispatchEvent(key(" "));
+      expect(player.play).toHaveBeenCalledTimes(2);
+    });
+
+    it("disable also swallows arrow seek + volume + fullscreen/pip commands", () => {
+      const player = makePlayer();
+      const { host, commands } = setupCapturingHost();
+      createKeyboardPlugin().setup(player, host);
+      commands.get("keyboard:disable")?.();
+
+      document.dispatchEvent(key("ArrowLeft"));
+      document.dispatchEvent(key("ArrowRight"));
+      document.dispatchEvent(key("ArrowUp"));
+      document.dispatchEvent(key("ArrowDown"));
+      document.dispatchEvent(key("m"));
+      document.dispatchEvent(key("f"));
+      document.dispatchEvent(key("p"));
+
+      expect(player.seekTo).not.toHaveBeenCalled();
+      expect(player.setVolume).not.toHaveBeenCalled();
+      expect(player.setMuted).not.toHaveBeenCalled();
+      expect(host.commands.run).not.toHaveBeenCalled();
+    });
+  });
 });
