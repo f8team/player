@@ -616,13 +616,26 @@ export function createPlayer(
     if (!video) throw new Error("[@f8/player-core] cannot play: no <video> attached");
     if (!store.getState().source) throw new Error("[@f8/player-core] cannot play: no source set");
 
+    // In `error`, `dispatch({ type: "play" })` is intentionally a reducer noop — user
+    // Space/Play would appear dead. Replay the descriptor through the machine like `retry()`
+    // so we return to loading and defer until `ready`.
+    if (status === "error") {
+      pendingPlay = false;
+      if (!retry()) {
+        throw new Error("[@f8/player-core] cannot play: error state without replayable source");
+      }
+      // retry() transitioned to loading synchronously via dispatch.
+    }
+
     // Defer-play during loading: the state machine treats `play` as a noop
     // in `loading`, so a single user click would otherwise be lost while
     // HLS.js is still fetching the m3u8 manifest. Queue the intent and
     // re-dispatch on the next `ready` transition. Tied to attach lifecycle
     // via `attachDisposers` so detach/dispose cancels the queued play.
     if (status === "loading") {
-      if (pendingPlay) return;
+      if (pendingPlay) {
+        return;
+      }
       pendingPlay = true;
       const off = bus.on("ready", () => {
         off();
