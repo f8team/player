@@ -701,3 +701,56 @@ describe("<f8-player controls> native captions (textTracks fallback)", () => {
     expect(el.querySelector('[data-f8-player-control="captions"]')).toBeNull();
   });
 });
+
+describe("<f8-player> reactive source property (Phase 2 T2.5)", () => {
+  it("calls player.setSource() when the source property is set after mount", async () => {
+    const el = await mount({});
+    expect(mockPlayer.setSource).not.toHaveBeenCalled();
+
+    el.source = { src: "video1.m3u8" };
+    await el.updateComplete;
+    expect(mockPlayer.setSource).toHaveBeenCalledWith(
+      expect.objectContaining({ src: "video1.m3u8" }),
+    );
+
+    el.source = { src: "video2.m3u8" };
+    await el.updateComplete;
+    expect(mockPlayer.setSource).toHaveBeenCalledTimes(2);
+    expect(mockPlayer.setSource).toHaveBeenLastCalledWith(
+      expect.objectContaining({ src: "video2.m3u8" }),
+    );
+  });
+
+  it("is a no-op when reassigning a source with the same src string", async () => {
+    const el = await mount({});
+    const src = { src: "video.m3u8" };
+    el.source = src;
+    await el.updateComplete;
+    expect(mockPlayer.setSource).toHaveBeenCalledTimes(1);
+
+    // New object literal, identical src → must not retrigger setSource.
+    el.source = { src: "video.m3u8" };
+    await el.updateComplete;
+    expect(mockPlayer.setSource).toHaveBeenCalledTimes(1);
+
+    // Identity match → also no-op.
+    el.source = src;
+    await el.updateComplete;
+    expect(mockPlayer.setSource).toHaveBeenCalledTimes(1);
+  });
+
+  it("calls setSource when the descriptor changes via tracks identity", async () => {
+    const el = await mount({});
+    el.source = { src: "video.m3u8", tracks: [] };
+    await el.updateComplete;
+    expect(mockPlayer.setSource).toHaveBeenCalledTimes(1);
+
+    // Same src, but tracks array reference changed → counts as a change.
+    el.source = {
+      src: "video.m3u8",
+      tracks: [{ src: "vi.vtt", srcLang: "vi", label: "Tiếng Việt" }],
+    };
+    await el.updateComplete;
+    expect(mockPlayer.setSource).toHaveBeenCalledTimes(2);
+  });
+});

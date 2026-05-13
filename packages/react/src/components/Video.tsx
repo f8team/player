@@ -16,7 +16,7 @@ export type VideoProps = Omit<
  * forwarded. Source / playback props are managed by `createPlayer` options.
  */
 export function Video({ className, style, ...rest }: VideoProps): JSX.Element {
-  const { player } = usePlayerContext();
+  const { player, options, poster } = usePlayerContext();
   const ref = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
@@ -30,5 +30,18 @@ export function Video({ className, style, ...rest }: VideoProps): JSX.Element {
     };
   }, [player]);
 
-  return <video ref={ref} className={className} style={style} data-f8-player-video="" {...rest} />;
+  // Poster: prefer the reactive context value (driven by `<Root poster={...}>`
+  // in Phase 2); fall back to the once-on-mount `options.poster` seed.
+  const effectivePoster = poster ?? options.poster;
+
+  return (
+    <video
+      ref={ref}
+      className={className}
+      style={style}
+      data-f8-player-video=""
+      poster={effectivePoster}
+      {...rest}
+    />
+  );
 }

@@ -37,6 +37,12 @@ export type { VideoProps } from "./components/Video.js";
 
 export { Captions } from "./components/Captions.js";
 
+export { Spinner } from "./components/Spinner.js";
+export type { SpinnerProps } from "./components/Spinner.js";
+
+export { LightOverlay } from "./components/LightOverlay.js";
+export type { LightOverlayProps } from "./components/LightOverlay.js";
+
 export * as Controls from "./components/controls/index.js";
 
 // Hooks
@@ -44,6 +50,11 @@ export { usePlayer } from "./hooks/usePlayer.js";
 export { usePlayerEvent } from "./hooks/usePlayerEvent.js";
 export { usePlayerState } from "./hooks/usePlayerState.js";
 export { useSourceType } from "./hooks/useSourceType.js";
+export { usePluginCommand } from "./hooks/usePluginCommand.js";
+export {
+  useCallbackProps,
+  type PlayerCallbackProps,
+} from "./hooks/useCallbackProps.js";
 
 export { blurFocusInside } from "./dom/blurFocusInside.js";
 

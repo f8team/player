@@ -4,6 +4,12 @@ import { createContext, useContext } from "react";
 export interface PlayerContextValue {
   player: Player;
   options: PlayerOptions;
+  /**
+   * Reactive poster URL — driven by the `poster` prop on `<Root>`. Falls back
+   * to `options.poster` (the once-on-mount seed) when the prop is undefined.
+   * `<Video>` reads this and applies it to the underlying `<video poster>`.
+   */
+  poster?: string;
 }
 
 export const PlayerContext = createContext<PlayerContextValue | null>(null);

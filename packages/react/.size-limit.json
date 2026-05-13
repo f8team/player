@@ -4,7 +4,7 @@
     "path": "dist/index.js",
     "import": "*",
     "ignore": ["@f8/player-core", "react", "react-dom"],
-    "limit": "4 KB",
+    "limit": "12 KB",
     "gzip": true
   },
   {
@@ -12,7 +12,7 @@
     "path": "dist/index.js",
     "import": "*",
     "ignore": ["@f8/player-core", "react", "react-dom"],
-    "limit": "5 KB",
+    "limit": "13 KB",
     "gzip": true
   }
 ]

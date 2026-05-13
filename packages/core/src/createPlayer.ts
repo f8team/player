@@ -504,7 +504,17 @@ export function createPlayer(
       video.playsInline = true;
       video.setAttribute("webkit-playsinline", "");
     }
-    if (options.crossOrigin) video.crossOrigin = options.crossOrigin;
+    // T3.5: default `crossOrigin: "anonymous"`. Required for WebVTT subtitle
+    // tracks (G15) and HLS segment fetch with `withCredentials`. Consumers can
+    // override with an explicit `"use-credentials"` or `null`. Note the
+    // `in options` guard — `options.crossOrigin === null` is treated as
+    // "no attribute on the element" (matches the JSDoc semantics), and
+    // `undefined` falls through to the default.
+    if ("crossOrigin" in options) {
+      if (options.crossOrigin) video.crossOrigin = options.crossOrigin;
+    } else {
+      video.crossOrigin = "anonymous";
+    }
     if (options.loop) video.loop = true;
     initialOptionsApplied = true;
   }

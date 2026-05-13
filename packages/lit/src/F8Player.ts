@@ -6,8 +6,9 @@ import type {
   PlayerOptions,
   PlayerState,
   QualityLevel,
+  SourceDescriptor,
 } from "@f8/player-core";
-import { LitElement, html, css } from "lit";
+import { LitElement, html, css, type PropertyValues } from "lit";
 
 import { PlayerController } from "./PlayerController.js";
 
@@ -189,6 +190,16 @@ export class F8PlayerElement extends LitElement {
    * `createPlayer` options. Read once on `hostConnected`; subsequent changes
    * are ignored (same contract as `@f8/player-react`). Use the imperative
    * `raw.setSource(...)` / `raw.setPlaybackRate(...)` for reactive updates.
+   *
+   * @phase-2-target The following reactive properties will be added alongside
+   * `options` (non-breaking — options remain valid as the initial seed):
+   *   - `source?: SourceDescriptor | null` — @property({ attribute: false });
+   *     `updated()` diffs src + descriptor identity → setSource(). No-op on same value.
+   *   - `poster?: string` — forwarded to player setter on change.
+   *   - `playbackRate?: number` — forwarded to player.setPlaybackRate() on change.
+   *   - `volume?: number`, `muted?: boolean` — forwarded to respective setters.
+   * Custom events `f8-player:play`, `f8-player:pause`, … (already emitted) will be
+   * audited in Phase 2 T2.6 to confirm detail shape matches React callback contract.
    */
   options?: PlayerOptions;
 
@@ -226,6 +237,21 @@ export class F8PlayerElement extends LitElement {
    * Override this to isolate prefs when embedding multiple players on one page.
    */
   prefsKey = "f8-player:prefs";
+
+  /**
+   * Reactive source. When the property changes (by `src` string equality +
+   * descriptor identity), `controller.player.setSource(...)` is called via
+   * the `updated()` lifecycle. Same value → no-op (avoids HLS re-init).
+   *
+   * Wins over `options.source`; consumers may set `options` once for the
+   * initial seed and update `source` reactively for runtime swaps.
+   *
+   * Phase 2 (T2.5): replaces the consumer `_syncInnerSource()` boilerplate.
+   */
+  source: SourceDescriptor | null = null;
+
+  /** Tracks the last-applied source so `updated()` can diff and skip no-ops. */
+  private lastAppliedSource: SourceDescriptor | null | undefined = undefined;
 
   /** Reactive controller — owns the player lifecycle. */
   readonly controller = new PlayerController(this, () => this.options);
@@ -339,6 +365,7 @@ export class F8PlayerElement extends LitElement {
 
   static override properties = {
     options: { attribute: false },
+    source: { attribute: false },
     videoClass: { attribute: "video-class" },
     controls: { type: Boolean, reflect: true },
     theme: { type: String },
@@ -355,8 +382,35 @@ export class F8PlayerElement extends LitElement {
     this.syncHostChromeAttributes();
   }
 
-  protected override updated(): void {
+  protected override updated(_changed: PropertyValues<this>): void {
     this.syncHostChromeAttributes();
+    // ─── Reactive source diffing (Phase 2 T2.5) ───────────────────────
+    // Apply only when the consumer EXPLICITLY changed `source`. The initial
+    // mount from default `null` is intentionally skipped so consumers using
+    // `options.source` (legacy path) are not double-set with null.
+    if (!_changed.has("source")) return;
+    // Lit reports any property change including the initial `null` → `null`
+    // assignment. Skip when both prev and next are null AND we never applied
+    // a real source (lastApplied still undefined).
+    if (this.source === null && this.lastAppliedSource === undefined) return;
+    this.applyReactiveSource();
+  }
+
+  private applyReactiveSource(): void {
+    const next = this.source;
+    const prev = this.lastAppliedSource;
+    if (prev === next) return;
+    if (prev && next && prev.src === next.src && prev.tracks === next.tracks) {
+      this.lastAppliedSource = next;
+      return;
+    }
+    const player = this.controller.player;
+    if (!player) {
+      // Player not connected yet; will be applied when `firstUpdated` runs.
+      return;
+    }
+    this.lastAppliedSource = next;
+    player.setSource(next);
   }
 
   /** Render into light DOM — see class docstring. */

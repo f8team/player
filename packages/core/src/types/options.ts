@@ -64,7 +64,14 @@ export interface PlayerOptions {
   preload?: "auto" | "metadata" | "none";
   /** iOS inline playback (G2, G14). Defaults to `true`. */
   playsInline?: boolean;
-  /** `<video crossorigin>`. Defaults to `"anonymous"` when subtitle tracks exist (G15). */
+  /**
+   * `<video crossorigin>`. Defaults to `"anonymous"` (T3.5) so WebVTT tracks
+   * load with valid CORS, HLS segments can be fetched with `withCredentials`,
+   * and `<canvas drawImage(video)>` does not taint the canvas.
+   *
+   * Pass `null` explicitly to omit the attribute (rare — only for legacy
+   * embeds where the response lacks `Access-Control-Allow-Origin`).
+   */
   crossOrigin?: "anonymous" | "use-credentials" | null;
   /** Plugins to register synchronously at `createPlayer` time. */
   plugins?: PluginInstance[];

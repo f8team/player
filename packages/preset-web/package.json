@@ -25,6 +25,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
+    "size": "size-limit",
     "lint": "eslint src --max-warnings=0",
     "clean": "rm -rf dist coverage .turbo"
   },
@@ -36,8 +37,19 @@
     "@f8/player-plugin-keyboard": ">=0.0.0",
     "@f8/player-plugin-markers": ">=0.0.0",
     "@f8/player-plugin-pip": ">=0.0.0",
+    "@f8/player-plugin-prefs": ">=0.0.0",
     "@f8/player-plugin-subtitles": ">=0.0.0",
-    "@f8/player-plugin-thumbnails": ">=0.0.0"
+    "@f8/player-plugin-thumbnails": ">=0.0.0",
+    "@f8/player-react": ">=0.0.0",
+    "@f8/player-lit": ">=0.0.0",
+    "react": ">=18.0.0",
+    "lit": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@f8/player-react": { "optional": true },
+    "@f8/player-lit": { "optional": true },
+    "react": { "optional": true },
+    "lit": { "optional": true }
   },
   "devDependencies": {
     "@f8/player-core": "workspace:*",
@@ -47,11 +59,19 @@
     "@f8/player-plugin-keyboard": "workspace:*",
     "@f8/player-plugin-markers": "workspace:*",
     "@f8/player-plugin-pip": "workspace:*",
+    "@f8/player-plugin-prefs": "workspace:*",
     "@f8/player-plugin-subtitles": "workspace:*",
     "@f8/player-plugin-thumbnails": "workspace:*",
+    "@f8/player-react": "workspace:*",
+    "@f8/player-lit": "workspace:*",
+    "@types/react": "^18.3.5",
+    "react": "^18.3.1",
+    "lit": "^3.2.0",
     "eslint": "^9.11.1",
     "tsup": "^8.3.0",
     "typescript": "^5.6.2",
-    "vitest": "^4.1.6"
+    "vitest": "^4.1.6",
+    "@size-limit/preset-small-lib": "^11.0.0",
+    "size-limit": "^11.0.0"
   }
 }

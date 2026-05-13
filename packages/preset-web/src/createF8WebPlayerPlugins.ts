@@ -8,6 +8,8 @@ import { createKeyboardPlugin } from "@f8/player-plugin-keyboard";
 import type { MarkersPluginOptions } from "@f8/player-plugin-markers";
 import { createMarkersPlugin } from "@f8/player-plugin-markers";
 import { createPipPlugin } from "@f8/player-plugin-pip";
+import type { PrefsPluginOptions } from "@f8/player-plugin-prefs";
+import { createPrefsPlugin } from "@f8/player-plugin-prefs";
 import type { SubtitlesPluginOptions } from "@f8/player-plugin-subtitles";
 import { createSubtitlesPlugin } from "@f8/player-plugin-subtitles";
 import { createThumbnailsPlugin } from "@f8/player-plugin-thumbnails";
@@ -64,6 +66,19 @@ export interface F8WebPlayerPluginsOptions {
    * Pass `false` to omit entirely.
    */
   subtitles?: false | SubtitlesPluginOptions;
+
+  /**
+   * Persist user prefs (volume, muted, playbackRate, qualityHeight) to
+   * `localStorage` and restore them on `ready`. Default `{}` (enabled with
+   * default storage key `"f8-player:prefs"`).
+   *
+   * Pass `false` to opt out — typical when the consumer attaches its own
+   * pref manager (legacy `f8-pro-ui` `persistPrefs` flag handled the same
+   * concern at the outer custom element level).
+   *
+   * Phase 5 T5.1.
+   */
+  prefs?: false | PrefsPluginOptions;
 }
 
 /**
@@ -81,6 +96,7 @@ export function createF8WebPlayerPlugins(options: F8WebPlayerPluginsOptions): Pl
     thumbnails = "always",
     auth,
     subtitles,
+    prefs,
   } = options;
 
   const plugins: PluginInstance[] = [];
@@ -112,6 +128,12 @@ export function createF8WebPlayerPlugins(options: F8WebPlayerPluginsOptions): Pl
 
   if (thumbnails === "always") {
     plugins.push(createThumbnailsPlugin());
+  }
+
+  // Prefs comes LAST so its `ready`/`play` restore runs after subtitles/HLS
+  // quality plugins have registered their commands.
+  if (prefs !== false) {
+    plugins.push(createPrefsPlugin(prefs ?? {}));
   }
 
   return plugins;

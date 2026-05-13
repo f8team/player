@@ -1,0 +1,137 @@
+/**
+ * @f8/player-themes — headless
+ *
+ * Layout-only theme: positioning, z-index, basic flex for the controls bar,
+ * and visibility helpers for external embeds (YouTube). No colors, borders,
+ * shadows, or sizing opinions. Intended for Tailwind / shadcn / design-system
+ * consumers who want to bring their own visual style on top of the
+ * `data-f8-player-…` attribute contract documented in
+ * `docs/spec/styling-contract.md`.
+ *
+ * Phase 4 (T4.3). Size target ≤ 1 KB gzip.
+ *
+ * Usage:
+ *   import "@f8/player-themes/headless.css";
+ *
+ * Then layer your own utilities, e.g.:
+ *   [data-f8-player-controls] { @apply bg-black/50 text-white px-3 py-2; }
+ *   [data-f8-player-control="play-pause"] { @apply hover:bg-white/10 rounded; }
+ */
+
+/* ─── Container & video ───────────────────────────────────────────────── */
+[data-f8-player] {
+  position: relative;
+  display: block;
+}
+
+[data-f8-player-video] {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ─── External embeds (YouTube) hide native controls slot ─────────────── */
+[data-f8-player][data-source-type="youtube"] [data-f8-player-yt-hidden] {
+  pointer-events: none;
+}
+
+/* ─── Controls bar layout ─────────────────────────────────────────────── */
+[data-f8-player-controls] {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+[data-f8-player-controls-layout="single-row"] {
+  flex-direction: row;
+  align-items: center;
+}
+
+[data-f8-player-controls-row="timeline"] {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+}
+
+[data-f8-player-controls-row="actions"] {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* SeekBar fills the row. */
+[data-f8p-seek-wrapper] {
+  flex: 1 1 auto;
+  position: relative;
+}
+
+[data-f8p-seek-buffered] {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  pointer-events: none;
+}
+
+/* Thumbnail tooltip hovers above the seekbar. */
+[data-f8p-seek-thumbnail] {
+  position: absolute;
+  bottom: 100%;
+  z-index: 6;
+  pointer-events: none;
+}
+
+/* ─── Control menus (captions / quality / speed) ─────────────────────── */
+[data-f8p-control-popover] {
+  position: absolute;
+  bottom: 100%;
+  z-index: 7;
+}
+
+[data-f8p-control-menu] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* ─── Center overlays ────────────────────────────────────────────────── */
+[data-f8-player-center-tap],
+[data-f8-player-center-spinner],
+[data-f8-player-big-play],
+[data-f8p-light-overlay] {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-f8p-light-poster] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-f8p-light-play-button] {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+}
+
+/* ─── Watermark stays below center overlays ──────────────────────────── */
+[data-f8p-watermark] {
+  position: absolute;
+  z-index: 10;
+  pointer-events: none;
+}

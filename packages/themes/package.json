@@ -11,6 +11,7 @@
     "./admin.css": "./src/admin.css",
     "./minimal.css": "./src/minimal.css",
     "./f8-brand.css": "./src/f8-brand.css",
+    "./headless.css": "./src/headless.css",
     "./package.json": "./package.json"
   },
   "files": [

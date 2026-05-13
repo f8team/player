@@ -191,3 +191,123 @@ describe("createAuthAwarePlugin", () => {
     warn.mockRestore();
   });
 });
+
+// ─── T3.4: auto-inject withCredentials predicate ────────────────────────────
+
+import type { PlayerState, SourceDescriptor } from "@f8/player-core";
+
+/** Player harness with a real subscribe pipeline (needed for T3.4 auto-inject). */
+function makeSubscribablePlayer(): {
+  player: Player;
+  setSource: (src: SourceDescriptor | null) => void;
+  currentSource: () => SourceDescriptor | null;
+} {
+  type Sub = { sel: (s: PlayerState) => unknown; cb: (v: unknown) => void };
+  const subs = new Set<Sub>();
+  let source: SourceDescriptor | null = null;
+
+  const state = (): PlayerState => ({
+    status: "idle",
+    source,
+    currentTime: 0,
+    duration: 0,
+    buffered: [],
+    playbackRate: 1,
+    volume: 1,
+    muted: false,
+    videoWidth: 0,
+    videoHeight: 0,
+    pip: false,
+    fullscreen: false,
+    qualities: [],
+    activeQuality: null,
+    error: null,
+  });
+
+  const setSource = (next: SourceDescriptor | null): void => {
+    source = next;
+    const s = state();
+    for (const sub of subs) sub.cb(sub.sel(s));
+  };
+
+  const player = {
+    getState: state,
+    getSource: () => source,
+    on: vi.fn().mockReturnValue(() => undefined),
+    setSource: vi.fn(setSource),
+    subscribe: vi.fn((sel: Sub["sel"], cb: Sub["cb"]) => {
+      const sub: Sub = { sel, cb };
+      subs.add(sub);
+      return () => subs.delete(sub);
+    }),
+    pause: vi.fn(),
+    play: vi.fn(),
+    commands: { add: vi.fn(), run: vi.fn(), has: vi.fn().mockReturnValue(false) },
+    seekTo: vi.fn(),
+    setPlaybackRate: vi.fn(),
+    setVolume: vi.fn(),
+    setMuted: vi.fn(),
+    getBuffered: vi.fn().mockReturnValue([]),
+    getCurrentTime: vi.fn().mockReturnValue(0),
+    getDuration: vi.fn().mockReturnValue(0),
+    paused: vi.fn().mockReturnValue(true),
+    off: vi.fn(),
+    attach: vi.fn().mockResolvedValue(undefined),
+    detach: vi.fn(),
+    dispose: vi.fn(),
+    use: vi.fn(),
+    removePlugin: vi.fn(),
+  } as unknown as Player;
+
+  return { player, setSource, currentSource: () => source };
+}
+
+describe("createAuthAwarePlugin — auto-inject withCredentials predicate (T3.4)", () => {
+  it("patches source with a predicate when allowlist matches and predicate is missing", () => {
+    const { player, setSource, currentSource } = makeSubscribablePlayer();
+
+    createAuthAwarePlugin({
+      allowlist: [/^https:\/\/api-gateway\./],
+    }).setup(player, makeHost());
+
+    setSource({ src: "https://api-gateway.example.com/v.m3u8" });
+
+    const patched = currentSource();
+    expect(patched?.withCredentials).toBeTypeOf("function");
+    const predicate = patched!.withCredentials as (url: string) => boolean;
+    expect(predicate("https://api-gateway.example.com/seg1.ts")).toBe(true);
+    expect(predicate("https://cdn.other.com/seg2.ts")).toBe(false);
+  });
+
+  it("does NOT override an explicit consumer withCredentials predicate", () => {
+    const { player, setSource, currentSource } = makeSubscribablePlayer();
+    const consumerPredicate = (url: string): boolean => url.includes("foo");
+
+    createAuthAwarePlugin({
+      allowlist: [/^https:\/\/api-gateway\./],
+    }).setup(player, makeHost());
+
+    setSource({
+      src: "https://api-gateway.example.com/v.m3u8",
+      withCredentials: consumerPredicate,
+    });
+
+    // Consumer predicate must win — no patch.
+    expect(currentSource()?.withCredentials).toBe(consumerPredicate);
+  });
+
+  it("does not patch a source that doesn't match the allowlist", () => {
+    const { player, currentSource } = makeSubscribablePlayer();
+
+    createAuthAwarePlugin({
+      allowlist: [/^https:\/\/api-gateway\./],
+    }).setup(player, makeHost());
+
+    // Use player.setSource directly so we can count plugin-driven re-sets.
+    player.setSource({ src: "https://cdn.public.com/v.m3u8" });
+
+    expect(currentSource()?.withCredentials).toBeUndefined();
+    // Plugin must NOT have called setSource again — only the consumer's call.
+    expect(player.setSource).toHaveBeenCalledTimes(1);
+  });
+});

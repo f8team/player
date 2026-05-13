@@ -64,6 +64,12 @@ export interface PlayerLabels {
   captions: string;
   /** Captions "off" option label. */
   captionsOff: string;
+  /** Center spinner — quality switch in flight (T4.1). */
+  bufferingQuality: string;
+  /** Center spinner — buffering / rebuffering (T4.1). */
+  bufferingPlayback: string;
+  /** Center spinner — both quality switch and buffering (T4.1). */
+  bufferingGeneric: string;
 }
 
 /** English defaults — the public OSS shape. */
@@ -91,6 +97,9 @@ export const defaultLabels: PlayerLabels = {
   posterPlay: "Play video",
   captions: "Captions",
   captionsOff: "Off",
+  bufferingQuality: "Changing resolution",
+  bufferingPlayback: "Loading to continue playback",
+  bufferingGeneric: "Processing video",
 };
 
 /**
@@ -122,6 +131,9 @@ export const vietnameseLabels: PlayerLabels = {
   posterPlay: "Phát video",
   captions: "Phụ đề",
   captionsOff: "Tắt phụ đề",
+  bufferingQuality: "Đang đổi độ phân giải",
+  bufferingPlayback: "Đang tải để tiếp tục phát",
+  bufferingGeneric: "Đang xử lý video",
 };
 
 const LabelsContext = createContext<PlayerLabels>(defaultLabels);

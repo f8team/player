@@ -1106,3 +1106,43 @@ describe("createPlayer — native event bridge & runtime errors", () => {
     player.dispose();
   });
 });
+
+describe("createPlayer — default crossOrigin + playsInline (T3.5)", () => {
+  it("defaults crossOrigin to 'anonymous' when not specified", async () => {
+    const player = createPlayer();
+    await player.attach(video);
+    expect(video.crossOrigin).toBe("anonymous");
+    player.dispose();
+  });
+
+  it("honors explicit crossOrigin: 'use-credentials'", async () => {
+    const player = createPlayer({ crossOrigin: "use-credentials" });
+    await player.attach(video);
+    expect(video.crossOrigin).toBe("use-credentials");
+    player.dispose();
+  });
+
+  it("omits crossOrigin when explicitly set to null", async () => {
+    const player = createPlayer({ crossOrigin: null });
+    await player.attach(video);
+    // Some jsdom builds normalize null → empty string; both mean "no attribute".
+    expect([null, ""].includes(video.crossOrigin as string)).toBe(true);
+    player.dispose();
+  });
+
+  it("defaults playsInline to true when not specified", async () => {
+    const player = createPlayer();
+    await player.attach(video);
+    expect(video.playsInline).toBe(true);
+    expect(video.hasAttribute("webkit-playsinline")).toBe(true);
+    player.dispose();
+  });
+
+  it("honors explicit playsInline: false", async () => {
+    const player = createPlayer({ playsInline: false });
+    await player.attach(video);
+    expect(video.playsInline).toBe(false);
+    expect(video.hasAttribute("webkit-playsinline")).toBe(false);
+    player.dispose();
+  });
+});

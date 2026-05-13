@@ -1,5 +1,21 @@
 import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
 
+/**
+ * Logical key names used by `blockKeys`. Mirrors `KeyboardEvent.key` for
+ * arrows + the rendered char for letter shortcuts. `"Space"` is the friendly
+ * alias for `" "` (Space), since `KeyboardEvent.key` returns the literal space.
+ */
+export type KeyboardKeyName =
+  | "Space"
+  | "K"
+  | "M"
+  | "F"
+  | "P"
+  | "ArrowLeft"
+  | "ArrowRight"
+  | "ArrowUp"
+  | "ArrowDown";
+
 export interface KeyboardPluginOptions {
   /**
    * Where to attach the keyboard listener.
@@ -22,6 +38,18 @@ export interface KeyboardPluginOptions {
    * If not provided, the player's attached `<video>` element's parent is used.
    */
   getContainer?: () => Element | null;
+  /**
+   * Selectively block individual hotkeys without disabling the entire plugin.
+   *
+   * Replaces the boilerplate `KeyboardHandler` consumers wrote when they only
+   * needed to block Space (auth-gated story) but keep arrow seek working.
+   *
+   * Default `[]` (no keys blocked). Updated at runtime via
+   * `keyboard:setBlockKeys(codes)` command.
+   *
+   * @phase-3-target T3.3
+   */
+  blockKeys?: readonly KeyboardKeyName[];
 }
 
 const PLUGIN_NAME = "keyboard";
@@ -49,8 +77,35 @@ const PLUGIN_NAME = "keyboard";
  *
  * Golden cases: G1 (course lesson keyboard nav), G16 (container-scoped).
  */
+/** Map a `KeyboardEvent` to the logical key name used by `blockKeys`. */
+function keyNameOf(e: KeyboardEvent): KeyboardKeyName | null {
+  switch (e.key) {
+    case " ":
+      return "Space";
+    case "k":
+    case "K":
+      return "K";
+    case "m":
+    case "M":
+      return "M";
+    case "f":
+    case "F":
+      return "F";
+    case "p":
+    case "P":
+      return "P";
+    case "ArrowLeft":
+    case "ArrowRight":
+    case "ArrowUp":
+    case "ArrowDown":
+      return e.key;
+    default:
+      return null;
+  }
+}
+
 export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): PluginInstance {
-  const { scope = "global", seekStep = 5, longSeekStep = 10, getContainer } = options;
+  const { scope = "global", seekStep = 5, longSeekStep = 10, getContainer, blockKeys = [] } = options;
 
   return {
     name: PLUGIN_NAME,
@@ -62,9 +117,16 @@ export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): Plugi
       // commands so consumers (modals, quiz overlays, transient dialogs) can
       // temporarily suppress hotkeys without re-registering the plugin.
       let enabled = true;
+      // Mutable blocked-key set. Updated via `keyboard:setBlockKeys(codes)` at
+      // runtime so the consumer can flip individual keys without re-registering.
+      let blocked = new Set<KeyboardKeyName>(blockKeys);
 
       const handler = (e: KeyboardEvent): void => {
         if (!enabled) return;
+        // Granular per-key block — runs before the focus-target guard so a
+        // blocked key never reaches the player even from container scope.
+        const keyName = keyNameOf(e);
+        if (keyName && blocked.has(keyName)) return;
         // Ignore when focus is inside an interactive element. Beyond
         // form controls we also need to skip:
         //   - `contenteditable` regions (rich-text editors, comments,
@@ -178,6 +240,14 @@ export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): Plugi
       });
       host.commands.add("keyboard:enable", () => {
         enabled = true;
+      });
+
+      // Granular block list. Pass the full replacement list — empty array
+      // unblocks everything, a non-empty array overrides the previous set.
+      // Phase 3 T3.3: replaces the consumer-side `KeyboardHandler` boilerplate.
+      host.commands.add("keyboard:setBlockKeys", (codes: unknown) => {
+        if (!Array.isArray(codes)) return;
+        blocked = new Set<KeyboardKeyName>(codes as KeyboardKeyName[]);
       });
 
       return () => {

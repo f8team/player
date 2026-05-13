@@ -31,6 +31,34 @@ import type { ReactiveController, ReactiveControllerHost } from "lit";
  * }
  * ```
  */
+// ─── Phase 2 reactive-prop surface (planned, not yet implemented) ────────────
+//
+// `PlayerController` currently reads options once in `hostConnected`; subsequent
+// changes are silently ignored (same contract as `@f8/player-react`'s Root).
+//
+// In Phase 2, `F8PlayerElement` (`<f8-player>`) will expose reactive Lit
+// properties whose `updated()` lifecycle compares old vs new values before
+// calling imperative setters:
+//
+//   source?:       SourceDescriptor | null  — @property({ attribute: false })
+//                  Diffs src string + descriptor identity → player.setSource().
+//                  Same value → no-op.  Planned target: T2.5.
+//
+//   poster?:       string            — @property({ type: String })
+//                  Forwarded to player.setPoster() on change.
+//
+//   playbackRate?: number            — @property({ type: Number })
+//                  Forwarded to player.setPlaybackRate() on change.
+//
+//   volume?:       number            — @property({ type: Number })
+//
+//   muted?:        boolean           — @property({ type: Boolean })
+//
+// Reasoning: the controller itself only manages lifecycle + subscriptions.
+// The reactive-prop diffing and setter calls live on `F8PlayerElement.updated()`
+// so the controller stays a thin lifecycle wrapper.
+// ─────────────────────────────────────────────────────────────────────────────
+
 export class PlayerController implements ReactiveController {
   /** Underlying core player. `null` until the host is first connected. */
   player: Player | null = null;

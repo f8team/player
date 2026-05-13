@@ -96,16 +96,48 @@ export function createAuthAwarePlugin(options: AuthAwarePluginOptions = {}): Plu
     name: PLUGIN_NAME,
 
     setup(player: Player, _host: PluginHost): () => void {
-      // Apply withCredentials for matching sources.
+      // Predicate that yields `true` for any URL matching the allowlist.
+      // Used both for auto-injecting `source.withCredentials` (T3.4) and for
+      // the post-ready `hls:setWithCredentials` command path.
+      const matchesAllowlist = (url: string): boolean =>
+        allowlist.some((entry) => matches(entry, url));
+
+      // Apply withCredentials for matching sources (post-ready legacy path).
       const applyCredentials = (): void => {
         const src = player.getSource()?.src ?? "";
-        const needs = allowlist.some((entry) => matches(entry, src));
-        if (needs && player.commands.has("hls:setWithCredentials")) {
+        if (matchesAllowlist(src) && player.commands.has("hls:setWithCredentials")) {
           player.commands.run("hls:setWithCredentials", true);
         }
       };
 
       const offReady = player.on("ready", applyCredentials);
+
+      // ─── T3.4: auto-inject `source.withCredentials` predicate ─────────
+      // When the consumer provides only an allowlist (no `withCredentials`
+      // on the descriptor), patch the descriptor by calling `setSource` with
+      // the derived predicate. This guarantees credentials are attached to
+      // the very first manifest XHR — the legacy `hls:setWithCredentials`
+      // command fires post-ready (too late for the manifest).
+      //
+      // Guards:
+      //   - Skip if `withCredentials` is already set (consumer override wins).
+      //   - Skip if the URL does not match the allowlist (avoid pointless setSource).
+      //   - The predicate itself is a function — after the patch, the next
+      //     subscribe tick sees `withCredentials !== undefined` and exits.
+      const offSourceSubscribe = allowlist.length === 0
+        ? () => undefined
+        : player.subscribe(
+            (s) => s.source,
+            (source) => {
+              if (!source) return;
+              if (source.withCredentials !== undefined) return;
+              if (!matchesAllowlist(source.src)) return;
+              player.setSource({
+                ...source,
+                withCredentials: matchesAllowlist,
+              });
+            },
+          );
 
       const offError = player.on("error", (err) => {
         if (err.code !== "unauthorized") return;
@@ -128,6 +160,7 @@ export function createAuthAwarePlugin(options: AuthAwarePluginOptions = {}): Plu
         offReady();
         offError();
         offUnauthorized();
+        offSourceSubscribe();
       };
     },
   };
