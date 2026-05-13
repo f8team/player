@@ -4,12 +4,12 @@ Opinionated F8 web player preset: plugin factory + one-liner components.
 
 ## When to use what
 
-| | `<F8WebPlayer>` (React) / `<f8-web-player>` (Lit) | `createF8WebPlayerPlugins` + `<Player.Root>` |
-|---|---|---|
-| **Use when** | 80% case: course lesson, admin preview, story embed | Custom layout, headless UI, or complex slot arrangement |
-| **Setup** | One import, done | Manual plugin wiring + compose primitives |
-| **Override** | Props for common toggles | Full control |
-| **Bundle delta** | ~1.5 KB extra vs factory-only | 0 extra |
+|                  | `<F8WebPlayer>` (React) / `<f8-web-player>` (Lit)   | `createF8WebPlayerPlugins` + `<Player.Root>`            |
+| ---------------- | --------------------------------------------------- | ------------------------------------------------------- |
+| **Use when**     | 80% case: course lesson, admin preview, story embed | Custom layout, headless UI, or complex slot arrangement |
+| **Setup**        | One import, done                                    | Manual plugin wiring + compose primitives               |
+| **Override**     | Props for common toggles                            | Full control                                            |
+| **Bundle delta** | ~1.5 KB extra vs factory-only                       | 0 extra                                                 |
 
 **Rule of thumb:** start with the one-liner, drop down to primitives only when you outgrow it.
 
@@ -42,23 +42,23 @@ import { defaultLabels } from "@f8/player-preset-web";
 
 ### Props
 
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `src` | `string` | — | Quick shorthand — sets `source.src` |
-| `source` | `SourceDescriptor` | — | Full source (src, tracks, withCredentials, …) |
-| `poster` | `string` | — | Poster URL; also used by light overlay |
-| `light` | `boolean \| string` | — | Light overlay — `true` = use poster, `string` = custom URL |
-| `muted` | `boolean` | — | Initial muted state |
-| `volume` | `number` | — | Initial volume `0–1` |
-| `playbackRate` | `number` | — | Initial playback rate |
-| `playbackRates` | `readonly number[]` | `[0.5…2]` | Custom rate menu |
-| `labels` | `Partial<PlayerLabels>` | `vietnameseLabels` | i18n labels |
-| `plugins` | `F8WebPlayerPluginsOptions` | — | Override plugin tuple options |
-| `options` | `PlayerOptions` | — | Extra raw player options |
-| `playerRef` | `RefObject<Player>` | — | Imperative player access |
-| `controls` | `boolean` | `true` | Show default controls bar |
-| `children` | `ReactNode` | — | Custom slot rendered above controls |
-| `onPlay/onPause/…` | callbacks | — | All `PlayerCallbackProps` forwarded |
+| Prop               | Type                        | Default            | Description                                                |
+| ------------------ | --------------------------- | ------------------ | ---------------------------------------------------------- |
+| `src`              | `string`                    | —                  | Quick shorthand — sets `source.src`                        |
+| `source`           | `SourceDescriptor`          | —                  | Full source (src, tracks, withCredentials, …)              |
+| `poster`           | `string`                    | —                  | Poster URL; also used by light overlay                     |
+| `light`            | `boolean \| string`         | —                  | Light overlay — `true` = use poster, `string` = custom URL |
+| `muted`            | `boolean`                   | —                  | Initial muted state                                        |
+| `volume`           | `number`                    | —                  | Initial volume `0–1`                                       |
+| `playbackRate`     | `number`                    | —                  | Initial playback rate                                      |
+| `playbackRates`    | `readonly number[]`         | `[0.5…2]`          | Custom rate menu                                           |
+| `labels`           | `Partial<PlayerLabels>`     | `vietnameseLabels` | i18n labels                                                |
+| `plugins`          | `F8WebPlayerPluginsOptions` | —                  | Override plugin tuple options                              |
+| `options`          | `PlayerOptions`             | —                  | Extra raw player options                                   |
+| `playerRef`        | `RefObject<Player>`         | —                  | Imperative player access                                   |
+| `controls`         | `boolean`                   | `true`             | Show default controls bar                                  |
+| `children`         | `ReactNode`                 | —                  | Custom slot rendered above controls                        |
+| `onPlay/onPause/…` | callbacks                   | —                  | All `PlayerCallbackProps` forwarded                        |
 
 ---
 
@@ -70,10 +70,7 @@ import { defaultLabels } from "@f8/player-preset-web";
   defineF8WebPlayer();
 </script>
 
-<f8-web-player
-  theme="classroom"
-  controls
-></f8-web-player>
+<f8-web-player theme="classroom" controls></f8-web-player>
 
 <script>
   const el = document.querySelector("f8-web-player");
@@ -93,22 +90,22 @@ import { createF8WebPlayerPlugins, DEFAULT_F8_GATEWAY_ALLOWLIST } from "@f8/play
 
 const plugins = createF8WebPlayerPlugins({
   auth: { allowlist: DEFAULT_F8_GATEWAY_ALLOWLIST },
-  prefs: { storageKey: "my-player" },  // or `false` to disable
-  keyboard: { blockKeys: ["Space"] },  // block space only (story auth-gate)
+  prefs: { storageKey: "my-player" }, // or `false` to disable
+  keyboard: { blockKeys: ["Space"] }, // block space only (story auth-gate)
   markers: { items: transcriptList },
 });
 ```
 
 ### `F8WebPlayerPluginsOptions`
 
-| Key | Type | Default | Description |
-|---|---|---|---|
-| `auth` | `{ allowlist: string[] }` | `[]` | auth-aware allowlist for `withCredentials` |
-| `prefs` | `false \| PrefsPluginOptions` | `{}` (on) | prefs persistence; `false` to skip |
-| `keyboard` | `KeyboardOptions` | F8 defaults | keyboard plugin options |
-| `markers` | `MarkersOptions` | — | timeline markers |
-| `hls` | `HlsQualityOptions` | — | HLS quality plugin options |
-| `thumbnails` | `ThumbnailsOptions` | — | preview thumbnails |
+| Key          | Type                          | Default     | Description                                |
+| ------------ | ----------------------------- | ----------- | ------------------------------------------ |
+| `auth`       | `{ allowlist: string[] }`     | `[]`        | auth-aware allowlist for `withCredentials` |
+| `prefs`      | `false \| PrefsPluginOptions` | `{}` (on)   | prefs persistence; `false` to skip         |
+| `keyboard`   | `KeyboardOptions`             | F8 defaults | keyboard plugin options                    |
+| `markers`    | `MarkersOptions`              | —           | timeline markers                           |
+| `hls`        | `HlsQualityOptions`           | —           | HLS quality plugin options                 |
+| `thumbnails` | `ThumbnailsOptions`           | —           | preview thumbnails                         |
 
 ---
 

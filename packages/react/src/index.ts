@@ -51,10 +51,7 @@ export { usePlayerEvent } from "./hooks/usePlayerEvent.js";
 export { usePlayerState } from "./hooks/usePlayerState.js";
 export { useSourceType } from "./hooks/useSourceType.js";
 export { usePluginCommand } from "./hooks/usePluginCommand.js";
-export {
-  useCallbackProps,
-  type PlayerCallbackProps,
-} from "./hooks/useCallbackProps.js";
+export { useCallbackProps, type PlayerCallbackProps } from "./hooks/useCallbackProps.js";
 
 export { blurFocusInside } from "./dom/blurFocusInside.js";
 

@@ -12,7 +12,7 @@ import type { PrefsPluginOptions } from "@f8/player-plugin-prefs";
 import { createPrefsPlugin } from "@f8/player-plugin-prefs";
 import type { SubtitlesPluginOptions } from "@f8/player-plugin-subtitles";
 import { createSubtitlesPlugin } from "@f8/player-plugin-subtitles";
-import { createThumbnailsPlugin } from "@f8/player-plugin-thumbnails";
+import type { ThumbnailsPluginOptions } from "@f8/player-plugin-thumbnails";
 
 /** Canonical keyboard defaults — matches f8-pro-ui `<video-player>` inner mount. */
 export const DEFAULT_F8_KEYBOARD: KeyboardPluginOptions = {
@@ -27,9 +27,9 @@ export const DEFAULT_F8_KEYBOARD: KeyboardPluginOptions = {
  *
  * Consumers may still spread or override entries in `{ auth }`.
  */
-export const DEFAULT_F8_GATEWAY_ALLOWLIST: NonNullable<
-  AuthAwarePluginOptions["allowlist"]
-> = [/^https:\/\/api-gateway\./];
+export const DEFAULT_F8_GATEWAY_ALLOWLIST: NonNullable<AuthAwarePluginOptions["allowlist"]> = [
+  /^https:\/\/api-gateway\./,
+];
 
 export interface F8WebPlayerPluginsOptions {
   /**
@@ -52,8 +52,8 @@ export interface F8WebPlayerPluginsOptions {
   fullscreen?: boolean;
   pip?: boolean;
 
-  /** Mount thumbnails plugin unconditionally so later `setSource()` can attach sprites. */
-  thumbnails?: "always" | false;
+  /** Lazy-load thumbnails plugin once the active source exposes sprite thumbnails. */
+  thumbnails?: "always" | false | ThumbnailsPluginOptions;
 
   /**
    * Auth-aware gateway cookies / unauthorized signalling.
@@ -126,8 +126,8 @@ export function createF8WebPlayerPlugins(options: F8WebPlayerPluginsOptions): Pl
     plugins.push(createSubtitlesPlugin(subtitles));
   }
 
-  if (thumbnails === "always") {
-    plugins.push(createThumbnailsPlugin());
+  if (thumbnails !== false) {
+    plugins.push(createLazyThumbnailsPlugin(thumbnails === "always" ? {} : thumbnails));
   }
 
   // Prefs comes LAST so its `ready`/`play` restore runs after subtitles/HLS
@@ -137,4 +137,55 @@ export function createF8WebPlayerPlugins(options: F8WebPlayerPluginsOptions): Pl
   }
 
   return plugins;
+}
+
+function hasPreviewThumbnails(
+  source: { thumbnails?: { src?: string } } | null | undefined,
+): boolean {
+  return !!source?.thumbnails?.src;
+}
+
+function createLazyThumbnailsPlugin(options: ThumbnailsPluginOptions = {}): PluginInstance {
+  return {
+    name: "thumbnails-lazy",
+    setup(player, host) {
+      let disposed = false;
+      let loading = false;
+      let loaded = player.commands.has("thumbnails:reload");
+
+      const load = (): void => {
+        if (disposed || loading || loaded) return;
+        if (!hasPreviewThumbnails(host.store.getState().source)) return;
+
+        loading = true;
+        import("@f8/player-plugin-thumbnails")
+          .then(({ createThumbnailsPlugin }) => {
+            loading = false;
+            if (disposed) return;
+            if (player.commands.has("thumbnails:reload")) {
+              loaded = true;
+              return;
+            }
+            player.use(createThumbnailsPlugin(options));
+            loaded = true;
+          })
+          .catch(() => {
+            loading = false;
+            host.emit("thumbnails:cleared", undefined);
+          });
+      };
+
+      const unsubscribe = host.store.subscribe(
+        (state) => state.source?.thumbnails?.src ?? null,
+        () => load(),
+      );
+      load();
+
+      return () => {
+        disposed = true;
+        unsubscribe();
+        if (loaded) player.removePlugin("thumbnails");
+      };
+    },
+  };
 }

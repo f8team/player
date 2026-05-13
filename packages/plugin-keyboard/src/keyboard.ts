@@ -105,7 +105,13 @@ function keyNameOf(e: KeyboardEvent): KeyboardKeyName | null {
 }
 
 export function createKeyboardPlugin(options: KeyboardPluginOptions = {}): PluginInstance {
-  const { scope = "global", seekStep = 5, longSeekStep = 10, getContainer, blockKeys = [] } = options;
+  const {
+    scope = "global",
+    seekStep = 5,
+    longSeekStep = 10,
+    getContainer,
+    blockKeys = [],
+  } = options;
 
   return {
     name: PLUGIN_NAME,

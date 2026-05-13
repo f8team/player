@@ -150,9 +150,7 @@ export function F8WebPlayer({
         <Captions />
         <Spinner />
         {children}
-        {isLightActive && (
-          <LightOverlay posterUrl={lightPoster} onDismiss={handleLightDismiss} />
-        )}
+        {isLightActive && <LightOverlay posterUrl={lightPoster} onDismiss={handleLightDismiss} />}
         {controls && !isLightActive && (
           <Controls.Bar layout="two-row">
             <Controls.TimelineRow>

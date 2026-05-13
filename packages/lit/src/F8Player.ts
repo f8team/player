@@ -622,9 +622,7 @@ export class F8PlayerElement extends LitElement {
         @click=${this.handleCenterTapClick}
         @keydown=${this.handleCenterTapKeydown}
       >
-        ${isPlaying
-          ? null
-          : html`<span data-f8-player-big-play>${this.renderIcon("play")}</span>`}
+        ${isPlaying ? null : html`<span data-f8-player-big-play>${this.renderIcon("play")}</span>`}
       </div>
     `;
   }
@@ -669,11 +667,7 @@ export class F8PlayerElement extends LitElement {
             @pointermove=${this.handleSeekPointerMove}
             @pointerleave=${this.handleSeekPointerLeave}
           >
-            <div
-              data-f8p-seek-buffered
-              style=${`width: ${bufferedPct}%`}
-              aria-hidden="true"
-            ></div>
+            <div data-f8p-seek-buffered style=${`width: ${bufferedPct}%`} aria-hidden="true"></div>
             ${this.renderThumbnailTile(max)}
             <input
               type="range"
@@ -817,7 +811,9 @@ export class F8PlayerElement extends LitElement {
       trigger: html`
         <span data-f8-player-quality-value aria-hidden="true">
           <span data-f8-player-quality-text>${activeParts.text}</span>
-          ${activeParts.badge ? html`<span data-f8-player-quality-badge>${activeParts.badge}</span>` : null}
+          ${activeParts.badge
+            ? html`<span data-f8-player-quality-badge>${activeParts.badge}</span>`
+            : null}
         </span>
       `,
       options,
@@ -995,8 +991,12 @@ export class F8PlayerElement extends LitElement {
                       @click=${() => this.selectMenuOption(option)}
                     >
                       <span data-f8p-option-label>${option.label}</span>
-                      ${option.badge ? html`<span data-f8p-option-badge>${option.badge}</span>` : null}
-                      ${option.active ? html`<span data-f8p-option-check aria-hidden="true">✓</span>` : null}
+                      ${option.badge
+                        ? html`<span data-f8p-option-badge>${option.badge}</span>`
+                        : null}
+                      ${option.active
+                        ? html`<span data-f8p-option-check aria-hidden="true">✓</span>`
+                        : null}
                     </button>
                   `,
                 )}
@@ -1074,12 +1074,7 @@ export class F8PlayerElement extends LitElement {
     const icon = ICONS[name];
 
     return html`
-      <svg
-        aria-hidden="true"
-        data-f8-player-icon=${name}
-        focusable="false"
-        viewBox=${icon.viewBox}
-      >
+      <svg aria-hidden="true" data-f8-player-icon=${name} focusable="false" viewBox=${icon.viewBox}>
         <path d=${icon.path}></path>
       </svg>
     `;
@@ -1245,7 +1240,9 @@ export class F8PlayerElement extends LitElement {
   private focusSelectedMenuOption(menuId: ControlMenuId): void {
     void this.updateComplete.then(() => {
       const popover = this.querySelector<HTMLElement>(`[data-f8p-control-popover="${menuId}"]`);
-      const selected = popover?.querySelector<HTMLElement>('[data-f8p-control-option][aria-selected="true"]');
+      const selected = popover?.querySelector<HTMLElement>(
+        '[data-f8p-control-option][aria-selected="true"]',
+      );
       const first = popover?.querySelector<HTMLElement>("[data-f8p-control-option]");
       (selected ?? first)?.focus();
     });
@@ -1299,7 +1296,11 @@ export class F8PlayerElement extends LitElement {
     return formatTime(Math.max(0, seconds));
   }
 
-  private formatQualityParts(label: string): { text: string; badge: string | null; optionLabel: string } {
+  private formatQualityParts(label: string): {
+    text: string;
+    badge: string | null;
+    optionLabel: string;
+  } {
     const match = label.match(/^(\d+)p$/i);
     if (!match) return { text: label, badge: null, optionLabel: label };
     const text = `${match[1]}p`;
@@ -1383,8 +1384,7 @@ export class F8PlayerElement extends LitElement {
     this.controller.on("ratechange", ({ playbackRate }) => {
       if (!this.playbackPrefsAllowSave) return;
       const msSinceLsRate =
-        this.playbackPrefsLastLsPlaybackRate != null &&
-        this.playbackPrefsLastLsRateAppliedAt > 0
+        this.playbackPrefsLastLsPlaybackRate != null && this.playbackPrefsLastLsRateAppliedAt > 0
           ? Math.round(performance.now() - this.playbackPrefsLastLsRateAppliedAt)
           : null;
       const skipSpuriousRevertToOne =

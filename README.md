@@ -114,6 +114,13 @@ import { markers } from "@f8/player-plugin-markers";
 </Player.Root>;
 ```
 
+## DX cookbook
+
+- [`docs/spec/plugin-authoring.md`](./docs/spec/plugin-authoring.md) — plugin lifecycle, commands, state subscriptions, SSR guards, tests, and lazy-loading patterns.
+- [`packages/preset-web/README.md`](./packages/preset-web/README.md) — when to use primitives vs `<F8WebPlayer>` / `<f8-web-player>`, plus preset options.
+- [`docs/spec/styling-contract.md`](./docs/spec/styling-contract.md) — stable `data-*` hooks, CSS variables, and Tailwind/headless recipes.
+- [`examples/`](./examples/) — classroom one-liner, headless Tailwind, and custom analytics plugin demos.
+
 ## Development
 
 ```bash

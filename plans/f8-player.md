@@ -4,7 +4,7 @@
 > any `[ ]` todo, continue from the first unchecked item. Check `[x]` immediately
 > when each todo finishes — never batch.
 
-**Status:** Phase 0–6 done · Phase 7 done except BrowserStack manual pass · Phase 8 repo-ready (P8.1–P8.4 ✅) — remaining items are **owner-approval blockers** (community + telemetry + npm org) tagged `[ ] (needs you)`; billing and legal docs are intentionally deferred (no premium tier and no public npm publish gated on legal review until you greenlight) · Phase 9 split into 9.A–9.F. Lit adapter (9.A–9.D) shipped as **public-reusable package** with zero `f8-pro-ui` coupling; `f8-pro-ui` migration (9.E plan + 9.F execution) **NOT applied yet** — `f8-pro-ui` still uses `react-player@2.12` + `video.js@8.4` · Phase 10 (golden case audit) ticked in master checklist below.
+**Status:** Phase 0–6 done · Phase 7 done except BrowserStack manual pass · Phase 8 repo-ready (P8.1–P8.4 ✅) — remaining items are **owner-approval blockers** (community + telemetry + npm org) tagged `[ ] (needs you)`; billing and legal docs are intentionally deferred (no premium tier and no public npm publish gated on legal review until you greenlight) · Phase 9 split into 9.A–9.F. Lit adapter (9.A–9.D) shipped as **public-reusable package** with zero `f8-pro-ui` coupling; `f8-pro-ui` migration 9.F automated gates are green and only authenticated manual smoke remains · Phase 10 (golden case audit) ticked in master checklist below · ✅ DX improvements landed via [`plans/f8-player-dx-flexibility-improvements.md`](./f8-player-dx-flexibility-improvements.md).
 
 ## Phase 0 — Discovery & spec freeze [DONE]
 

@@ -16,7 +16,11 @@ export type CenterPlayOverlayProps = ComponentPropsWithoutRef<"div">;
  * Omit when the active source is YouTube (native embed controls). Consumers
  * should also skip when a poster / “light” overlay already covers first play.
  */
-export function CenterPlayOverlay({ className, style, ...rest }: CenterPlayOverlayProps): JSX.Element | null {
+export function CenterPlayOverlay({
+  className,
+  style,
+  ...rest
+}: CenterPlayOverlayProps): JSX.Element | null {
   const player = usePlayer();
   const labels = useLabels();
   const sourceType = useSourceType();

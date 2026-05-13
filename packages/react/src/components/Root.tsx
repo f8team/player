@@ -161,10 +161,7 @@ export function Root({
   });
 
   // Context value. `poster` is reactive; `player` and `options` are stable.
-  const ctx = useMemo(
-    () => ({ player, options: optionsRef.current, poster }),
-    [player, poster],
-  );
+  const ctx = useMemo(() => ({ player, options: optionsRef.current, poster }), [player, poster]);
 
   return (
     <PlayerContext.Provider value={ctx}>

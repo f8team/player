@@ -1,4 +1,10 @@
-import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
+import type {
+  Player,
+  PlayerEvents,
+  PlayerState,
+  PluginHost,
+  SourceDescriptor,
+} from "@f8/player-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createAuthAwarePlugin, __resetTrailingDotWarnForTests } from "./auth-aware.js";
@@ -193,8 +199,6 @@ describe("createAuthAwarePlugin", () => {
 });
 
 // ─── T3.4: auto-inject withCredentials predicate ────────────────────────────
-
-import type { PlayerState, SourceDescriptor } from "@f8/player-core";
 
 /** Player harness with a real subscribe pipeline (needed for T3.4 auto-inject). */
 function makeSubscribablePlayer(): {

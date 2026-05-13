@@ -56,8 +56,7 @@ const ICONS = {
 
 export type PlayerIconName = keyof typeof ICONS;
 
-export interface PlayerIconProps
-  extends Omit<SVGProps<SVGSVGElement>, "children" | "viewBox"> {
+export interface PlayerIconProps extends Omit<SVGProps<SVGSVGElement>, "children" | "viewBox"> {
   name: PlayerIconName;
   title?: string;
 }

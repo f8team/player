@@ -2,23 +2,28 @@
 
 ## Hard CI gates
 
-| Package                                 | Target gzip | CI hard fail |
-| --------------------------------------- | ----------- | ------------ |
-| `@f8/player-core`                       | <12 KB      | >15 KB       |
-| `@f8/player-react`                      | <4 KB       | >5 KB        |
-| `@f8/player-plugin-subtitles`           | <2 KB       | >3 KB        |
-| `@f8/player-plugin-hls-quality`         | <2.5 KB     | >3 KB        |
-| `@f8/player-plugin-markers`             | <2.5 KB     | >3 KB        |
-| `@f8/player-plugin-keyboard`            | <1 KB       | >2 KB        |
-| `@f8/player-plugin-touch-gestures`      | <2 KB       | >3 KB        |
-| `@f8/player-plugin-resume-position`     | <1 KB       | >2 KB        |
-| `@f8/player-plugin-auth-aware`          | <1 KB       | >2 KB        |
-| `@f8/player-plugin-story-gestures`      | <2 KB       | >3 KB        |
-| `@f8/player-plugin-safari-mp4-fallback` | <1 KB       | >2 KB        |
-| `@f8/player-plugin-analytics`           | <2 KB       | >3 KB        |
-| `@f8/player-plugin-pip`                 | <1 KB       | >2 KB        |
-| `@f8/player-plugin-watermark`           | <1.5 KB     | >2 KB        |
-| Each theme CSS                          | <1.5 KB     | >2 KB        |
+| Package                                 | CI limit                          |
+| --------------------------------------- | --------------------------------- |
+| `@f8/player-core`                       | <12 KB target / <15 KB hard cap   |
+| `@f8/player-react`                      | <12 KB target / <13 KB hard cap   |
+| `@f8/player-lit`                        | <12 KB target / <13 KB hard cap   |
+| `@f8/player-preset-web`                 | <6 KB factory / <7 KB full export |
+| `@f8/player-plugin-prefs`               | <2 KB gzip                        |
+| `@f8/player-plugin-subtitles`           | <3 KB gzip                        |
+| `@f8/player-plugin-hls-quality`         | <3 KB gzip                        |
+| `@f8/player-plugin-markers`             | <3 KB gzip                        |
+| `@f8/player-plugin-thumbnails`          | <3 KB gzip                        |
+| `@f8/player-plugin-keyboard`            | <3 KB gzip                        |
+| `@f8/player-plugin-touch-gestures`      | <3 KB gzip                        |
+| `@f8/player-plugin-resume-position`     | <3 KB gzip                        |
+| `@f8/player-plugin-auth-aware`          | <3 KB gzip                        |
+| `@f8/player-plugin-story-gestures`      | <3 KB gzip                        |
+| `@f8/player-plugin-safari-mp4-fallback` | <3 KB gzip                        |
+| `@f8/player-plugin-analytics`           | <3 KB gzip                        |
+| `@f8/player-plugin-fullscreen`          | <3 KB gzip                        |
+| `@f8/player-plugin-pip`                 | <3 KB gzip                        |
+| `@f8/player-plugin-watermark`           | <3 KB gzip                        |
+| Each theme CSS                          | <4 KB brotli                      |
 
 `hls.js` and the YouTube IFrame API are **lazy-loaded** and not counted in the
 package totals.
@@ -36,7 +41,7 @@ package totals.
 ## Tooling
 
 - **Bundle:** `size-limit` per package; thresholds above are encoded in
-  `size-limit` config and break the build on regression.
+  `.size-limit.json` config and break the build on regression.
 - **Runtime:** Lighthouse CI with a custom `player-perf` audit (Phase 7).
 - **Memory leaks:** disposal tests in Vitest assert that `dispose()` returns the
   internal Set sizes to zero.

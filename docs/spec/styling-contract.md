@@ -5,88 +5,88 @@
 
 ## Attribute stability legend
 
-| Symbol | Meaning |
-|--------|---------|
-| ✅ **stable** | Semver-protected. Consumers may use in production CSS/selectors. Removal = major version. |
-| 🔶 **internal** | Subject to change without notice. Tests / theming internals only. |
+| Symbol          | Meaning                                                                                   |
+| --------------- | ----------------------------------------------------------------------------------------- |
+| ✅ **stable**   | Semver-protected. Consumers may use in production CSS/selectors. Removal = major version. |
+| 🔶 **internal** | Subject to change without notice. Tests / theming internals only.                         |
 
 ---
 
 ## 1. Host & video element
 
-| Attribute | Element | Values | Stability | Semantic |
-|-----------|---------|--------|-----------|---------|
-| `data-f8-player` | root wrapper `<div>` | `""` (present/absent) | ✅ | Outermost player container. Attach theme resets here. |
-| `data-f8-player-video` | `<video>` | `""` | ✅ | The native video element. Use `[data-f8-player-video]` to size it. |
-| `data-f8-player-yt-hidden` | `<div>` (React theme) | `""` | 🔶 | YouTube source: hides native controls; internal. |
+| Attribute                  | Element               | Values                | Stability | Semantic                                                           |
+| -------------------------- | --------------------- | --------------------- | --------- | ------------------------------------------------------------------ |
+| `data-f8-player`           | root wrapper `<div>`  | `""` (present/absent) | ✅        | Outermost player container. Attach theme resets here.              |
+| `data-f8-player-video`     | `<video>`             | `""`                  | ✅        | The native video element. Use `[data-f8-player-video]` to size it. |
+| `data-f8-player-yt-hidden` | `<div>` (React theme) | `""`                  | 🔶        | YouTube source: hides native controls; internal.                   |
 
 ---
 
 ## 2. Controls layout
 
-| Attribute | Element | Values | Stability | Semantic |
-|-----------|---------|--------|-----------|---------|
-| `data-f8-player-controls` | controls root `<div>` | `""` | ✅ | Top-level controls bar. Toggled present/absent; use for show/hide. |
-| `data-f8-player-controls-layout` | controls root | `"two-row"` \| `"single-row"` | ✅ | Layout variant; drives row stacking. |
-| `data-f8-player-controls-row` | `<div>` | `"timeline"` \| `"actions"` | ✅ | Identifies the row within the two-row layout. |
-| `data-f8-player-control` | individual control buttons | `"play-pause"` \| `"seek-bar"` \| `"time"` \| `"volume"` \| `"mute"` \| `"fullscreen"` \| `"pip"` \| `"seek-offset"` | ✅ | Names each clickable/interactive control. Target individual controls from CSS. |
+| Attribute                        | Element                    | Values                                                                                                               | Stability | Semantic                                                                       |
+| -------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------ |
+| `data-f8-player-controls`        | controls root `<div>`      | `""`                                                                                                                 | ✅        | Top-level controls bar. Toggled present/absent; use for show/hide.             |
+| `data-f8-player-controls-layout` | controls root              | `"two-row"` \| `"single-row"`                                                                                        | ✅        | Layout variant; drives row stacking.                                           |
+| `data-f8-player-controls-row`    | `<div>`                    | `"timeline"` \| `"actions"`                                                                                          | ✅        | Identifies the row within the two-row layout.                                  |
+| `data-f8-player-control`         | individual control buttons | `"play-pause"` \| `"seek-bar"` \| `"time"` \| `"volume"` \| `"mute"` \| `"fullscreen"` \| `"pip"` \| `"seek-offset"` | ✅        | Names each clickable/interactive control. Target individual controls from CSS. |
 
 ---
 
 ## 3. Center overlays
 
-| Attribute | Element | Values | Stability | Semantic |
-|-----------|---------|--------|-----------|---------|
-| `data-f8-player-center-tap` | center click target | `""` | ✅ | Invisible full-area click zone for double-tap seek / single-tap play-pause. |
-| `data-f8-player-big-play` | large play button overlay | `""` | ✅ | The "big play" button shown before first play (not the light mode overlay). |
-| `data-f8-player-center-spinner` | center spinner (Lit only) | `""` | ✅ | Buffering / quality-switch center spinner. React uses component state; Lit uses attribute. |
+| Attribute                       | Element                   | Values | Stability | Semantic                                                                                   |
+| ------------------------------- | ------------------------- | ------ | --------- | ------------------------------------------------------------------------------------------ |
+| `data-f8-player-center-tap`     | center click target       | `""`   | ✅        | Invisible full-area click zone for double-tap seek / single-tap play-pause.                |
+| `data-f8-player-big-play`       | large play button overlay | `""`   | ✅        | The "big play" button shown before first play (not the light mode overlay).                |
+| `data-f8-player-center-spinner` | center spinner (Lit only) | `""`   | ✅        | Buffering / quality-switch center spinner. React uses component state; Lit uses attribute. |
 
 ---
 
 ## 4. Seek / timeline
 
-| Attribute | Element | Values | Stability | Semantic |
-|-----------|---------|--------|-----------|---------|
-| `data-f8p-seek-wrapper` | seek bar outer `<div>` | `""` | ✅ | Wraps the range input + overlays. Use for hover thumbnail positioning. |
-| `data-f8p-seek-buffered` | buffered progress bar | `""` | ✅ | Inline-width filled from 0–100% matching buffered range. |
-| `data-f8p-seek-thumbnail` | thumbnail hover preview | `""` | 🔶 | Container for sprite thumbnail on hover. May change shape. |
-| `data-f8p-seek-thumbnail-image` | thumbnail image `<div>` | `""` | 🔶 | Background-image sprite positioned by plugin. |
-| `data-f8p-seek-thumbnail-time` | timestamp label in thumbnail | `""` | 🔶 | Time label rendered in the thumbnail bubble. |
+| Attribute                       | Element                      | Values | Stability | Semantic                                                               |
+| ------------------------------- | ---------------------------- | ------ | --------- | ---------------------------------------------------------------------- |
+| `data-f8p-seek-wrapper`         | seek bar outer `<div>`       | `""`   | ✅        | Wraps the range input + overlays. Use for hover thumbnail positioning. |
+| `data-f8p-seek-buffered`        | buffered progress bar        | `""`   | ✅        | Inline-width filled from 0–100% matching buffered range.               |
+| `data-f8p-seek-thumbnail`       | thumbnail hover preview      | `""`   | 🔶        | Container for sprite thumbnail on hover. May change shape.             |
+| `data-f8p-seek-thumbnail-image` | thumbnail image `<div>`      | `""`   | 🔶        | Background-image sprite positioned by plugin.                          |
+| `data-f8p-seek-thumbnail-time`  | timestamp label in thumbnail | `""`   | 🔶        | Time label rendered in the thumbnail bubble.                           |
 
 ---
 
 ## 5. Control menus (popovers)
 
-| Attribute | Element | Values | Stability | Semantic |
-|-----------|---------|--------|-----------|---------|
-| `data-f8p-control-trigger` | popover trigger button | `""` | ✅ | Button that opens a settings/captions/quality menu. |
-| `data-f8p-trigger-label` | text label in trigger | `""` | ✅ | E.g. current quality "720p" displayed on the trigger button. |
-| `data-f8p-control-popover` | popover container `<div>` | `""` | ✅ | The floating list container for a control menu. |
-| `data-f8p-control-menu` | listbox `<ul>` | `"captions"` \| `"quality"` \| `"speed"` | ✅ | Identifies which menu the listbox belongs to. |
-| `data-f8p-menu-open` | control parent | `""` (present = open) | ✅ | Applied to the trigger/wrapper when the menu is open. Drive open animations here. |
-| `data-f8p-control-option` | `<li>` in listbox | `""` | ✅ | One option row in a control menu. |
-| `data-f8p-option-label` | text span in option | `""` | ✅ | The human-readable label (e.g. "720p", "1×"). |
-| `data-f8p-option-badge` | badge span in option | `""` | 🔶 | Optional secondary badge (e.g. "HD"). |
-| `data-f8p-option-check` | checkmark in option | `""` | ✅ | Shown on the active/selected option. |
+| Attribute                  | Element                   | Values                                   | Stability | Semantic                                                                          |
+| -------------------------- | ------------------------- | ---------------------------------------- | --------- | --------------------------------------------------------------------------------- |
+| `data-f8p-control-trigger` | popover trigger button    | `""`                                     | ✅        | Button that opens a settings/captions/quality menu.                               |
+| `data-f8p-trigger-label`   | text label in trigger     | `""`                                     | ✅        | E.g. current quality "720p" displayed on the trigger button.                      |
+| `data-f8p-control-popover` | popover container `<div>` | `""`                                     | ✅        | The floating list container for a control menu.                                   |
+| `data-f8p-control-menu`    | listbox `<ul>`            | `"captions"` \| `"quality"` \| `"speed"` | ✅        | Identifies which menu the listbox belongs to.                                     |
+| `data-f8p-menu-open`       | control parent            | `""` (present = open)                    | ✅        | Applied to the trigger/wrapper when the menu is open. Drive open animations here. |
+| `data-f8p-control-option`  | `<li>` in listbox         | `""`                                     | ✅        | One option row in a control menu.                                                 |
+| `data-f8p-option-label`    | text span in option       | `""`                                     | ✅        | The human-readable label (e.g. "720p", "1×").                                     |
+| `data-f8p-option-badge`    | badge span in option      | `""`                                     | 🔶        | Optional secondary badge (e.g. "HD").                                             |
+| `data-f8p-option-check`    | checkmark in option       | `""`                                     | ✅        | Shown on the active/selected option.                                              |
 
 ---
 
 ## 6. Quality & captions state
 
-| Attribute | Element | Values | Stability | Semantic |
-|-----------|---------|--------|-----------|---------|
-| `data-f8-player-quality-text` | quality label `<span>` | `""` | ✅ | "720p", "Auto", etc. Rendered in toolbar. |
-| `data-f8-player-quality-value` | resolution `<span>` | `""` | 🔶 | Raw numeric height value (e.g. `720`). |
-| `data-f8-player-quality-badge` | badge overlay | `""` | 🔶 | "HD" / "4K" badge overlaid on quality button. |
-| `data-f8-player-captions-active` | captions button | boolean expression | ✅ | Present + non-empty when captions are showing; drives the "active" visual state. |
+| Attribute                        | Element                | Values             | Stability | Semantic                                                                         |
+| -------------------------------- | ---------------------- | ------------------ | --------- | -------------------------------------------------------------------------------- |
+| `data-f8-player-quality-text`    | quality label `<span>` | `""`               | ✅        | "720p", "Auto", etc. Rendered in toolbar.                                        |
+| `data-f8-player-quality-value`   | resolution `<span>`    | `""`               | 🔶        | Raw numeric height value (e.g. `720`).                                           |
+| `data-f8-player-quality-badge`   | badge overlay          | `""`               | 🔶        | "HD" / "4K" badge overlaid on quality button.                                    |
+| `data-f8-player-captions-active` | captions button        | boolean expression | ✅        | Present + non-empty when captions are showing; drives the "active" visual state. |
 
 ---
 
 ## 7. Icon primitive
 
-| Attribute | Element | Values | Stability | Semantic |
-|-----------|---------|--------|-----------|---------|
-| `data-f8-player-icon` | `<svg>` or icon wrapper | `"play"` \| `"pause"` \| `"volume"` \| `"volumeMuted"` \| `"maximize"` \| `"minimize"` \| `"settings"` \| `"pip"` \| `"cc"` \| `"rewind"` \| `"forward"` \| `"compress"` | ✅ | Names the icon. Use `[data-f8-player-icon="play"]` to target specific icons. |
+| Attribute             | Element                 | Values                                                                                                                                                                   | Stability | Semantic                                                                     |
+| --------------------- | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- | ---------------------------------------------------------------------------- |
+| `data-f8-player-icon` | `<svg>` or icon wrapper | `"play"` \| `"pause"` \| `"volume"` \| `"volumeMuted"` \| `"maximize"` \| `"minimize"` \| `"settings"` \| `"pip"` \| `"cc"` \| `"rewind"` \| `"forward"` \| `"compress"` | ✅        | Names the icon. Use `[data-f8-player-icon="play"]` to target specific icons. |
 
 ---
 
@@ -95,11 +95,11 @@
 The following attributes will be introduced in Phase 4 (T4.1) for the new
 `<Player.Spinner />` and `<Player.LightOverlay />` React primitives:
 
-| Attribute | Planned element | Planned values |
-|-----------|----------------|---------------|
-| `data-f8p-center-spinner` | spinner `<div>` | `""` |
-| `data-f8p-light-overlay` | overlay `<div>` | `""` |
-| `data-f8p-light-poster` | poster `<img>` | `""` |
+| Attribute                 | Planned element | Planned values |
+| ------------------------- | --------------- | -------------- |
+| `data-f8p-center-spinner` | spinner `<div>` | `""`           |
+| `data-f8p-light-overlay`  | overlay `<div>` | `""`           |
+| `data-f8p-light-poster`   | poster `<img>`  | `""`           |
 
 ---
 
@@ -113,25 +113,25 @@ Listen via DOM (`el.addEventListener("f8-player:play", e => …)`).
 exactly (Phase 2 ergonomic-surface contract). Both adapters share the same
 `PlayerEvents` source-of-truth so consumer migration is mechanical.
 
-| Custom event name | `detail` shape | React callback equivalent |
-|---|---|---|
-| `f8-player:ready` | `{ duration: number }` | `onReady` (also fires `onDuration`) |
-| `f8-player:play` | `void` | `onPlay` (also `onStart` once per mount) |
-| `f8-player:pause` | `void` | `onPause` |
-| `f8-player:ended` | `void` | `onEnded` |
-| `f8-player:timeupdate` | `{ currentTime, playedSeconds, duration }` | `onTimeUpdate` (and `onProgress` with derived shape) |
-| `f8-player:durationchange` | `{ duration: number }` | `onDuration` |
-| `f8-player:ratechange` | `{ playbackRate: number }` | `onRateChange(playbackRate)` |
-| `f8-player:volumechange` | `{ volume: number, muted: boolean }` | `onVolumeChange` |
-| `f8-player:seeking` | `{ time: number }` | — (use `seeked` for after-the-fact) |
-| `f8-player:seeked` | `{ time: number }` | `onSeek(time)` and `onSeeked(time)` |
-| `f8-player:buffering` | `{ isBuffering: boolean }` | `onBuffering(isBuffering)` |
-| `f8-player:qualitychange` | `{ quality: QualityLevel \| null, auto: boolean }` | `onQualityChange` |
-| `f8-player:qualityswitch` | `{ active: boolean }` | `onQualitySwitch(active)` |
-| `f8-player:error` | `PlayerError` | `onError` |
-| `f8-player:unauthorized` | `UnauthorizedEvent` | `onUnauthorized` |
-| `f8-player:fullscreenchange` | `{ fullscreen: boolean }` | — (read from state store) |
-| `f8-player:pipchange` | `{ pip: boolean }` | — (read from state store) |
+| Custom event name            | `detail` shape                                     | React callback equivalent                            |
+| ---------------------------- | -------------------------------------------------- | ---------------------------------------------------- |
+| `f8-player:ready`            | `{ duration: number }`                             | `onReady` (also fires `onDuration`)                  |
+| `f8-player:play`             | `void`                                             | `onPlay` (also `onStart` once per mount)             |
+| `f8-player:pause`            | `void`                                             | `onPause`                                            |
+| `f8-player:ended`            | `void`                                             | `onEnded`                                            |
+| `f8-player:timeupdate`       | `{ currentTime, playedSeconds, duration }`         | `onTimeUpdate` (and `onProgress` with derived shape) |
+| `f8-player:durationchange`   | `{ duration: number }`                             | `onDuration`                                         |
+| `f8-player:ratechange`       | `{ playbackRate: number }`                         | `onRateChange(playbackRate)`                         |
+| `f8-player:volumechange`     | `{ volume: number, muted: boolean }`               | `onVolumeChange`                                     |
+| `f8-player:seeking`          | `{ time: number }`                                 | — (use `seeked` for after-the-fact)                  |
+| `f8-player:seeked`           | `{ time: number }`                                 | `onSeek(time)` and `onSeeked(time)`                  |
+| `f8-player:buffering`        | `{ isBuffering: boolean }`                         | `onBuffering(isBuffering)`                           |
+| `f8-player:qualitychange`    | `{ quality: QualityLevel \| null, auto: boolean }` | `onQualityChange`                                    |
+| `f8-player:qualityswitch`    | `{ active: boolean }`                              | `onQualitySwitch(active)`                            |
+| `f8-player:error`            | `PlayerError`                                      | `onError`                                            |
+| `f8-player:unauthorized`     | `UnauthorizedEvent`                                | `onUnauthorized`                                     |
+| `f8-player:fullscreenchange` | `{ fullscreen: boolean }`                          | — (read from state store)                            |
+| `f8-player:pipchange`        | `{ pip: boolean }`                                 | — (read from state store)                            |
 
 **Signature differences vs React callbacks:** the React adapter unwraps single-key
 payloads for ergonomic reasons (`onSeek(seconds)`, `onRateChange(rate)`,
@@ -169,7 +169,7 @@ import { Player } from "@f8/player-react";
       <Player.Controls.Fullscreen className="size-9 hover:bg-white/10 rounded" />
     </Player.Controls.ActionsRow>
   </Player.Controls.Bar>
-</Player.Root>
+</Player.Root>;
 ```
 
 ### Recipe — admin / Tailwind compact dark
@@ -177,7 +177,8 @@ import { Player } from "@f8/player-react";
 Match `f8-dash-ui` admin density without writing 80 lines of utility strings:
 
 ```tsx
-const btn = "size-8 rounded hover:bg-white/10 transition focus-visible:ring-2 focus-visible:ring-white/40";
+const btn =
+  "size-8 rounded hover:bg-white/10 transition focus-visible:ring-2 focus-visible:ring-white/40";
 
 <Player.Controls.Bar
   className="[&[data-f8-player-controls]]:bg-neutral-900/80 [&[data-f8-player-controls]]:backdrop-blur [&[data-f8-player-controls]]:px-2 [&[data-f8-player-controls]]:py-1.5 text-neutral-100 text-xs"
@@ -190,7 +191,7 @@ const btn = "size-8 rounded hover:bg-white/10 transition focus-visible:ring-2 fo
   <Player.Controls.Quality className="px-2 hover:bg-white/10 rounded" />
   <Player.Controls.Settings className={btn} />
   <Player.Controls.Fullscreen className={btn} />
-</Player.Controls.Bar>
+</Player.Controls.Bar>;
 ```
 
 ### Recipe — shadcn-style menu (captions / quality / speed)
@@ -219,13 +220,13 @@ emit the right attributes for nesting popovers visually:
 
 ### When to pick which theme
 
-| Goal | Import |
-|---|---|
+| Goal                                  | Import                            |
+| ------------------------------------- | --------------------------------- |
 | F8 brand defaults (classroom lessons) | `@f8/player-themes/classroom.css` |
-| Admin dense controls (dashboard) | `@f8/player-themes/admin.css` |
-| Full-bleed story (Reels-style) | `@f8/player-themes/story.css` |
-| Marketing hero / landing autoplay | `@f8/player-themes/minimal.css` |
-| Bring your own design system | `@f8/player-themes/headless.css` |
+| Admin dense controls (dashboard)      | `@f8/player-themes/admin.css`     |
+| Full-bleed story (Reels-style)        | `@f8/player-themes/story.css`     |
+| Marketing hero / landing autoplay     | `@f8/player-themes/minimal.css`   |
+| Bring your own design system          | `@f8/player-themes/headless.css`  |
 
 `headless.css` ships only layout/z-index/positioning. Everything else (colors, sizes,
 shadows, focus rings, hover states) is the consumer's responsibility — typically a

@@ -75,8 +75,7 @@ describe("<SeekBar>", () => {
       // pointer-position math has a real width to work with.
       Object.defineProperty(el, "getBoundingClientRect", {
         configurable: true,
-        value: () =>
-          ({ left: 0, width, top: 0, right: width, bottom: 18, height: 18 }) as DOMRect,
+        value: () => ({ left: 0, width, top: 0, right: width, bottom: 18, height: 18 }) as DOMRect,
       });
     }
 
@@ -159,7 +158,8 @@ describe("<SeekBar>", () => {
       stubRect(host, 300);
       Object.defineProperty(wrap, "getBoundingClientRect", {
         configurable: true,
-        value: () => ({ left: 50, width: 250, top: 0, right: 300, bottom: 18, height: 18 }) as DOMRect,
+        value: () =>
+          ({ left: 50, width: 250, top: 0, right: 300, bottom: 18, height: 18 }) as DOMRect,
       });
 
       act(() => {

@@ -15,6 +15,7 @@ const NAV = [
     links: [
       { to: "/api", label: "API Reference" },
       { to: "/plugins", label: "Plugins" },
+      { to: "/plugin-authoring", label: "Plugin authoring" },
     ],
   },
   {

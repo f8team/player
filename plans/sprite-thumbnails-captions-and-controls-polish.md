@@ -22,9 +22,9 @@ Bổ sung 3 mảng vào ecosystem `@f8/player`:
 
 ### 3.1 Cấu trúc hiện tại
 
-- `f8-player` workspace: `packages/core` (PlayerOptions/SourceDescriptor), `packages/react` (Controls.*), `packages/lit` (`<f8-player>` với default chrome khi `controls=true`), `packages/themes/classroom.css` (token `--f8p-btn-size`, `--f8p-icon-size`), 14 plugins độc lập.
+- `f8-player` workspace: `packages/core` (PlayerOptions/SourceDescriptor), `packages/react` (Controls.\*), `packages/lit` (`<f8-player>` với default chrome khi `controls=true`), `packages/themes/classroom.css` (token `--f8p-btn-size`, `--f8p-icon-size`), 14 plugins độc lập.
 - `f8-ui/src/components/VideoPlayer/index.tsx` + `VideoPlayer.module.scss` — wrapper React dùng `Controls.Bar` + `Controls.SeekBar` + `Controls.Quality` + `Controls.Settings` + `Controls.Fullscreen`. Subtitle: `tracks` prop → `SourceDescriptor.tracks` → `<Captions>` portal `<track>`.
-- `f8-dash-ui/src/components/VideoUploadPreview/index.jsx` — wrapper React Tailwind, cùng Controls.* + plugin markers/keyboard/hls-quality/auth-aware/fullscreen.
+- `f8-dash-ui/src/components/VideoUploadPreview/index.jsx` — wrapper React Tailwind, cùng Controls.\* + plugin markers/keyboard/hls-quality/auth-aware/fullscreen.
 - `f8-pro-ui/src/components/video-player/index.ts` — outer Lit dùng `<f8-player .controls=true theme="classroom">`, inner chrome do `classroom.css` style (token `--f8p-btn-size: 3.6rem`, `--f8p-icon-size: 1.55rem`). Subtitle qua `captions-controller` (fetch blob + append `<track kind="captions" srclang="vi">`). Chưa có sprite thumbnails (deferred từ 9.F.4).
 - `SourceDescriptor` hiện chỉ có `src/type/withCredentials/tracks`. Phải thêm field `thumbnails?` mà không phá tương thích.
 
@@ -66,13 +66,13 @@ sprites/00001.jpg#xywh=160,0,160,90
 
 Theme tokens hiện tại:
 
-| Token | Hiện tại | Mục tiêu | Note |
-|---|---|---|---|
-| `--f8p-btn-size` | 3.6rem | **3.2rem** | Nén bớt hộp button |
-| `--f8p-playpause-btn-size` | 4rem | **3.6rem** | Tỷ lệ giữ với btn-size |
-| `--f8p-icon-size` | 1.55rem | **1.8rem** | Icon to hơn, đỡ "lọt thỏm" |
-| `--f8p-playpause-icon-size` | 2rem | **2.2rem** | Cân với btn-size mới |
-| `--f8p-ctrl-height` | 8.6rem | giữ | Bar height giữ — chỉ nội dung chặt hơn |
+| Token                       | Hiện tại | Mục tiêu   | Note                                   |
+| --------------------------- | -------- | ---------- | -------------------------------------- |
+| `--f8p-btn-size`            | 3.6rem   | **3.2rem** | Nén bớt hộp button                     |
+| `--f8p-playpause-btn-size`  | 4rem     | **3.6rem** | Tỷ lệ giữ với btn-size                 |
+| `--f8p-icon-size`           | 1.55rem  | **1.8rem** | Icon to hơn, đỡ "lọt thỏm"             |
+| `--f8p-playpause-icon-size` | 2rem     | **2.2rem** | Cân với btn-size mới                   |
+| `--f8p-ctrl-height`         | 8.6rem   | giữ        | Bar height giữ — chỉ nội dung chặt hơn |
 
 Mobile (`@media (pointer: coarse)`) giữ override 4.4rem / 4.9rem cho touch target ≥ 44px.
 
@@ -100,6 +100,7 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 **Repo:** `f8-player` (monorepo).
 
 **Input:**
+
 - `packages/core/src/types/source.ts` — `SourceDescriptor` interface.
 - `packages/react/src/components/controls/SeekBar.tsx` — wrapper render.
 - `packages/react/src/components/controls/index.ts` — export list.
@@ -108,11 +109,13 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 - `packages/plugin-subtitles/src/subtitles.ts` — commands + events đã có.
 
 **Output:**
+
 - File mới: `packages/plugin-thumbnails/{package.json, src/index.ts, src/thumbnails.ts, src/parseSpriteVtt.ts, src/types.ts, src/__tests__/parseSpriteVtt.test.ts, src/__tests__/thumbnails.test.ts, tsup.config.ts, tsconfig.json, vitest.config.ts}`.
 - File mới: `packages/react/src/components/controls/Captions.tsx`.
 - File sửa: `packages/core/src/types/source.ts` (thêm `thumbnails?`), `packages/react/src/components/controls/SeekBar.tsx` (hover preview), `packages/react/src/components/controls/index.ts`, `packages/lit/src/F8Player.ts` (CC + thumbnails render + ICON cc), `packages/themes/src/classroom.css` (tokens + new selectors), `packages/lit/src/__tests__/F8Player.test.ts`, `packages/react/src/components/controls/__tests__/SeekBar.test.tsx`.
 
 **Test gate:**
+
 - `pnpm --filter @f8/player-plugin-thumbnails test` — green.
 - `pnpm --filter @f8/player-react test` — green (74+ tests).
 - `pnpm --filter @f8/player-lit test` — green (29+ tests).
@@ -192,17 +195,20 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 **Repo:** `f8-ui`.
 
 **Input:**
+
 - `src/components/VideoPlayer/index.tsx` (487 LOC).
 - `src/components/VideoPlayer/VideoPlayer.module.scss` (475 LOC).
 - `src/components/VideoPlayer/VideoPlayer.test.tsx`.
 - `src/types/learning.ts` (`SubtitleLanguage`, `TrackStepStep`).
 
 **Output:**
+
 - `index.tsx`: prop mới `previewThumbnailsUrl?: string` (optional). Truyền `source.thumbnails = { src, withCredentials: false }`. Thêm `<Controls.Captions>` vào ActionsRow. Plugin `createThumbnailsPlugin` add vào list khi prop có.
 - `VideoPlayer.module.scss`: `.btn` width/height 3.2rem (was 3.6rem); `[data-f8-player-icon]` 1.8rem (was 1.55rem); `.btnPlayPause` 3.6rem/2.2rem (was 4rem/2rem). Thêm `.captionsControl` style giống `.qualityControl`. Thêm `.thumbnail` cho `[data-f8p-seek-thumbnail]`.
 - Test: thêm coverage cho Captions render/hidden, ensure VideoPlayer pass `thumbnails` xuống.
 
 **Test gate:**
+
 - `pnpm test` (f8-ui) — 235/235 + new tests green.
 - Manual smoke (user owed): course lesson video, story, video detail, preview course.
 
@@ -248,14 +254,17 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 **Repo:** `f8-dash-ui`.
 
 **Input:**
+
 - `src/components/VideoUploadPreview/index.jsx` (223 LOC).
 - `src/components/VideoUploadPreview/VideoUploadPreview.test.jsx` (11 tests).
 
 **Output:**
+
 - `index.jsx`: thêm prop `previewThumbnailsUrl?: string`, plugin thumbnails + `Controls.Captions` vào VisualLayer. Tailwind: `BTN_CLS` đổi `size-[3.2rem]` + `[&_svg]:size-[1.8rem]`; `PLAY_PAUSE_CLS` đổi `!size-[3.6rem]` + `[&_svg]:!size-[2.2rem]`. Thêm `CAPTIONS_CLS` (giống QUALITY_CLS).
 - Test: 11→12+ tests, cover Captions render/hide.
 
 **Test gate:**
+
 - `pnpm test` (f8-dash-ui suite VideoUploadPreview) — green.
 - Manual smoke (user owed): VideoUploadPreview thực tế với HLS auth source.
 
@@ -301,16 +310,19 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 **Repo:** `f8-pro-ui`.
 
 **Input:**
+
 - `src/components/video-player/index.ts` (729 LOC).
 - `src/components/video-player/__tests__/video-player.lit.test.ts`.
 - `src/components/video-player/controllers/types.ts` (thêm `sprite_url?: string` vào `VideoPlayerVideoMeta`).
 
 **Output:**
+
 - `index.ts`: import `createThumbnailsPlugin`. `_buildSource` thêm `thumbnails: v.sprite_url ? { src: v.sprite_url, withCredentials: ... } : undefined`. `_buildPlayerOptions.plugins` thêm thumbnails plugin.
 - `controllers/types.ts`: `VideoPlayerVideoMeta` thêm `sprite_url?: string`.
 - `__tests__/video-player.lit.test.ts`: thêm test "passes thumbnails to source when sprite_url present", "omits thumbnails when sprite_url null".
 
 **Test gate:**
+
 - `npm run test:lit` — 51→53+ green.
 - `npm run test:unit` — 56/56 unchanged.
 - `npm run type-check` — green.

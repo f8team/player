@@ -1,6 +1,4 @@
-import { defineConfig } from "vitest/config";
-
-export default defineConfig({
+export default {
   test: {
     environment: "jsdom",
     globals: true,
@@ -25,4 +23,4 @@ export default defineConfig({
       },
     },
   },
-});
+};

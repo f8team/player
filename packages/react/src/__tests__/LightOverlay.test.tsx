@@ -12,9 +12,7 @@ import { renderWithPlayer } from "../test-utils/renderWithPlayer.js";
 
 describe("Player.LightOverlay — renders poster when posterUrl is provided (T4.1)", () => {
   it("renders an <img> with the given posterUrl as src", () => {
-    const { container } = renderWithPlayer(
-      <LightOverlay posterUrl="https://cdn/thumb.jpg" />,
-    );
+    const { container } = renderWithPlayer(<LightOverlay posterUrl="https://cdn/thumb.jpg" />);
     const img = container.querySelector<HTMLImageElement>("[data-f8p-light-poster]");
     expect(img).toBeTruthy();
     expect(img?.getAttribute("src")).toBe("https://cdn/thumb.jpg");
@@ -38,7 +36,11 @@ describe("Player.LightOverlay — calls onDismiss + player.play() on click (T4.1
   it("skips autoplay when autoPlayOnDismiss=false", () => {
     const onDismiss = vi.fn();
     const { container, player } = renderWithPlayer(
-      <LightOverlay posterUrl="https://cdn/a.jpg" onDismiss={onDismiss} autoPlayOnDismiss={false} />,
+      <LightOverlay
+        posterUrl="https://cdn/a.jpg"
+        onDismiss={onDismiss}
+        autoPlayOnDismiss={false}
+      />,
     );
     fireEvent.click(container.querySelector("[data-f8p-light-overlay]")!);
     expect(onDismiss).toHaveBeenCalledTimes(1);

@@ -50,10 +50,12 @@ export class F8WebPlayerElement extends F8PlayerElement {
   /** Default theme to `classroom` so the F8 chrome ships without extra props. */
   override theme = "classroom";
 
-  static override properties = {
-    ...F8PlayerElement.properties,
-    pluginsConfig: { attribute: false },
-  };
+  static override get properties() {
+    return {
+      ...F8PlayerElement.properties,
+      pluginsConfig: { attribute: false },
+    };
+  }
 
   override connectedCallback(): void {
     // Merge default plugins into options BEFORE the base class calls

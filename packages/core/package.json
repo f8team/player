@@ -48,6 +48,7 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest run",
+    "perf:timeupdate": "vitest run --config vitest.perf.config.ts",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "typecheck": "tsc --noEmit",

@@ -16,9 +16,19 @@
     },
     "./package.json": "./package.json"
   },
-  "files": ["dist", "README.md"],
-  "engines": { "node": ">=20" },
-  "keywords": ["f8", "player", "plugins", "preset"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "f8",
+    "player",
+    "plugins",
+    "preset"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -46,10 +56,18 @@
     "lit": ">=3.0.0"
   },
   "peerDependenciesMeta": {
-    "@f8/player-react": { "optional": true },
-    "@f8/player-lit": { "optional": true },
-    "react": { "optional": true },
-    "lit": { "optional": true }
+    "@f8/player-react": {
+      "optional": true
+    },
+    "@f8/player-lit": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "lit": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@f8/player-core": "workspace:*",

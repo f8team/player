@@ -390,9 +390,7 @@ class HlsLoader implements SourceLoader {
     const awaiting = this.qualityAwait;
     if (awaiting === false) return;
 
-    const done =
-      awaiting === "auto" ||
-      (typeof awaiting === "number" && awaiting === levelIdx);
+    const done = awaiting === "auto" || (typeof awaiting === "number" && awaiting === levelIdx);
 
     if (done) this.completeQualityAwaitIfBusy();
   }
@@ -401,7 +399,11 @@ class HlsLoader implements SourceLoader {
     let levelIdx: number | undefined;
     for (let i = args.length - 1; i >= 0; i--) {
       const a = args[i];
-      if (a !== null && typeof a === "object" && typeof (a as { level?: unknown }).level === "number") {
+      if (
+        a !== null &&
+        typeof a === "object" &&
+        typeof (a as { level?: unknown }).level === "number"
+      ) {
         levelIdx = (a as { level: number }).level;
         break;
       }

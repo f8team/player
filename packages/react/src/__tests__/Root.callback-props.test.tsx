@@ -5,13 +5,14 @@
  * Each callback uses a stable ref so prop identity changes do NOT re-subscribe.
  */
 import { createPlayer, type Player } from "@f8/player-core";
+import type * as PlayerCore from "@f8/player-core";
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Root } from "../components/Root.js";
 
 vi.mock("@f8/player-core", async () => {
-  const actual = await vi.importActual<typeof import("@f8/player-core")>("@f8/player-core");
+  const actual = await vi.importActual<typeof PlayerCore>("@f8/player-core");
   return {
     ...actual,
     createPlayer: vi.fn(() => ({

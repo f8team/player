@@ -1,0 +1,23 @@
+{
+  "name": "@f8/player-example-headless-tailwind",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 6102",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1 --port 6102"
+  },
+  "dependencies": {
+    "@f8/player-core": "workspace:*",
+    "@f8/player-preset-web": "workspace:*",
+    "@f8/player-react": "workspace:*",
+    "@f8/player-themes": "workspace:*",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "^5.6.2",
+    "vite": "^6.3.4"
+  }
+}

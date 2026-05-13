@@ -64,8 +64,9 @@ function makeHost(store: FakeStore): PluginHost & {
     },
     store: {
       getState: () => store.state,
-      subscribe: vi.fn().mockImplementation(
-        <U>(selector: (s: PlayerState) => U, listener: (v: U) => void) => {
+      subscribe: vi
+        .fn()
+        .mockImplementation(<U>(selector: (s: PlayerState) => U, listener: (v: U) => void) => {
           const entry = {
             selector,
             listener: listener as (v: unknown) => void,
@@ -76,8 +77,7 @@ function makeHost(store: FakeStore): PluginHost & {
             const i = store.subscribers.indexOf(entry);
             if (i >= 0) store.subscribers.splice(i, 1);
           };
-        },
-      ),
+        }),
     },
     emit: vi.fn().mockImplementation((name: string, payload?: unknown) => {
       events.push({ name, payload });
@@ -266,9 +266,7 @@ describe("createThumbnailsPlugin", () => {
     } as SourceDescriptor);
     const host = makeHost(store);
 
-    const fetchSpy = vi
-      .fn()
-      .mockResolvedValue({ ok: true, text: () => Promise.resolve(VTT_BODY) });
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve(VTT_BODY) });
     (globalThis.fetch as unknown) = fetchSpy;
 
     createThumbnailsPlugin().setup(makePlayer(), host);

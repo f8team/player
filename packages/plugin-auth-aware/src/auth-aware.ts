@@ -124,20 +124,21 @@ export function createAuthAwarePlugin(options: AuthAwarePluginOptions = {}): Plu
       //   - Skip if the URL does not match the allowlist (avoid pointless setSource).
       //   - The predicate itself is a function — after the patch, the next
       //     subscribe tick sees `withCredentials !== undefined` and exits.
-      const offSourceSubscribe = allowlist.length === 0
-        ? () => undefined
-        : player.subscribe(
-            (s) => s.source,
-            (source) => {
-              if (!source) return;
-              if (source.withCredentials !== undefined) return;
-              if (!matchesAllowlist(source.src)) return;
-              player.setSource({
-                ...source,
-                withCredentials: matchesAllowlist,
-              });
-            },
-          );
+      const offSourceSubscribe =
+        allowlist.length === 0
+          ? () => undefined
+          : player.subscribe(
+              (s) => s.source,
+              (source) => {
+                if (!source) return;
+                if (source.withCredentials !== undefined) return;
+                if (!matchesAllowlist(source.src)) return;
+                player.setSource({
+                  ...source,
+                  withCredentials: matchesAllowlist,
+                });
+              },
+            );
 
       const offError = player.on("error", (err) => {
         if (err.code !== "unauthorized") return;

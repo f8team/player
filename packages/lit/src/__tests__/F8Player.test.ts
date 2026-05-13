@@ -212,12 +212,14 @@ describe("<f8-player> default controls", () => {
     expect(el.querySelector('[data-f8-player-controls-layout="two-row"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-controls-row="timeline"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-controls-row="actions"]')).toBeTruthy();
-    expect(el.querySelector('[data-f8-player-control="play-pause"] [data-f8-player-icon="pause"]')).toBeTruthy();
+    expect(
+      el.querySelector('[data-f8-player-control="play-pause"] [data-f8-player-icon="pause"]'),
+    ).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="seek-bar"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="seek-backward"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="seek-forward"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="quality"]')).toBeTruthy();
-    expect(el.querySelector('[data-f8-player-quality-badge]')?.textContent).toBe("HD");
+    expect(el.querySelector("[data-f8-player-quality-badge]")?.textContent).toBe("HD");
     expect(el.querySelector('[data-f8-player-control="settings"]')).toBeTruthy();
     expect(el.querySelector('[data-f8-player-control="fullscreen"]')).toBeTruthy();
   });
@@ -277,7 +279,9 @@ describe("<f8-player> default controls", () => {
     mute.click();
     expect(mockPlayer.setMuted).toHaveBeenCalledWith(true);
 
-    const qualityTrigger = el.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="quality"]')!;
+    const qualityTrigger = el.querySelector<HTMLButtonElement>(
+      '[data-f8p-control-trigger="quality"]',
+    )!;
     qualityTrigger.click();
     await el.updateComplete;
     const quality = el.querySelector<HTMLButtonElement>(
@@ -519,7 +523,9 @@ describe("<f8-player controls> sprite thumbnails", () => {
     wrapper.dispatchEvent(new MouseEvent("pointermove", { clientX: 300, bubbles: true }));
     await el.updateComplete;
 
-    const tileStyle = el.querySelector<HTMLElement>("[data-f8p-seek-thumbnail]")!.getAttribute("style")!;
+    const tileStyle = el
+      .querySelector<HTMLElement>("[data-f8p-seek-thumbnail]")!
+      .getAttribute("style")!;
     expect(tileStyle).toContain("left:162px");
     expect(tileStyle).toContain("width:80px");
   });
