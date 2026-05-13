@@ -119,6 +119,13 @@ export function createPlayer(
   let pendingAttachAbort: (() => void) | null = null;
   let disposed = false;
   let initialOptionsApplied = false;
+  // Tracks a `play()` call that arrived while the engine is still in the
+  // `loading` state (HLS manifest, native metadata). The state machine
+  // intentionally treats `play` as a noop in `loading`, so we queue the
+  // intent here and re-dispatch on the next `ready` transition. Without
+  // this, the very first user click on the play button is silently
+  // swallowed and the user has to click twice for HLS sources.
+  let pendingPlay = false;
 
   /* ---------------------------------------------------------------- */
   /* Source registry                                                   */
@@ -582,6 +589,9 @@ export function createPlayer(
   }
 
   function setSource(source: SourceDescriptor | null): void {
+    // Cancel any queued play intent so a play() issued during the previous
+    // load doesn't auto-fire on the new source's `ready` event.
+    pendingPlay = false;
     dispatch({ type: "setSource", source });
   }
 
@@ -605,12 +615,38 @@ export function createPlayer(
     if (disposed) throw new Error("[@f8/player-core] cannot play: player disposed");
     if (!video) throw new Error("[@f8/player-core] cannot play: no <video> attached");
     if (!store.getState().source) throw new Error("[@f8/player-core] cannot play: no source set");
+
+    // Defer-play during loading: the state machine treats `play` as a noop
+    // in `loading`, so a single user click would otherwise be lost while
+    // HLS.js is still fetching the m3u8 manifest. Queue the intent and
+    // re-dispatch on the next `ready` transition. Tied to attach lifecycle
+    // via `attachDisposers` so detach/dispose cancels the queued play.
+    if (status === "loading") {
+      if (pendingPlay) return;
+      pendingPlay = true;
+      const off = bus.on("ready", () => {
+        off();
+        if (!pendingPlay) return;
+        pendingPlay = false;
+        if (disposed || !video || !store.getState().source) return;
+        dispatch({ type: "play" });
+      });
+      attachDisposers.push(() => {
+        pendingPlay = false;
+        off();
+      });
+      return;
+    }
+
     dispatch({ type: "play" });
     // If the underlying engine returned a play() promise, the runner already
     // surfaced its rejection through dispatch(runtimeError).
   }
 
   function pause(): void {
+    // Cancel any queued play intent so explicitly pausing during loading
+    // doesn't autoplay once `ready` fires.
+    pendingPlay = false;
     dispatch({ type: "pause" });
   }
 

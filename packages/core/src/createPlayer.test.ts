@@ -520,6 +520,117 @@ describe("createPlayer — play / pause / seekTo", () => {
   });
 });
 
+describe("createPlayer — defer-play during loading", () => {
+  // A provider whose attach() never resolves on its own — the test drives
+  // `loaded` via dispatching `loadedmetadata` on the <video>. Mirrors how
+  // hls.js / native engines actually signal readiness.
+  function pendingProvider(): SourceProvider {
+    return {
+      name: "pending",
+      canHandle: () => true,
+      createLoader: () => ({
+        attach: () => new Promise<void>(() => undefined),
+        detach: () => undefined,
+      }),
+    };
+  }
+
+  it("play() during loading defers; ready transition triggers play", async () => {
+    const player = createPlayer(
+      { source: { src: "https://x.com/file.mp4" } },
+      { extraProviders: [pendingProvider()] },
+    );
+    await player.attach(video);
+    expect(player.getState().status).toBe("loading");
+
+    const playSpy = vi.spyOn(video, "play").mockResolvedValue();
+    // First click while still loading — must not be lost.
+    await player.play();
+    expect(playSpy).not.toHaveBeenCalled();
+    expect(player.getState().status).toBe("loading");
+
+    // Engine signals readiness — queued play should fire automatically.
+    Object.defineProperty(video, "duration", { configurable: true, value: 60 });
+    video.dispatchEvent(new Event("loadedmetadata"));
+    expect(player.getState().status).toBe("playing");
+    expect(playSpy).toHaveBeenCalledTimes(1);
+    player.dispose();
+  });
+
+  it("multiple play() calls during loading queue at most once", async () => {
+    const player = createPlayer(
+      { source: { src: "https://x.com/file.mp4" } },
+      { extraProviders: [pendingProvider()] },
+    );
+    await player.attach(video);
+    const playSpy = vi.spyOn(video, "play").mockResolvedValue();
+    await player.play();
+    await player.play();
+    await player.play();
+    video.dispatchEvent(new Event("loadedmetadata"));
+    expect(playSpy).toHaveBeenCalledTimes(1);
+    player.dispose();
+  });
+
+  it("pause() during loading cancels the queued play", async () => {
+    const player = createPlayer(
+      { source: { src: "https://x.com/file.mp4" } },
+      { extraProviders: [pendingProvider()] },
+    );
+    await player.attach(video);
+    const playSpy = vi.spyOn(video, "play").mockResolvedValue();
+    await player.play();
+    player.pause(); // explicitly cancel before ready
+    video.dispatchEvent(new Event("loadedmetadata"));
+    expect(playSpy).not.toHaveBeenCalled();
+    expect(player.getState().status).toBe("ready");
+    player.dispose();
+  });
+
+  it("setSource() during loading cancels the queued play", async () => {
+    const player = createPlayer(
+      { source: { src: "https://x.com/a.mp4" } },
+      { extraProviders: [pendingProvider()] },
+    );
+    await player.attach(video);
+    const playSpy = vi.spyOn(video, "play").mockResolvedValue();
+    await player.play();
+    player.setSource({ src: "https://x.com/b.mp4" });
+    video.dispatchEvent(new Event("loadedmetadata"));
+    expect(playSpy).not.toHaveBeenCalled();
+    player.dispose();
+  });
+
+  it("dispose() during loading cancels the queued play", async () => {
+    const player = createPlayer(
+      { source: { src: "https://x.com/file.mp4" } },
+      { extraProviders: [pendingProvider()] },
+    );
+    await player.attach(video);
+    const playSpy = vi.spyOn(video, "play").mockResolvedValue();
+    await player.play();
+    player.dispose();
+    video.dispatchEvent(new Event("loadedmetadata"));
+    expect(playSpy).not.toHaveBeenCalled();
+  });
+
+  it("play() after ready dispatches immediately (no defer)", async () => {
+    const player = createPlayer(
+      { source: { src: "https://x.com/file.mp4" } },
+      { extraProviders: [pendingProvider()] },
+    );
+    await player.attach(video);
+    video.dispatchEvent(new Event("loadedmetadata"));
+    expect(player.getState().status).toBe("ready");
+
+    const playSpy = vi.spyOn(video, "play").mockResolvedValue();
+    await player.play();
+    expect(playSpy).toHaveBeenCalledTimes(1);
+    expect(player.getState().status).toBe("playing");
+    player.dispose();
+  });
+});
+
 describe("createPlayer — events", () => {
   function readyProvider(): SourceProvider {
     return {
