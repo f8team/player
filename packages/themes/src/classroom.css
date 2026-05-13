@@ -139,14 +139,24 @@
 [data-f8-player][data-theme="classroom"] video::cue {
   color: #ffffff;
   background-color: rgba(0, 0, 0, 0.72);
-  /* Slightly larger text for easier reading; more generous horizontal padding
-   * gives breathing room from the left/right edges of each cue text box.
-   * Note: CSS `max-width` is not supported on ::cue — to cap cue width in VTT
-   * source files, add `size:80%` to individual cue headers instead. */
-  font-size: 92%;
-  line-height: 1.6;
-  padding: 0.2em 0.9em;
+  /* ~2px smaller than previous 92%; ::cue percentages are UA-relative. */
+  font-size: calc(92% - 2px);
+  line-height: 1.55;
+  /* Horizontal padding scales with cue font (`em`) + a few px so glyphs
+   * don’t kiss the rounded rgba background rim. Vertical stays compact. */
+  padding: 0.24em calc(1.15em + 4px);
   text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.85);
+}
+
+/*
+ * Blink / WebKit / Safari: captions render in a UA shadow subtree. Narrowing this
+ * container insets wrapped lines from the <video> box (player edges). Unsupported in
+ * Firefox — cue padding above still improves in-cue gutters.
+ */
+[data-f8-player][data-theme="classroom"] video::-webkit-media-text-track-container {
+  box-sizing: border-box !important;
+  width: calc(100% - clamp(28px, 6vw, 52px)) !important;
+  margin-inline: auto !important;
 }
 
 /* ─── Controls bar ──────────────────────────────────────────────────── */
