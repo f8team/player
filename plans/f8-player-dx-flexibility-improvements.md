@@ -525,7 +525,6 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
   - Done when: ✅ README thêm "DX cookbook"; `plans/f8-player.md` status link sang plan DX; `docs/spec/perf.md` đồng bộ budget hiện tại.
 
   **Final Phase 9 gate (2026-05-13):**
-
   - `pnpm verify` ✅ — format/lint/typecheck/test pass. Root Vitest 2/2; core 339/339; React 133/133; Lit 48/48; all plugin/preset suites pass.
   - `pnpm size` ✅ — 44/44 tasks pass.
   - `pnpm docs:build` ✅ — docs site builds; existing large-chunk warning remains non-fatal.
