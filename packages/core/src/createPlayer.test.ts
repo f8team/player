@@ -492,10 +492,13 @@ describe("createPlayer — play / pause / seekTo", () => {
     const player = await ready();
     player.setVolume(2);
     expect(video.volume).toBe(1);
+    expect(player.getState().volume).toBe(1);
     player.setVolume(-1);
     expect(video.volume).toBe(0);
+    expect(player.getState().volume).toBe(0);
     player.setVolume(0.5);
     expect(video.volume).toBe(0.5);
+    expect(player.getState().volume).toBe(0.5);
     player.dispose();
   });
 
@@ -503,8 +506,10 @@ describe("createPlayer — play / pause / seekTo", () => {
     const player = await ready();
     player.setMuted(true);
     expect(video.muted).toBe(true);
+    expect(player.getState().muted).toBe(true);
     player.setMuted(false);
     expect(video.muted).toBe(false);
+    expect(player.getState().muted).toBe(false);
     player.dispose();
   });
 
@@ -512,6 +517,7 @@ describe("createPlayer — play / pause / seekTo", () => {
     const player = await ready();
     player.setPlaybackRate(1.5);
     expect(video.playbackRate).toBe(1.5);
+    expect(player.getState().playbackRate).toBe(1.5);
     player.setPlaybackRate(0); // ignored
     expect(video.playbackRate).toBe(1.5);
     player.setPlaybackRate(Number.NaN); // ignored

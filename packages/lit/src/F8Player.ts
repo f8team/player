@@ -258,6 +258,29 @@ export class F8PlayerElement extends LitElement {
   /** Disposers returned by `controller.on(...)` for plugin-event subscriptions. */
   private pluginEventDisposers: Disposer[] = [];
 
+  /**
+   * Persist-guard: ignore volume/rate change events briefly after restoring from LS.
+   * The engine sometimes emits stale values (e.g. playbackRate 1 right after restoring 1.6).
+   */
+  private playbackPrefsAllowSave = false;
+  private playbackPrefsRestoreOnPlay = true;
+  private playbackPrefsUnlockGen = 0;
+  /** Playback rate restored from LS; used to ignore spurious `ratechange→1` right after. */
+  private playbackPrefsLastLsPlaybackRate: number | null = null;
+  private playbackPrefsLastLsRateAppliedAt = 0;
+
+  private schedulePlaybackPrefsSaveUnlock(): void {
+    this.playbackPrefsAllowSave = false;
+    const gen = ++this.playbackPrefsUnlockGen;
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (gen !== this.playbackPrefsUnlockGen) return;
+        if (!this.persistPrefs || !this.controller.player) return;
+        this.playbackPrefsAllowSave = true;
+      });
+    });
+  }
+
   private openMenu: ControlMenuId | null = null;
 
   /** Re-render when native `<track>` elements are added/removed or their mode changes. */
@@ -1194,15 +1217,25 @@ export class F8PlayerElement extends LitElement {
   // Internal — player preferences persistence (localStorage)
   // ------------------------------------------------------------------------
 
+  private applyLsVolumeMutedRate(player: Player, prefs: Partial<PlayerPrefs>): void {
+    if (prefs.volume != null) player.setVolume(prefs.volume);
+    if (prefs.muted != null) player.setMuted(prefs.muted);
+    if (prefs.playbackRate != null) {
+      player.setPlaybackRate(prefs.playbackRate);
+      this.playbackPrefsLastLsPlaybackRate = prefs.playbackRate;
+      this.playbackPrefsLastLsRateAppliedAt = performance.now();
+    }
+  }
+
   private installPrefsListeners(): void {
     const player = this.controller.player;
     if (!player || !this.persistPrefs) return;
 
-    // Restore immediately applicable prefs (volume, muted, playbackRate).
+    this.playbackPrefsRestoreOnPlay = true;
+
     const prefs = this.loadPlayerPrefs();
-    if (prefs.volume != null) player.setVolume(prefs.volume);
-    if (prefs.muted != null) player.setMuted(prefs.muted);
-    if (prefs.playbackRate != null) player.setPlaybackRate(prefs.playbackRate);
+    this.applyLsVolumeMutedRate(player, prefs);
+    this.schedulePlaybackPrefsSaveUnlock();
 
     // Restore quality once the qualities list becomes available.
     // YouTube-style: prefer saved quality but silently skip if not in the list
@@ -1227,13 +1260,47 @@ export class F8PlayerElement extends LitElement {
       }
     }
 
-    // Save prefs whenever relevant state changes.
+    // Re-bootstrap after metadata — engine may clamp playbackRate or mute state before LS wins.
+    this.controller.on("ready", () => {
+      if (!this.persistPrefs) return;
+      this.playbackPrefsRestoreOnPlay = true;
+      this.applyLsVolumeMutedRate(player, this.loadPlayerPrefs());
+      this.schedulePlaybackPrefsSaveUnlock();
+    });
+
+    this.controller.on("play", () => {
+      if (!this.persistPrefs) return;
+      if (this.playbackPrefsRestoreOnPlay) {
+        this.playbackPrefsRestoreOnPlay = false;
+        this.applyLsVolumeMutedRate(player, this.loadPlayerPrefs());
+      }
+      this.schedulePlaybackPrefsSaveUnlock();
+    });
+
     this.controller.on("volumechange", ({ volume, muted }) => {
+      if (!this.playbackPrefsAllowSave) return;
       this.savePlayerPrefs({ volume, muted });
     });
+
     this.controller.on("ratechange", ({ playbackRate }) => {
+      if (!this.playbackPrefsAllowSave) return;
+      const msSinceLsRate =
+        this.playbackPrefsLastLsPlaybackRate != null &&
+        this.playbackPrefsLastLsRateAppliedAt > 0
+          ? Math.round(performance.now() - this.playbackPrefsLastLsRateAppliedAt)
+          : null;
+      const skipSpuriousRevertToOne =
+        playbackRate === 1 &&
+        this.playbackPrefsLastLsPlaybackRate != null &&
+        this.playbackPrefsLastLsPlaybackRate !== 1 &&
+        msSinceLsRate != null &&
+        msSinceLsRate < 800;
+      if (skipSpuriousRevertToOne) return;
       this.savePlayerPrefs({ playbackRate });
+      this.playbackPrefsLastLsPlaybackRate = null;
+      this.playbackPrefsLastLsRateAppliedAt = 0;
     });
+
     // Only persist user-chosen quality (auto=false); ABR selections are ignored.
     this.controller.on("qualitychange", ({ quality, auto }) => {
       if (!auto) {

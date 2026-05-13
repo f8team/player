@@ -663,21 +663,34 @@ export function createPlayer(
     video.currentTime = clamped;
   }
 
+  function syncVolumeMutedStoreFromVideo(): void {
+    if (!video) return;
+    store.setState({ volume: video.volume, muted: video.muted });
+  }
+
+  function syncPlaybackRateStoreFromVideo(): void {
+    if (!video) return;
+    store.setState({ playbackRate: video.playbackRate });
+  }
+
   function setPlaybackRate(rate: number): void {
     if (!Number.isFinite(rate) || rate <= 0) return;
     if (!video) return;
     video.playbackRate = rate;
+    syncPlaybackRateStoreFromVideo();
   }
 
   function setVolume(volume: number): void {
     if (!Number.isFinite(volume)) return;
     if (!video) return;
     video.volume = Math.max(0, Math.min(1, volume));
+    syncVolumeMutedStoreFromVideo();
   }
 
   function setMuted(muted: boolean): void {
     if (!video) return;
     video.muted = muted;
+    syncVolumeMutedStoreFromVideo();
   }
 
   function getState(): PlayerState {
