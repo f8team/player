@@ -139,9 +139,13 @@
 [data-f8-player][data-theme="classroom"] video::cue {
   color: #ffffff;
   background-color: rgba(0, 0, 0, 0.72);
-  font-size: 78%;
-  line-height: 1.55;
-  padding: 0.14em 0.36em;
+  /* Slightly larger text for easier reading; more generous horizontal padding
+   * gives breathing room from the left/right edges of each cue text box.
+   * Note: CSS `max-width` is not supported on ::cue — to cap cue width in VTT
+   * source files, add `size:80%` to individual cue headers instead. */
+  font-size: 92%;
+  line-height: 1.6;
+  padding: 0.2em 0.9em;
   text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.85);
 }
 
@@ -658,7 +662,7 @@
   display: flex;
   align-items: center;
   gap: 0.65rem;
-  padding: 0.75rem 0.9rem;
+  padding: 0.9rem 1rem;
   border: none;
   border-radius: 0.65rem;
   background: transparent;
