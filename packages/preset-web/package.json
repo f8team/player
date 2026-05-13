@@ -1,0 +1,57 @@
+{
+  "name": "@f8/player-preset-web",
+  "version": "0.0.0",
+  "description": "Shared Default plugin bundles for F8 web apps (learner / admin / pro).",
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md"],
+  "engines": { "node": ">=20" },
+  "keywords": ["f8", "player", "plugins", "preset"],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --max-warnings=0",
+    "clean": "rm -rf dist coverage .turbo"
+  },
+  "peerDependencies": {
+    "@f8/player-core": ">=0.0.0",
+    "@f8/player-plugin-auth-aware": ">=0.0.0",
+    "@f8/player-plugin-fullscreen": ">=0.0.0",
+    "@f8/player-plugin-hls-quality": ">=0.0.0",
+    "@f8/player-plugin-keyboard": ">=0.0.0",
+    "@f8/player-plugin-markers": ">=0.0.0",
+    "@f8/player-plugin-pip": ">=0.0.0",
+    "@f8/player-plugin-subtitles": ">=0.0.0",
+    "@f8/player-plugin-thumbnails": ">=0.0.0"
+  },
+  "devDependencies": {
+    "@f8/player-core": "workspace:*",
+    "@f8/player-plugin-auth-aware": "workspace:*",
+    "@f8/player-plugin-fullscreen": "workspace:*",
+    "@f8/player-plugin-hls-quality": "workspace:*",
+    "@f8/player-plugin-keyboard": "workspace:*",
+    "@f8/player-plugin-markers": "workspace:*",
+    "@f8/player-plugin-pip": "workspace:*",
+    "@f8/player-plugin-subtitles": "workspace:*",
+    "@f8/player-plugin-thumbnails": "workspace:*",
+    "eslint": "^9.11.1",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.2",
+    "vitest": "^4.1.6"
+  }
+}

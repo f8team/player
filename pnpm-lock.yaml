@@ -551,6 +551,48 @@ importers:
         specifier: ^8.3.0
         version: 8.5.1(@swc/core@1.15.33)(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
 
+  packages/preset-web:
+    devDependencies:
+      '@f8/player-core':
+        specifier: workspace:*
+        version: link:../core
+      '@f8/player-plugin-auth-aware':
+        specifier: workspace:*
+        version: link:../plugin-auth-aware
+      '@f8/player-plugin-fullscreen':
+        specifier: workspace:*
+        version: link:../plugin-fullscreen
+      '@f8/player-plugin-hls-quality':
+        specifier: workspace:*
+        version: link:../plugin-hls-quality
+      '@f8/player-plugin-keyboard':
+        specifier: workspace:*
+        version: link:../plugin-keyboard
+      '@f8/player-plugin-markers':
+        specifier: workspace:*
+        version: link:../plugin-markers
+      '@f8/player-plugin-pip':
+        specifier: workspace:*
+        version: link:../plugin-pip
+      '@f8/player-plugin-subtitles':
+        specifier: workspace:*
+        version: link:../plugin-subtitles
+      '@f8/player-plugin-thumbnails':
+        specifier: workspace:*
+        version: link:../plugin-thumbnails
+      eslint:
+        specifier: ^9.11.1
+        version: 9.39.4(jiti@2.7.0)
+      tsup:
+        specifier: ^8.3.0
+        version: 8.5.1(@swc/core@1.15.33)(jiti@2.7.0)(postcss@8.5.14)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.6.2
+        version: 5.9.3
+      vitest:
+        specifier: ^4.1.6
+        version: 4.1.6(@types/node@22.19.18)(@vitest/coverage-v8@4.1.6)(jsdom@25.0.1)(vite@6.4.2(@types/node@22.19.18)(jiti@2.7.0))
+
   packages/react:
     devDependencies:
       '@f8/player-core':
