@@ -32,7 +32,7 @@ export function Fullscreen({ children, ...rest }: FullscreenProps): JSX.Element 
       data-f8-player-control="fullscreen"
       {...rest}
     >
-      {children ?? <PlayerIcon name={fullscreen ? "minimize" : "maximize"} />}
+      {children ?? <PlayerIcon name={fullscreen ? "compress" : "maximize"} />}
     </button>
   );
 }

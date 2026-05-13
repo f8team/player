@@ -5,6 +5,7 @@ import type {
   PlayerEvents,
   PlayerOptions,
   PlayerState,
+  QualityLevel,
 } from "@f8/player-core";
 import { LitElement, html, css } from "lit";
 
@@ -30,6 +31,17 @@ interface SubtitleTrackStateLite {
   lang: string;
   label: string;
   mode: "showing" | "hidden" | "disabled";
+}
+
+/** Persisted user preferences stored in localStorage. */
+interface PlayerPrefs {
+  volume: number;
+  muted: boolean;
+  playbackRate: number;
+  /** Quality resolution in pixels (e.g. 720, 1080). null = auto. */
+  qualityHeight: number | null;
+  /** Active captions language code. null = off. */
+  captionsLang: string | null;
 }
 
 const THUMB_PREVIEW_WIDTH = 160;
@@ -87,6 +99,10 @@ const ICONS = {
     viewBox: "0 0 448 512",
     path: "M136 320H24C10.746 320 0 330.742 0 344C0 357.254 10.746 368 24 368H112V456C112 469.254 122.746 480 136 480S160 469.254 160 456V344C160 330.742 149.254 320 136 320ZM312 192H424C437.254 192 448 181.254 448 168C448 154.742 437.254 144 424 144H336V56C336 42.742 325.254 32 312 32S288 42.742 288 56V168C288 181.254 298.746 192 312 192ZM136 32C122.746 32 112 42.742 112 56V144H24C10.746 144 0 154.742 0 168C0 181.254 10.746 192 24 192H136C149.254 192 160 181.254 160 168V56C160 42.742 149.254 32 136 32ZM424 320H312C298.746 320 288 330.742 288 344V456C288 469.254 298.746 480 312 480S336 469.254 336 456V368H424C437.254 368 448 357.254 448 344C448 330.742 437.254 320 424 320Z",
   },
+  compress: {
+    viewBox: "0 0 448 512",
+    path: "M128 320H32C14.312 320 0 334.312 0 352S14.312 384 32 384H96V448C96 465.688 110.312 480 128 480S160 465.688 160 448V352C160 334.312 145.688 320 128 320ZM416 320H320C302.312 320 288 334.312 288 352V448C288 465.688 302.312 480 320 480S352 465.688 352 448V384H416C433.688 384 448 369.688 448 352S433.688 320 416 320ZM320 192H416C433.688 192 448 177.688 448 160S433.688 128 416 128H352V64C352 46.312 337.688 32 320 32S288 46.312 288 64V160C288 177.688 302.312 192 320 192ZM128 32C110.312 32 96 46.312 96 64V128H32C14.312 128 0 142.312 0 160S14.312 192 32 192H128C145.688 192 160 177.688 160 160V64C160 46.312 145.688 32 128 32Z",
+  },
   settings: {
     viewBox: "0 0 512 512",
     path: "M499.954 332.005C499.954 326.345 496.842 320.874 491.75 317.934L445.137 291.023C447.235 279.648 448.477 267.977 448.477 256S447.235 232.352 445.137 220.977L491.75 194.066C496.842 191.126 499.954 185.655 499.954 179.995C499.954 165.898 457.979 80.953 436.09 80.953C433.258 80.953 430.403 81.68 427.844 83.156L381.125 110.133C363.411 94.98 342.897 83.098 320.477 75.16V21.281C320.477 13.758 315.315 7.004 307.95 5.461C291.321 1.977 274.145 0 256.477 0S221.633 1.977 205.004 5.461C197.639 7.004 192.477 13.758 192.477 21.281V75.16C170.057 83.098 149.543 94.98 131.828 110.133L85.11 83.156C82.553 81.68 79.694 80.953 76.864 80.953C57.143 80.953 13 162.9 13 179.995C13 185.655 16.112 191.126 21.203 194.066L67.817 220.977C65.719 232.352 64.477 244.023 64.477 256S65.719 279.648 67.817 291.023L21.203 317.934C16.112 320.874 13 326.345 13 332.005C13 346.102 54.975 431.047 76.864 431.047C79.696 431.047 82.551 430.32 85.11 428.844L131.828 401.867C149.543 417.02 170.057 428.902 192.477 436.84V490.719C192.477 498.242 197.639 504.996 205.004 506.539C221.633 510.023 238.809 512 256.477 512S291.321 510.023 307.95 506.539C315.315 504.996 320.477 498.242 320.477 490.719V436.84C342.897 428.902 363.411 417.02 381.125 401.867L427.844 428.844C430.401 430.32 433.26 431.047 436.09 431.047C455.81 431.047 499.954 349.1 499.954 332.005ZM256.477 336C212.366 336 176.477 300.113 176.477 256S212.366 176 256.477 176S336.477 211.887 336.477 256S300.588 336 256.477 336Z",
@@ -102,6 +118,22 @@ const ICONS = {
 } as const;
 
 type IconName = keyof typeof ICONS;
+type ControlMenuId = "captions" | "quality" | "speed";
+
+interface ControlMenuOption {
+  value: string;
+  label: string;
+  badge?: string | null;
+  active: boolean;
+  onSelect: () => void;
+}
+
+interface ThumbnailHoverState {
+  x: number;
+  time: number;
+  hostWidth: number;
+  wrapperLeft: number;
+}
 
 /**
  * `<f8-player>` — Lit custom element wrapping `@f8/player-core`.
@@ -177,6 +209,24 @@ export class F8PlayerElement extends LitElement {
    */
   theme = "classroom";
 
+  /**
+   * Custom list of playback rates shown in the speed menu.
+   * Defaults to `[0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2]` when `null`.
+   */
+  playbackRates: readonly number[] | null = null;
+
+  /**
+   * Persist volume, speed, quality, and captions to `localStorage` and
+   * restore them on next load (YouTube-style adaptive quality preference).
+   */
+  persistPrefs = false;
+
+  /**
+   * `localStorage` key used when `persistPrefs` is enabled.
+   * Override this to isolate prefs when embedding multiple players on one page.
+   */
+  prefsKey = "f8-player:prefs";
+
   /** Reactive controller — owns the player lifecycle. */
   readonly controller = new PlayerController(this, () => this.options);
 
@@ -197,7 +247,7 @@ export class F8PlayerElement extends LitElement {
   private thumbnailCues: readonly ThumbnailCueLite[] = [];
 
   /** Hover pointer state tracked on the timeline wrapper. */
-  private thumbnailHover: { x: number; time: number } | null = null;
+  private thumbnailHover: ThumbnailHoverState | null = null;
 
   /** Active caption language (null = off). Mirrored from `subtitles:changed`. */
   private activeCaptionsLang: string | null = null;
@@ -207,6 +257,8 @@ export class F8PlayerElement extends LitElement {
 
   /** Disposers returned by `controller.on(...)` for plugin-event subscriptions. */
   private pluginEventDisposers: Disposer[] = [];
+
+  private openMenu: ControlMenuId | null = null;
 
   /** Re-render when native `<track>` elements are added/removed or their mode changes. */
   private readonly _onTextTrackChange = (): void => {
@@ -218,6 +270,25 @@ export class F8PlayerElement extends LitElement {
     if (ae instanceof HTMLElement && this.contains(ae)) {
       ae.blur();
     }
+    this.closeOpenMenu();
+  };
+
+  private readonly onDocumentPointerDown = (event: PointerEvent): void => {
+    if (!this.openMenu) return;
+    const target = event.target;
+    if (!(target instanceof Node)) {
+      this.closeOpenMenu();
+      return;
+    }
+    const activeMenu = this.querySelector<HTMLElement>(
+      `[data-f8p-control-menu="${this.openMenu}"]`,
+    );
+    if (activeMenu?.contains(target)) return;
+    this.closeOpenMenu();
+  };
+
+  private readonly onDocumentKeydown = (event: KeyboardEvent): void => {
+    if (event.key === "Escape") this.closeOpenMenu();
   };
 
   static override properties = {
@@ -225,11 +296,16 @@ export class F8PlayerElement extends LitElement {
     videoClass: { attribute: "video-class" },
     controls: { type: Boolean, reflect: true },
     theme: { type: String },
+    playbackRates: { attribute: false },
+    persistPrefs: { type: Boolean, attribute: "persist-prefs" },
+    prefsKey: { attribute: "prefs-key" },
   };
 
   override connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener("mouseleave", this.onHostMouseLeave);
+    document.addEventListener("pointerdown", this.onDocumentPointerDown, true);
+    document.addEventListener("keydown", this.onDocumentKeydown);
     this.syncHostChromeAttributes();
   }
 
@@ -251,6 +327,7 @@ export class F8PlayerElement extends LitElement {
     });
     this.installEventBridges();
     this.installPluginEventBridges();
+    this.installPrefsListeners();
     // Listen for native <track> additions / mode changes so the CC button
     // stays in sync with tracks appended directly to <video> (e.g. by
     // captions-controller in f8-pro-ui). Guard: JSDOM stubs TextTrackList
@@ -265,6 +342,8 @@ export class F8PlayerElement extends LitElement {
 
   override disconnectedCallback(): void {
     this.removeEventListener("mouseleave", this.onHostMouseLeave);
+    document.removeEventListener("pointerdown", this.onDocumentPointerDown, true);
+    document.removeEventListener("keydown", this.onDocumentKeydown);
     super.disconnectedCallback();
     if (this.videoEl) {
       const tt = this.videoEl.textTracks;
@@ -280,6 +359,7 @@ export class F8PlayerElement extends LitElement {
     this.pluginEventDisposers = [];
     this.thumbnailCues = [];
     this.thumbnailHover = null;
+    this.openMenu = null;
   }
 
   /**
@@ -296,6 +376,9 @@ export class F8PlayerElement extends LitElement {
       event: PluginEventName,
       handler: (payload: unknown) => void,
     ) => Disposer;
+
+    // One-time flag: restore saved captions pref on the first subtitles event.
+    let captionsPrefRestored = false;
 
     this.pluginEventDisposers.push(
       onAny("thumbnails:ready", (payload) => {
@@ -318,6 +401,15 @@ export class F8PlayerElement extends LitElement {
         if (next !== this.activeCaptionsLang) {
           this.activeCaptionsLang = next;
           this.requestUpdate();
+        }
+        // Restore saved captions lang once (only before the user has interacted).
+        if (this.persistPrefs && !captionsPrefRestored && !this.captionsTouched) {
+          captionsPrefRestored = true;
+          const prefs = this.loadPlayerPrefs();
+          if (prefs.captionsLang !== undefined && prefs.captionsLang !== null) {
+            const available = states.find((s) => s.lang === prefs.captionsLang);
+            if (available) this.selectPluginCaptions(prefs.captionsLang);
+          }
         }
       }),
     );
@@ -563,7 +655,7 @@ export class F8PlayerElement extends LitElement {
             data-f8-player-control="fullscreen"
             @click=${this.handleFullscreenClick}
           >
-            ${this.renderIcon(fullscreen ? "minimize" : "maximize")}
+            ${this.renderIcon(fullscreen ? "compress" : "maximize")}
           </button>
         </div>
       </div>
@@ -577,58 +669,61 @@ export class F8PlayerElement extends LitElement {
     const activeParts = activeQuality
       ? this.formatQualityParts(activeQuality.label)
       : { text: "Tự động", badge: null };
+    const options: ControlMenuOption[] = [
+      {
+        value: "auto",
+        label: "Tự động",
+        active: !activeQuality,
+        onSelect: () => this.selectQuality("auto"),
+      },
+      ...qualities.map((quality) => {
+        const parts = this.formatQualityParts(quality.label);
+        return {
+          value: quality.id,
+          label: parts.text,
+          badge: parts.badge,
+          active: activeQuality?.id === quality.id,
+          onSelect: () => this.selectQuality(quality.id),
+        };
+      }),
+    ];
 
-    return html`
-      <span
-        class="f8p-quality"
-        data-f8-player-control="quality"
-      >
+    return this.renderControlMenu({
+      menuId: "quality",
+      control: "quality",
+      ariaLabel: "Chất lượng video",
+      active: Boolean(activeQuality),
+      trigger: html`
         <span data-f8-player-quality-value aria-hidden="true">
           <span data-f8-player-quality-text>${activeParts.text}</span>
           ${activeParts.badge ? html`<span data-f8-player-quality-badge>${activeParts.badge}</span>` : null}
         </span>
-        <select
-          class="f8p-native-select"
-          .value=${activeQuality?.id ?? "auto"}
-          aria-label="Chất lượng video"
-          data-f8-player-quality-select
-          @change=${this.handleQualityChange}
-        >
-          <option value="auto">Tự động</option>
-          ${qualities.map(
-            (quality) => html`
-              <option value=${quality.id}>${this.formatQualityParts(quality.label).optionLabel}</option>
-            `,
-          )}
-        </select>
-      </span>
-    `;
+      `,
+      options,
+    });
   }
 
   private renderSettingsControl(state: PlayerState | null): unknown {
     const playbackRate = state?.playbackRate ?? 1;
-    const rates = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
-    return html`
-      <span
-        class="f8p-settings"
-        title="Cài đặt"
-        data-f8-player-control="settings"
-        data-playback-rate=${playbackRate}
-      >
+    const rates = this.playbackRates ?? [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
+    const options = rates.map((rate) => ({
+      value: String(rate),
+      label: rate === 1 ? "Bình thường" : `${rate}×`,
+      active: rate === playbackRate,
+      onSelect: () => this.selectPlaybackRate(rate),
+    }));
+
+    return this.renderControlMenu({
+      menuId: "speed",
+      control: "settings",
+      ariaLabel: "Tốc độ phát",
+      active: playbackRate !== 1,
+      trigger: html`
         ${this.renderIcon("settings")}
-        <select
-          class="f8p-native-select"
-          .value=${String(playbackRate)}
-          aria-label="Cài đặt"
-          data-f8-player-settings-select
-          @change=${this.handlePlaybackRateChange}
-        >
-          ${rates.map(
-            (rate) => html`<option value=${rate}>${rate === 1 ? "Bình thường" : `${rate}×`}</option>`,
-          )}
-        </select>
-      </span>
-    `;
+        <span data-f8p-trigger-label>${playbackRate === 1 ? "1×" : `${playbackRate}×`}</span>
+      `,
+      options,
+    });
   }
 
   private renderPipButton(state: PlayerState | null): unknown {
@@ -652,41 +747,37 @@ export class F8PlayerElement extends LitElement {
     const pluginTracks = state?.source?.tracks ?? [];
 
     if (pluginTracks.length > 0) {
-      // Plugin-managed tracks (e.g. @f8/player-plugin-subtitles). Hydrate the
-      // active language from the track defaults the first time the user hasn't
-      // interacted yet (and the plugin hasn't emitted subtitles:changed).
       if (this.activeCaptionsLang === null && !this.captionsTouched) {
         const def = pluginTracks.find((t) => t.default);
         if (def) this.activeCaptionsLang = def.srcLang;
       }
       const isActive = this.activeCaptionsLang !== null;
-      const selectValue = this.activeCaptionsLang ?? "__off__";
-      return html`
-        <span
-          class="f8p-captions"
-          data-f8-player-control="captions"
-          ?data-f8-player-captions-active=${isActive}
-        >
-          ${this.renderIcon("cc")}
-          <select
-            class="f8p-native-select"
-            .value=${selectValue}
-            aria-label="Phụ đề"
-            data-f8-player-captions-select
-            @change=${this.handleCaptionsChange}
-          >
-            <option value="__off__">Tắt phụ đề</option>
-            ${pluginTracks.map(
-              (t) => html`<option value=${t.srcLang}>${t.label}</option>`,
-            )}
-          </select>
-        </span>
-      `;
+      const activeTrack = pluginTracks.find((t) => t.srcLang === this.activeCaptionsLang);
+      const options: ControlMenuOption[] = [
+        {
+          value: "__off__",
+          label: "Tắt phụ đề",
+          active: !isActive,
+          onSelect: () => this.selectPluginCaptions("__off__"),
+        },
+        ...pluginTracks.map((track) => ({
+          value: track.srcLang,
+          label: track.label,
+          active: track.srcLang === this.activeCaptionsLang,
+          onSelect: () => this.selectPluginCaptions(track.srcLang),
+        })),
+      ];
+
+      return this.renderControlMenu({
+        menuId: "captions",
+        control: "captions",
+        ariaLabel: "Phụ đề",
+        active: isActive,
+        trigger: this.renderCaptionsTrigger(activeTrack?.srcLang ?? null),
+        options,
+      });
     }
 
-    // Native-track fallback: tracks appended directly to <video> (e.g. by
-    // captions-controller in f8-pro-ui). These are not reflected in
-    // state.source.tracks; we read them from videoEl.textTracks instead.
     const nativeTracks = this.videoEl
       ? Array.from(this.videoEl.textTracks).filter(
           (t) => t.kind === "captions" || t.kind === "subtitles",
@@ -696,26 +787,100 @@ export class F8PlayerElement extends LitElement {
 
     const showingTrack = nativeTracks.find((t) => t.mode === "showing");
     const isActive = showingTrack != null;
-    const selectValue = showingTrack?.language ?? "__off__";
+    const options: ControlMenuOption[] = [
+      {
+        value: "__off__",
+        label: "Tắt phụ đề",
+        active: !isActive,
+        onSelect: () => this.selectNativeCaptions("__off__"),
+      },
+      ...nativeTracks.map((track) => ({
+        value: track.language,
+        label: track.label || track.language || "Phụ đề",
+        active: track === showingTrack,
+        onSelect: () => this.selectNativeCaptions(track.language),
+      })),
+    ];
+
+    return this.renderControlMenu({
+      menuId: "captions",
+      control: "captions",
+      ariaLabel: "Phụ đề",
+      active: isActive,
+      trigger: this.renderCaptionsTrigger(showingTrack?.language ?? null),
+      options,
+    });
+  }
+
+  private renderCaptionsTrigger(lang: string | null): unknown {
+    return html`
+      ${this.renderIcon("cc")}
+      <span data-f8p-trigger-label>${lang ? lang.toUpperCase() : "CC"}</span>
+    `;
+  }
+
+  private renderControlMenu(params: {
+    menuId: ControlMenuId;
+    control: "captions" | "quality" | "settings";
+    ariaLabel: string;
+    trigger: unknown;
+    options: ControlMenuOption[];
+    active?: boolean;
+  }): unknown {
+    const open = this.openMenu === params.menuId;
+    const panelId = `f8p-${params.menuId}-menu`;
+
     return html`
       <span
-        class="f8p-captions"
-        data-f8-player-control="captions"
-        ?data-f8-player-captions-active=${isActive}
+        class="f8p-menu"
+        data-f8-player-control=${params.control}
+        data-f8p-control-menu=${params.menuId}
+        ?data-f8p-menu-open=${open}
+        ?data-f8-player-captions-active=${params.control === "captions" && Boolean(params.active)}
       >
-        ${this.renderIcon("cc")}
-        <select
-          class="f8p-native-select"
-          .value=${selectValue}
-          aria-label="Phụ đề"
-          data-f8-player-captions-select
-          @change=${this.handleNativeCaptionsChange}
+        <button
+          type="button"
+          class="f8p-menu-trigger"
+          aria-label=${params.ariaLabel}
+          aria-haspopup="listbox"
+          aria-expanded=${open ? "true" : "false"}
+          aria-controls=${panelId}
+          data-f8p-control-trigger=${params.menuId}
+          @click=${() => this.toggleMenu(params.menuId)}
+          @keydown=${(event: KeyboardEvent) => this.handleMenuTriggerKeydown(event, params.menuId)}
         >
-          <option value="__off__">Tắt phụ đề</option>
-          ${nativeTracks.map(
-            (t) => html`<option value=${t.language}>${t.label || t.language}</option>`,
-          )}
-        </select>
+          ${params.trigger}
+        </button>
+        ${open
+          ? html`
+              <div
+                id=${panelId}
+                class="f8p-menu-popover"
+                role="listbox"
+                aria-label=${params.ariaLabel}
+                data-f8p-control-popover=${params.menuId}
+                @keydown=${this.handleMenuListboxKeydown}
+              >
+                ${params.options.map(
+                  (option) => html`
+                    <button
+                      type="button"
+                      class="f8p-menu-option"
+                      role="option"
+                      aria-selected=${option.active ? "true" : "false"}
+                      data-f8p-control-option
+                      data-value=${option.value}
+                      @click=${() => this.selectMenuOption(option)}
+                    >
+                      <span data-f8p-option-label>${option.label}</span>
+                      ${option.badge ? html`<span data-f8p-option-badge>${option.badge}</span>` : null}
+                      ${option.active ? html`<span data-f8p-option-check aria-hidden="true">✓</span>` : null}
+                    </button>
+                  `,
+                )}
+              </div>
+            `
+          : null}
       </span>
     `;
   }
@@ -730,31 +895,39 @@ export class F8PlayerElement extends LitElement {
     const tileW = cue.w > 0 ? cue.w : THUMB_PREVIEW_WIDTH;
     const tileH = cue.h > 0 ? cue.h : THUMB_PREVIEW_HEIGHT;
     void max;
-    // Scale the tile to 50% of its natural sprite dimensions.
-    // `transform-origin: 50% 100%` anchors the bottom-centre so the visual
-    // bottom stays fixed at `calc(100% + 0.8rem)` above the seek bar.
-    // `scale(0.5) translateX(-50%)` then centres the half-size visual on
-    // `hover.x`. Background is not set to `background-size` — the sprite
-    // sheet renders at intrinsic size so the raw `(cue.x, cue.y)` offsets
-    // address the correct tile; CSS transform handles the visual scaling.
+    const scale = 0.5;
+    const visualW = tileW * scale;
+    const visualH = tileH * scale;
+    const edgePadding = 8;
+    const hostLeftInWrapper = -hover.wrapperLeft;
+    const hostRightInWrapper = hover.hostWidth - hover.wrapperLeft;
+    const minCenter = hostLeftInWrapper + visualW / 2 + edgePadding;
+    const maxCenter = hostRightInWrapper - visualW / 2 - edgePadding;
+    const center =
+      minCenter <= maxCenter
+        ? Math.min(maxCenter, Math.max(minCenter, hover.x))
+        : (hostLeftInWrapper + hostRightInWrapper) / 2;
     const tileStyle = [
       "position:absolute",
       `bottom:calc(100% + 0.8rem)`,
-      `left:${hover.x}px`,
-      "transform:scale(0.5) translateX(-50%)",
-      "transform-origin:50% 100%",
-      `width:${tileW}px`,
-      `height:${tileH}px`,
-      `background-image:url("${cue.src}")`,
-      "background-repeat:no-repeat",
-      `background-position:-${cue.x}px -${cue.y}px`,
+      `left:${center - visualW / 2}px`,
+      `width:${visualW}px`,
+      `height:${visualH}px`,
       "pointer-events:none",
       "z-index:2",
     ].join(";");
-    // Render the time label independently so it is not scaled with the tile.
+    const imageStyle = [
+      `width:${tileW}px`,
+      `height:${tileH}px`,
+      `transform:scale(${scale})`,
+      "transform-origin:0 0",
+      `background-image:url("${cue.src}")`,
+      "background-repeat:no-repeat",
+      `background-position:-${cue.x}px -${cue.y}px`,
+    ].join(";");
     const labelStyle = [
       "position:absolute",
-      `left:${hover.x}px`,
+      `left:${center}px`,
       "bottom:calc(100% + 0.2rem)",
       "transform:translateX(-50%)",
       "color:#fff",
@@ -766,7 +939,9 @@ export class F8PlayerElement extends LitElement {
       "z-index:2",
     ].join(";");
     return html`
-      <div data-f8p-seek-thumbnail aria-hidden="true" style=${tileStyle}></div>
+      <div data-f8p-seek-thumbnail aria-hidden="true" style=${tileStyle}>
+        <div data-f8p-seek-thumbnail-image style=${imageStyle}></div>
+      </div>
       <span data-f8p-seek-thumbnail-time aria-hidden="true" style=${labelStyle}>
         ${this.formatTimeLabel(hover.time)}
       </span>
@@ -846,10 +1021,9 @@ export class F8PlayerElement extends LitElement {
     this.controller.player?.setVolume(Number(input.value));
   }
 
-  private handleQualityChange(event: Event): void {
+  private selectQuality(value: string): void {
     const player = this.controller.player;
     if (!player) return;
-    const value = (event.currentTarget as HTMLSelectElement).value;
     if (value === "auto") {
       player.commands.run("hls-quality:setAuto");
       return;
@@ -859,9 +1033,39 @@ export class F8PlayerElement extends LitElement {
       player.commands.run("hls-quality:set", quality as unknown as Record<string, unknown>);
   }
 
-  private handlePlaybackRateChange(event: Event): void {
-    const value = Number((event.currentTarget as HTMLSelectElement).value);
+  private selectPlaybackRate(value: number): void {
     this.controller.player?.setPlaybackRate(value);
+  }
+
+  private selectPluginCaptions(value: string): void {
+    this.captionsTouched = true;
+    if (value === "__off__") {
+      this.controller.player?.commands.run("subtitles:off");
+      this.activeCaptionsLang = null;
+    } else {
+      this.controller.player?.commands.run(
+        "subtitles:setLang",
+        value as unknown as Record<string, unknown>,
+      );
+      this.activeCaptionsLang = value;
+    }
+    if (this.persistPrefs) {
+      this.savePlayerPrefs({ captionsLang: value === "__off__" ? null : value });
+    }
+  }
+
+  private selectNativeCaptions(value: string): void {
+    if (!this.videoEl) return;
+    const nativeTracks = Array.from(this.videoEl.textTracks).filter(
+      (t) => t.kind === "captions" || t.kind === "subtitles",
+    );
+    for (const t of nativeTracks) {
+      t.mode = value !== "__off__" && t.language === value ? "showing" : "hidden";
+    }
+    this.captionsTouched = true;
+    if (this.persistPrefs) {
+      this.savePlayerPrefs({ captionsLang: value === "__off__" ? null : value });
+    }
   }
 
   private handlePipClick(): void {
@@ -877,11 +1081,18 @@ export class F8PlayerElement extends LitElement {
     if (!wrapper) return;
     const rect = wrapper.getBoundingClientRect();
     if (rect.width <= 0) return;
+    const hostRect = this.getBoundingClientRect();
     const duration = this.controller.player?.getState().duration ?? 0;
     const max = Number.isFinite(duration) && duration > 0 ? duration : 1;
     const x = Math.max(0, Math.min(rect.width, event.clientX - rect.left));
-    const time = (x / rect.width) * max;
-    this.thumbnailHover = { x, time };
+    const rawTime = (x / rect.width) * max;
+    const time = Math.min(rawTime, Math.max(0, max - 0.001));
+    this.thumbnailHover = {
+      x,
+      time,
+      hostWidth: hostRect.width > 0 ? hostRect.width : rect.width,
+      wrapperLeft: rect.left - hostRect.left,
+    };
     this.requestUpdate();
   };
 
@@ -891,34 +1102,75 @@ export class F8PlayerElement extends LitElement {
     this.requestUpdate();
   };
 
-  private handleCaptionsChange = (event: Event): void => {
-    const select = event.currentTarget as HTMLSelectElement;
-    const value = select.value;
-    this.captionsTouched = true;
-    if (value === "__off__") {
-      this.controller.player?.commands.run("subtitles:off");
-      this.activeCaptionsLang = null;
-    } else {
-      this.controller.player?.commands.run(
-        "subtitles:setLang",
-        value as unknown as Record<string, unknown>,
-      );
-      this.activeCaptionsLang = value;
-    }
+  private toggleMenu(menuId: ControlMenuId): void {
+    const willOpen = this.openMenu !== menuId;
+    this.openMenu = willOpen ? menuId : null;
     this.requestUpdate();
-  };
+    if (willOpen) this.focusSelectedMenuOption(menuId);
+  }
 
-  private handleNativeCaptionsChange = (event: Event): void => {
-    if (!this.videoEl) return;
-    const value = (event.currentTarget as HTMLSelectElement).value;
-    const nativeTracks = Array.from(this.videoEl.textTracks).filter(
-      (t) => t.kind === "captions" || t.kind === "subtitles",
-    );
-    for (const t of nativeTracks) {
-      t.mode = value !== "__off__" && t.language === value ? "showing" : "hidden";
-    }
-    this.captionsTouched = true;
+  private closeOpenMenu(): void {
+    if (!this.openMenu) return;
+    this.openMenu = null;
     this.requestUpdate();
+  }
+
+  private selectMenuOption(option: ControlMenuOption): void {
+    option.onSelect();
+    this.openMenu = null;
+    this.requestUpdate();
+  }
+
+  private focusSelectedMenuOption(menuId: ControlMenuId): void {
+    void this.updateComplete.then(() => {
+      const popover = this.querySelector<HTMLElement>(`[data-f8p-control-popover="${menuId}"]`);
+      const selected = popover?.querySelector<HTMLElement>('[data-f8p-control-option][aria-selected="true"]');
+      const first = popover?.querySelector<HTMLElement>("[data-f8p-control-option]");
+      (selected ?? first)?.focus();
+    });
+  }
+
+  private focusMenuTrigger(menuId: ControlMenuId): void {
+    this.querySelector<HTMLElement>(`[data-f8p-control-trigger="${menuId}"]`)?.focus();
+  }
+
+  private handleMenuTriggerKeydown(event: KeyboardEvent, menuId: ControlMenuId): void {
+    if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+    event.preventDefault();
+    if (this.openMenu !== menuId) {
+      this.openMenu = menuId;
+      this.requestUpdate();
+    }
+    this.focusSelectedMenuOption(menuId);
+  }
+
+  private handleMenuListboxKeydown = (event: KeyboardEvent): void => {
+    const popover = event.currentTarget as HTMLElement;
+    const options = Array.from(popover.querySelectorAll<HTMLElement>("[data-f8p-control-option]"));
+    const currentIndex = Math.max(0, options.indexOf(document.activeElement as HTMLElement));
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      const menuId = this.openMenu;
+      this.closeOpenMenu();
+      if (menuId) this.focusMenuTrigger(menuId);
+      return;
+    }
+
+    const nextIndex =
+      event.key === "ArrowDown"
+        ? Math.min(options.length - 1, currentIndex + 1)
+        : event.key === "ArrowUp"
+          ? Math.max(0, currentIndex - 1)
+          : event.key === "Home"
+            ? 0
+            : event.key === "End"
+              ? options.length - 1
+              : -1;
+
+    if (nextIndex < 0) return;
+    event.preventDefault();
+    options[nextIndex]?.focus();
   };
 
   private formatTimeLabel(seconds: number): string {
@@ -936,6 +1188,76 @@ export class F8PlayerElement extends LitElement {
   private toDateTime(seconds: number): string {
     if (!Number.isFinite(seconds)) return "PT0S";
     return `PT${Math.round(Math.max(0, seconds))}S`;
+  }
+
+  // ------------------------------------------------------------------------
+  // Internal — player preferences persistence (localStorage)
+  // ------------------------------------------------------------------------
+
+  private installPrefsListeners(): void {
+    const player = this.controller.player;
+    if (!player || !this.persistPrefs) return;
+
+    // Restore immediately applicable prefs (volume, muted, playbackRate).
+    const prefs = this.loadPlayerPrefs();
+    if (prefs.volume != null) player.setVolume(prefs.volume);
+    if (prefs.muted != null) player.setMuted(prefs.muted);
+    if (prefs.playbackRate != null) player.setPlaybackRate(prefs.playbackRate);
+
+    // Restore quality once the qualities list becomes available.
+    // YouTube-style: prefer saved quality but silently skip if not in the list
+    // (adaptive quality will take over in that case).
+    if (prefs.qualityHeight != null) {
+      const tryApplyQuality = (qualities: readonly QualityLevel[]): boolean => {
+        const level = qualities.find((q) => q.height === prefs.qualityHeight);
+        if (level) {
+          player.commands.run("hls:setQuality", level);
+          return true;
+        }
+        return false;
+      };
+      const state = player.getState();
+      if (!tryApplyQuality(state.qualities)) {
+        const unsub = player.subscribe(
+          (s) => s.qualities,
+          (qualities) => {
+            if (tryApplyQuality(qualities)) unsub();
+          },
+        );
+      }
+    }
+
+    // Save prefs whenever relevant state changes.
+    this.controller.on("volumechange", ({ volume, muted }) => {
+      this.savePlayerPrefs({ volume, muted });
+    });
+    this.controller.on("ratechange", ({ playbackRate }) => {
+      this.savePlayerPrefs({ playbackRate });
+    });
+    // Only persist user-chosen quality (auto=false); ABR selections are ignored.
+    this.controller.on("qualitychange", ({ quality, auto }) => {
+      if (!auto) {
+        this.savePlayerPrefs({ qualityHeight: quality?.height ?? null });
+      }
+    });
+  }
+
+  private loadPlayerPrefs(): Partial<PlayerPrefs> {
+    try {
+      const raw = localStorage.getItem(this.prefsKey);
+      return raw ? (JSON.parse(raw) as Partial<PlayerPrefs>) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  private savePlayerPrefs(patch: Partial<PlayerPrefs>): void {
+    try {
+      const current = this.loadPlayerPrefs();
+      localStorage.setItem(this.prefsKey, JSON.stringify({ ...current, ...patch }));
+    } catch {
+      // Ignore: private browsing mode, storage quota exceeded, etc.
+    }
   }
 
   // ------------------------------------------------------------------------

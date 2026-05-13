@@ -136,6 +136,15 @@
   object-fit: contain;
 }
 
+[data-f8-player][data-theme="classroom"] video::cue {
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.72);
+  font-size: 78%;
+  line-height: 1.55;
+  padding: 0.14em 0.36em;
+  text-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.85);
+}
+
 /* ─── Controls bar ──────────────────────────────────────────────────── */
 [data-f8-player][data-theme="classroom"] [data-f8-player-controls] {
   position: absolute;
@@ -183,7 +192,7 @@
   flex-wrap: wrap;
   align-items: center;
   width: 100%;
-  gap: 0.65rem 1rem;
+  gap: 0.65rem 1.4rem;
   box-sizing: border-box;
 }
 
@@ -322,8 +331,6 @@
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-backward"],
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-forward"],
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"],
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="captions"],
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"],
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"],
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"] {
   order: 10;
@@ -382,7 +389,7 @@
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="captions"] {
   order: 19;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   margin-left: auto;
 }
 
@@ -391,6 +398,9 @@
 [data-f8-player][data-theme="classroom"]
   [data-f8-player-control="captions"]
   ~ [data-f8-player-control="quality"],
+[data-f8-player][data-theme="classroom"]
+  [data-f8-player-control="captions"]
+  ~ [data-f8-player-control="playback-rate"],
 [data-f8-player][data-theme="classroom"]
   [data-f8-player-control="captions"]
   ~ [data-f8-player-control="settings"] {
@@ -404,16 +414,25 @@
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"] {
-  order: 20;
+  order: 23;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"] {
   order: 22;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   margin-left: auto;
 }
 
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="playback-rate"] {
+  order: 22;
+  position: relative;
+  overflow: visible;
+}
+
+[data-f8-player][data-theme="classroom"]
+  [data-f8-player-control="quality"]
+  + [data-f8-player-control="playback-rate"],
 [data-f8-player][data-theme="classroom"]
   [data-f8-player-control="quality"]
   + [data-f8-player-control="settings"] {
@@ -421,7 +440,7 @@
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"] {
-  order: 23;
+  order: 24;
 }
 
 /* ─── Sprite thumbnails hover preview ───────────────────────────────── */
@@ -452,7 +471,6 @@
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-backward"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-forward"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"]:hover,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"]:hover,
 [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"]:hover {
   background: rgba(255, 255, 255, 0.08);
@@ -530,27 +548,70 @@
   background: #ffffff;
 }
 
-/* ─── Select-backed controls (quality / settings) ───────────────────── */
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"] {
-  order: 21;
-  margin-left: auto;
+/* ─── Menu-backed controls (captions / quality / speed) ─────────────── */
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="captions"],
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"],
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="playback-rate"],
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"] {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  flex-shrink: 0;
   height: var(--f8p-btn-size);
+  color: var(--f8p-text);
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"] {
+  order: 21;
+  margin-left: auto;
+  min-width: 5.8rem;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-control-trigger] {
+  min-width: var(--f8p-btn-size);
+  height: var(--f8p-btn-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0 0.75rem;
   border: none;
   border-radius: var(--f8p-radius);
   background: transparent;
-  color: var(--f8p-text);
+  color: inherit;
   font: inherit;
-  font-size: 1.4rem;
-  min-width: 5.8rem;
-  padding: 0 0.5rem;
+  font-size: 1.35rem;
+  line-height: 1;
   cursor: pointer;
   outline: none;
+  transition:
+    background var(--f8p-transition),
+    color var(--f8p-transition),
+    transform var(--f8p-transition);
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-control-trigger]:hover,
+[data-f8-player][data-theme="classroom"] [data-f8p-control-trigger]:focus-visible,
+[data-f8-player][data-theme="classroom"] [data-f8p-menu-open] [data-f8p-control-trigger] {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-control-trigger]:focus-visible {
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.22);
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-control-trigger]:hover {
+  transform: translateY(-0.1rem);
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-trigger-label] {
+  max-width: 7.2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
 }
 
 [data-f8-player][data-theme="classroom"] [data-f8-player-quality-value] {
@@ -571,19 +632,91 @@
   letter-spacing: 0.02em;
 }
 
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:hover,
-[data-f8-player][data-theme="classroom"] [data-f8-player-control="quality"]:focus-within {
-  background: rgba(255, 255, 255, 0.08);
+[data-f8-player][data-theme="classroom"] [data-f8p-control-popover] {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 0.8rem);
+  z-index: calc(var(--f8p-z-controls) + 2);
+  min-width: 16rem;
+  max-width: min(24rem, calc(100vw - 3.2rem));
+  max-height: min(28rem, calc(100vh - 10rem));
+  overflow: auto;
+  box-sizing: border-box;
+  padding: 0.45rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.9rem;
+  background: rgba(18, 18, 20, 0.96);
+  box-shadow: 0 1.2rem 3.2rem rgba(0, 0, 0, 0.42);
+  backdrop-filter: blur(1.4rem);
+  transform-origin: 100% 100%;
+  animation: f8p-menu-in 0.14s ease-out;
 }
 
-[data-f8-player][data-theme="classroom"] [data-f8-player-quality-select],
-[data-f8-player][data-theme="classroom"] [data-f8-player-settings-select] {
-  position: absolute;
-  inset: 0;
+[data-f8-player][data-theme="classroom"] [data-f8p-control-option] {
   width: 100%;
-  height: 100%;
-  opacity: 0;
+  min-height: 3.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 0.9rem;
+  border: none;
+  border-radius: 0.65rem;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.88);
+  font: inherit;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  text-align: left;
   cursor: pointer;
+  outline: none;
+  transition:
+    background var(--f8p-transition),
+    color var(--f8p-transition);
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-control-option]:hover,
+[data-f8-player][data-theme="classroom"] [data-f8p-control-option]:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-control-option][aria-selected="true"] {
+  background: rgba(59, 130, 246, 0.22);
+  color: #ffffff;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-option-label] {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-option-badge] {
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.25rem;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+[data-f8-player][data-theme="classroom"] [data-f8p-option-check] {
+  margin-left: auto;
+  color: var(--f8p-accent-hover);
+  font-weight: 700;
+}
+
+@keyframes f8p-menu-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 /* ─── Watermark ─────────────────────────────────────────────────────── */
@@ -632,13 +765,17 @@
   [data-f8-player][data-theme="classroom"] [data-f8-player-controls],
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="play-pause"],
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="mute"],
-  [data-f8-player][data-theme="classroom"] [data-f8-player-control="settings"],
+  [data-f8-player][data-theme="classroom"] [data-f8p-control-trigger],
+  [data-f8-player][data-theme="classroom"] [data-f8-player-control="playback-rate"],
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="pip"],
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="fullscreen"],
   [data-f8-player][data-theme="classroom"]
     [data-f8-player-control="seek-bar"]::-webkit-slider-thumb,
   [data-f8-player][data-theme="classroom"] [data-f8-player-control="seek-bar"]::-moz-range-thumb {
     transition: none;
+  }
+  [data-f8-player][data-theme="classroom"] [data-f8p-control-popover] {
+    animation: none;
   }
 }
 

@@ -16,6 +16,7 @@ describe("<Fullscreen>", () => {
     renderWithPlayer(<Fullscreen />, { initialState: { fullscreen: true } });
     const btn = screen.getByRole("button", { name: "Exit fullscreen" });
     expect(btn.getAttribute("aria-pressed")).toBe("true");
+    expect(document.querySelector('[data-f8-player-icon="compress"]')).toBeDefined();
   });
 
   it("calls commands.run('fullscreen:toggle') on click", async () => {

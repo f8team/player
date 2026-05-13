@@ -1,9 +1,8 @@
-import { type ChangeEvent } from "react";
-
 import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 import { useLabels } from "../../i18n.js";
 
+import { ControlMenu, type ControlMenuOption } from "./ControlMenu.js";
 import { PlayerIcon } from "./icons.js";
 
 export interface SettingsProps {
@@ -27,30 +26,29 @@ export function Settings({
   const labels = useLabels();
   const playbackRate = usePlayerState((s) => s.playbackRate);
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-    player.setPlaybackRate(Number(e.target.value));
-  };
+  const options: ControlMenuOption[] = rates.map((rate) => ({
+    value: String(rate),
+    label: rate === 1 ? (normalLabel ?? "1×") : `${rate}×`,
+    active: rate === playbackRate,
+    onSelect: () => player.setPlaybackRate(rate),
+  }));
 
   return (
-    <span
+    <ControlMenu
       className={className}
       title={labels.settings}
-      data-f8-player-control="settings"
-      data-playback-rate={playbackRate}
-    >
-      <PlayerIcon name="settings" />
-      <select
-        value={playbackRate}
-        onChange={handleChange}
-        aria-label={labels.settings}
-        data-f8-player-settings-select=""
-      >
-        {rates.map((rate) => (
-          <option key={rate} value={rate}>
-            {rate === 1 ? (normalLabel ?? "1×") : `${rate}×`}
-          </option>
-        ))}
-      </select>
-    </span>
+      control="settings"
+      menuId="speed"
+      ariaLabel={labels.playbackRate}
+      active={playbackRate !== 1}
+      rootAttributes={{ "data-playback-rate": playbackRate }}
+      trigger={
+        <>
+          <PlayerIcon name="settings" />
+          <span data-f8p-trigger-label="">{playbackRate === 1 ? "1×" : `${playbackRate}×`}</span>
+        </>
+      }
+      options={options}
+    />
   );
 }

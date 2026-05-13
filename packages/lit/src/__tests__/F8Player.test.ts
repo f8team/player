@@ -222,6 +222,23 @@ describe("<f8-player> default controls", () => {
     expect(el.querySelector('[data-f8-player-control="fullscreen"]')).toBeTruthy();
   });
 
+  it("uses a compress icon while fullscreen is active", async () => {
+    mockPlayer.getState.mockReturnValue({
+      ...defaultState,
+      fullscreen: true,
+    });
+
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.options = {};
+    el.controls = true;
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    expect(
+      el.querySelector('[data-f8-player-control="fullscreen"] [data-f8-player-icon="compress"]'),
+    ).toBeTruthy();
+  });
+
   it("delegates default control interactions to the core player", async () => {
     mockPlayer.getState.mockReturnValue({
       ...defaultState,
@@ -260,17 +277,25 @@ describe("<f8-player> default controls", () => {
     mute.click();
     expect(mockPlayer.setMuted).toHaveBeenCalledWith(true);
 
-    const quality = el.querySelector<HTMLSelectElement>("[data-f8-player-quality-select]")!;
-    quality.value = "360";
-    quality.dispatchEvent(new Event("change", { bubbles: true }));
+    const qualityTrigger = el.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="quality"]')!;
+    qualityTrigger.click();
+    await el.updateComplete;
+    const quality = el.querySelector<HTMLButtonElement>(
+      '[data-f8p-control-popover="quality"] [data-value="360"]',
+    )!;
+    quality.click();
     expect(mockPlayer.commands.run).toHaveBeenCalledWith(
       "hls-quality:set",
       expect.objectContaining({ id: "360" }),
     );
 
-    const rate = el.querySelector<HTMLSelectElement>("[data-f8-player-settings-select]")!;
-    rate.value = "1.5";
-    rate.dispatchEvent(new Event("change", { bubbles: true }));
+    const rateTrigger = el.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="speed"]')!;
+    rateTrigger.click();
+    await el.updateComplete;
+    const rate = el.querySelector<HTMLButtonElement>(
+      '[data-f8p-control-popover="speed"] [data-value="1.5"]',
+    )!;
+    rate.click();
     expect(mockPlayer.setPlaybackRate).toHaveBeenCalledWith(1.5);
 
     const fullscreen = el.querySelector<HTMLButtonElement>(
@@ -278,6 +303,30 @@ describe("<f8-player> default controls", () => {
     )!;
     fullscreen.click();
     expect(mockPlayer.commands.run).toHaveBeenCalledWith("fullscreen:toggle");
+  });
+
+  it("closes an open menu when clicking inside the player but outside that menu", async () => {
+    mockPlayer.getState.mockReturnValue({
+      ...defaultState,
+      status: "paused",
+      qualities: [{ id: "360", height: 360, bitrate: 500_000, label: "360p" }],
+    });
+
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.options = {};
+    el.controls = true;
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    el.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="quality"]')!.click();
+    await el.updateComplete;
+    expect(el.querySelector('[data-f8p-control-popover="quality"]')).toBeTruthy();
+
+    el.querySelector<HTMLButtonElement>('[data-f8-player-control="play-pause"]')!.dispatchEvent(
+      new MouseEvent("pointerdown", { bubbles: true }),
+    );
+    await el.updateComplete;
+    expect(el.querySelector('[data-f8p-control-popover="quality"]')).toBeNull();
   });
 });
 
@@ -443,6 +492,36 @@ describe("<f8-player controls> sprite thumbnails", () => {
 
     expect(el.querySelector("[data-f8p-seek-thumbnail]")).toBeNull();
   });
+
+  it("keeps the hover thumbnail inside the player right edge", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    fireCoreEvent("thumbnails:ready", {
+      cues: [{ start: 0, end: 20, src: "sprite.jpg", x: 0, y: 0, w: 160, h: 90 }],
+    });
+    await el.updateComplete;
+
+    const wrapper = el.querySelector<HTMLElement>("[data-f8p-seek-wrapper]")!;
+    Object.defineProperty(el, "getBoundingClientRect", {
+      configurable: true,
+      value: () => ({ left: 0, width: 300 }),
+    });
+    Object.defineProperty(wrapper, "getBoundingClientRect", {
+      configurable: true,
+      value: () => ({ left: 50, width: 250 }),
+    });
+
+    wrapper.dispatchEvent(new MouseEvent("pointermove", { clientX: 300, bubbles: true }));
+    await el.updateComplete;
+
+    const tileStyle = el.querySelector<HTMLElement>("[data-f8p-seek-thumbnail]")!.getAttribute("style")!;
+    expect(tileStyle).toContain("left:162px");
+    expect(tileStyle).toContain("width:80px");
+  });
 });
 
 describe("<f8-player controls> captions", () => {
@@ -460,7 +539,7 @@ describe("<f8-player controls> captions", () => {
     });
   });
 
-  it("renders a captions select when source has tracks", async () => {
+  it("renders a captions listbox when source has tracks", async () => {
     const el = document.createElement("f8-player") as F8PlayerElement;
     el.controls = true;
     el.options = { source: { src: "video.m3u8" } };
@@ -469,8 +548,11 @@ describe("<f8-player controls> captions", () => {
 
     const captions = el.querySelector('[data-f8-player-control="captions"]');
     expect(captions).not.toBeNull();
-    const select = captions?.querySelector("select");
-    const values = Array.from(select?.options ?? []).map((o) => o.value);
+    captions!.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="captions"]')!.click();
+    await el.updateComplete;
+    const values = Array.from(
+      el.querySelectorAll<HTMLButtonElement>('[data-f8p-control-popover="captions"] [data-value]'),
+    ).map((o) => o.dataset.value);
     expect(values).toEqual(["__off__", "vi", "en"]);
   });
 
@@ -481,11 +563,11 @@ describe("<f8-player controls> captions", () => {
     document.body.appendChild(el);
     await el.updateComplete;
 
-    const select = el.querySelector(
-      '[data-f8-player-control="captions"] select',
-    ) as HTMLSelectElement;
-    select.value = "en";
-    select.dispatchEvent(new Event("change", { bubbles: true }));
+    el.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="captions"]')!.click();
+    await el.updateComplete;
+    el.querySelector<HTMLButtonElement>(
+      '[data-f8p-control-popover="captions"] [data-value="en"]',
+    )!.click();
     expect(mockPlayer.commands.run).toHaveBeenCalledWith("subtitles:setLang", "en");
   });
 
@@ -496,11 +578,11 @@ describe("<f8-player controls> captions", () => {
     document.body.appendChild(el);
     await el.updateComplete;
 
-    const select = el.querySelector(
-      '[data-f8-player-control="captions"] select',
-    ) as HTMLSelectElement;
-    select.value = "__off__";
-    select.dispatchEvent(new Event("change", { bubbles: true }));
+    el.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="captions"]')!.click();
+    await el.updateComplete;
+    el.querySelector<HTMLButtonElement>(
+      '[data-f8p-control-popover="captions"] [data-value="__off__"]',
+    )!.click();
     expect(mockPlayer.commands.run).toHaveBeenCalledWith("subtitles:off");
   });
 
@@ -559,7 +641,11 @@ describe("<f8-player controls> native captions (textTracks fallback)", () => {
 
     const captions = el.querySelector('[data-f8-player-control="captions"]');
     expect(captions).not.toBeNull();
-    const options = Array.from(captions!.querySelectorAll("option")).map((o) => o.value);
+    captions!.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="captions"]')!.click();
+    await el.updateComplete;
+    const options = Array.from(
+      el.querySelectorAll<HTMLButtonElement>('[data-f8p-control-popover="captions"] [data-value]'),
+    ).map((o) => o.dataset.value);
     expect(options).toEqual(["__off__", "vi"]);
   });
 
@@ -575,11 +661,11 @@ describe("<f8-player controls> native captions (textTracks fallback)", () => {
     el.requestUpdate();
     await el.updateComplete;
 
-    const select = el.querySelector(
-      '[data-f8-player-control="captions"] select',
-    ) as HTMLSelectElement;
-    select.value = "vi";
-    select.dispatchEvent(new Event("change", { bubbles: true }));
+    el.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="captions"]')!.click();
+    await el.updateComplete;
+    el.querySelector<HTMLButtonElement>(
+      '[data-f8p-control-popover="captions"] [data-value="vi"]',
+    )!.click();
     expect(nativeTrack.mode).toBe("showing");
   });
 
@@ -595,11 +681,11 @@ describe("<f8-player controls> native captions (textTracks fallback)", () => {
     el.requestUpdate();
     await el.updateComplete;
 
-    const select = el.querySelector(
-      '[data-f8-player-control="captions"] select',
-    ) as HTMLSelectElement;
-    select.value = "__off__";
-    select.dispatchEvent(new Event("change", { bubbles: true }));
+    el.querySelector<HTMLButtonElement>('[data-f8p-control-trigger="captions"]')!.click();
+    await el.updateComplete;
+    el.querySelector<HTMLButtonElement>(
+      '[data-f8p-control-popover="captions"] [data-value="__off__"]',
+    )!.click();
     expect(nativeTrack.mode).toBe("hidden");
   });
 

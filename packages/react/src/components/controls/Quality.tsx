@@ -1,9 +1,10 @@
 import type { QualityLevel } from "@f8/player-core";
-import { type ChangeEvent } from "react";
 
 import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 import { useLabels } from "../../i18n.js";
+
+import { ControlMenu, type ControlMenuOption } from "./ControlMenu.js";
 
 export interface QualityProps {
   className?: string;
@@ -44,12 +45,11 @@ export function Quality({ className, resolutionBadge }: QualityProps): JSX.Eleme
 
   if (qualities.length === 0) return null;
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-    const val = e.target.value;
-    if (val === "auto") {
+  const selectQuality = (value: string): void => {
+    if (value === "auto") {
       player.commands.run("hls-quality:setAuto");
     } else {
-      const q = qualities.find((level) => level.id === val);
+      const q = qualities.find((level) => level.id === value);
       if (q) {
         player.commands.run("hls-quality:set", q as unknown as Record<string, unknown>);
       }
@@ -59,26 +59,41 @@ export function Quality({ className, resolutionBadge }: QualityProps): JSX.Eleme
   const activeParts = activeQuality
     ? getQualityParts(activeQuality.label, resolutionBadge)
     : { text: labels.qualityAuto, badge: null };
+  const options: ControlMenuOption[] = [
+    {
+      value: "auto",
+      label: labels.qualityAuto,
+      active: !activeQuality,
+      onSelect: () => selectQuality("auto"),
+    },
+    ...qualities.map((q: QualityLevel) => {
+      const parts = getQualityParts(q.label, resolutionBadge);
+      return {
+        value: q.id,
+        label: parts.text,
+        badge: parts.badge,
+        active: activeQuality?.id === q.id,
+        onSelect: () => selectQuality(q.id),
+      };
+    }),
+  ];
 
   return (
-    <span className={className} data-f8-player-control="quality">
-      <span data-f8-player-quality-value="" aria-hidden="true">
-        <span data-f8-player-quality-text="">{activeParts.text}</span>
-        {activeParts.badge ? <span data-f8-player-quality-badge="">{activeParts.badge}</span> : null}
-      </span>
-      <select
-        value={activeQuality?.id ?? "auto"}
-        onChange={handleChange}
-        aria-label={labels.quality}
-        data-f8-player-quality-select=""
-      >
-        <option value="auto">{labels.qualityAuto}</option>
-        {qualities.map((q: QualityLevel) => (
-          <option key={q.id} value={q.id}>
-            {getQualityParts(q.label, resolutionBadge).optionLabel}
-          </option>
-        ))}
-      </select>
-    </span>
+    <ControlMenu
+      className={className}
+      control="quality"
+      menuId="quality"
+      ariaLabel={labels.quality}
+      active={Boolean(activeQuality)}
+      trigger={
+        <span data-f8-player-quality-value="" aria-hidden="true">
+          <span data-f8-player-quality-text="">{activeParts.text}</span>
+          {activeParts.badge ? (
+            <span data-f8-player-quality-badge="">{activeParts.badge}</span>
+          ) : null}
+        </span>
+      }
+      options={options}
+    />
   );
 }

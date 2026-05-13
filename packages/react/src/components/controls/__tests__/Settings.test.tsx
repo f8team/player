@@ -8,14 +8,15 @@ import { Settings } from "../Settings.js";
 describe("<Settings>", () => {
   it("renders a gear-backed playback settings select", () => {
     renderWithPlayer(<Settings />, { initialState: { playbackRate: 1 } });
-    expect(screen.getByRole("combobox", { name: "Settings" })).toBeDefined();
+    expect(screen.getByRole("button", { name: "Playback speed" })).toBeDefined();
     expect(document.querySelector('[data-f8-player-icon="settings"]')).toBeDefined();
   });
 
   it("updates the playback rate when a rate is selected", async () => {
     const { player } = renderWithPlayer(<Settings />, { initialState: { playbackRate: 1 } });
 
-    await userEvent.selectOptions(screen.getByRole("combobox", { name: "Settings" }), "1.5");
+    await userEvent.click(screen.getByRole("button", { name: "Playback speed" }));
+    await userEvent.click(screen.getByRole("option", { name: "1.5×" }));
 
     expect(player.setPlaybackRate).toHaveBeenCalledWith(1.5);
   });

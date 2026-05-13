@@ -31,9 +31,10 @@ interface ThumbnailCueLite {
   h: number;
 }
 
-/** Pixel dimensions chosen for the hover preview tile. */
+/** Pixel dimensions used when a cue has no explicit tile size. */
 const THUMB_PREVIEW_WIDTH = 160;
 const THUMB_PREVIEW_HEIGHT = 90;
+const THUMB_PREVIEW_SCALE = 0.5;
 
 function findCueAt(cues: readonly ThumbnailCueLite[], time: number): ThumbnailCueLite | null {
   if (!cues.length || !Number.isFinite(time)) return null;
@@ -134,7 +135,12 @@ export function SeekBar({
   const [cues, setCues] = useState<readonly ThumbnailCueLite[]>([]);
 
   // Hover state for the thumbnail tooltip. `null` means "not hovering".
-  const [hover, setHover] = useState<{ x: number; time: number } | null>(null);
+  const [hover, setHover] = useState<{
+    x: number;
+    time: number;
+    hostWidth: number;
+    wrapperLeft: number;
+  } | null>(null);
 
   const wrapperRef = useRef<HTMLDivElement | null>(null);
 
@@ -211,9 +217,17 @@ export function SeekBar({
       if (!wrapper || max <= 0) return;
       const rect = wrapper.getBoundingClientRect();
       if (rect.width === 0) return;
+      const host = wrapper.closest<HTMLElement>("[data-f8-player]");
+      const hostRect = host?.getBoundingClientRect();
       const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
-      const time = (x / rect.width) * max;
-      setHover({ x, time });
+      const rawTime = (x / rect.width) * max;
+      const time = Math.min(rawTime, Math.max(0, max - 0.001));
+      setHover({
+        x,
+        time,
+        hostWidth: hostRect && hostRect.width > 0 ? hostRect.width : rect.width,
+        wrapperLeft: hostRect ? rect.left - hostRect.left : 0,
+      });
     },
     [max],
   );
@@ -269,47 +283,62 @@ export function SeekBar({
     if (!hover || !hoverCue) return null;
     const tileW = hoverCue.w > 0 ? hoverCue.w : THUMB_PREVIEW_WIDTH;
     const tileH = hoverCue.h > 0 ? hoverCue.h : THUMB_PREVIEW_HEIGHT;
-    const scale = tileW > 0 ? THUMB_PREVIEW_WIDTH / tileW : 1;
-    const renderW = tileW * scale;
-    const renderH = tileH * scale;
+    const renderW = tileW * THUMB_PREVIEW_SCALE;
+    const renderH = tileH * THUMB_PREVIEW_SCALE;
+    const edgePadding = 8;
+    const hostLeftInWrapper = -hover.wrapperLeft;
+    const hostRightInWrapper = hover.hostWidth - hover.wrapperLeft;
+    const minCenter = hostLeftInWrapper + renderW / 2 + edgePadding;
+    const maxCenter = hostRightInWrapper - renderW / 2 - edgePadding;
+    const center =
+      minCenter <= maxCenter
+        ? Math.min(maxCenter, Math.max(minCenter, hover.x))
+        : (hostLeftInWrapper + hostRightInWrapper) / 2;
     const tileStyle: CSSProperties = {
       position: "absolute",
       bottom: "calc(100% + 0.8rem)",
-      left: hover.x,
-      transform: "translateX(-50%)",
+      left: center - renderW / 2,
       width: renderW,
       height: renderH,
+      pointerEvents: "none",
+      zIndex: 2,
+    };
+    const imageStyle: CSSProperties = {
+      width: tileW,
+      height: tileH,
+      transform: `scale(${THUMB_PREVIEW_SCALE})`,
+      transformOrigin: "0 0",
       backgroundImage: `url("${hoverCue.src}")`,
       backgroundRepeat: "no-repeat",
-      backgroundPosition: `-${hoverCue.x * scale}px -${hoverCue.y * scale}px`,
-      backgroundSize: `${(hoverCue.w > 0 ? hoverCue.w : THUMB_PREVIEW_WIDTH) * scale}px auto`,
+      backgroundPosition: `-${hoverCue.x}px -${hoverCue.y}px`,
+    };
+    const labelStyle: CSSProperties = {
+      position: "absolute",
+      left: center,
+      bottom: "calc(100% + 0.2rem)",
+      transform: "translateX(-50%)",
+      color: "#fff",
+      fontSize: "1.2rem",
+      fontVariantNumeric: "tabular-nums",
+      textShadow: "0 1px 0.2rem rgba(0,0,0,0.55)",
+      whiteSpace: "nowrap",
       pointerEvents: "none",
       zIndex: 2,
     };
     return (
-      <div
-        data-f8p-seek-thumbnail=""
-        className={thumbnailClassName}
-        style={tileStyle}
-        aria-hidden="true"
-      >
-        <span
-          data-f8p-seek-thumbnail-time=""
-          style={{
-            position: "absolute",
-            left: "50%",
-            bottom: "-2rem",
-            transform: "translateX(-50%)",
-            color: "#fff",
-            fontSize: "1.2rem",
-            fontVariantNumeric: "tabular-nums",
-            textShadow: "0 1px 0.2rem rgba(0,0,0,0.55)",
-            whiteSpace: "nowrap",
-          }}
+      <>
+        <div
+          data-f8p-seek-thumbnail=""
+          className={thumbnailClassName}
+          style={tileStyle}
+          aria-hidden="true"
         >
+          <div data-f8p-seek-thumbnail-image="" style={imageStyle} />
+        </div>
+        <span data-f8p-seek-thumbnail-time="" style={labelStyle} aria-hidden="true">
           {formatTime(hover.time)}
         </span>
-      </div>
+      </>
     );
   })();
 

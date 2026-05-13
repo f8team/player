@@ -1,5 +1,5 @@
 import type { PlayerState } from "@f8/player-core";
-import { screen } from "@testing-library/react";
+import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, type vi } from "vitest";
 
@@ -21,9 +21,10 @@ describe("<Quality>", () => {
     renderWithPlayer(<Quality />, {
       initialState: { qualities: QUALITIES, activeQuality: null },
     });
-    expect(screen.getByRole("combobox", { name: "Quality" })).toBeDefined();
-    expect(screen.getByText("360p HD")).toBeDefined();
-    expect(screen.getByText("720p HD")).toBeDefined();
+    expect(screen.getByRole("button", { name: "Quality" })).toBeDefined();
+    fireEvent.click(screen.getByRole("button", { name: "Quality" }));
+    expect(screen.getByRole("option", { name: /360p HD/ })).toBeDefined();
+    expect(screen.getByRole("option", { name: /720p HD/ })).toBeDefined();
     expect(screen.getAllByText("Auto").length).toBeGreaterThan(0);
   });
 
@@ -36,18 +37,19 @@ describe("<Quality>", () => {
   });
 
   it("selects 'auto' when activeQuality is null", () => {
-    renderWithPlayer(<Quality />, {
+    const { container } = renderWithPlayer(<Quality />, {
       initialState: { qualities: QUALITIES, activeQuality: null },
     });
-    expect((screen.getByRole("combobox") as HTMLSelectElement).value).toBe("auto");
+    fireEvent.click(screen.getByRole("button", { name: "Quality" }));
+    expect(container.querySelector('[data-value="auto"][aria-selected="true"]')).not.toBeNull();
   });
 
   it("calls commands.run('hls-quality:set') when a quality is chosen", async () => {
     const { player } = renderWithPlayer(<Quality />, {
       initialState: { qualities: QUALITIES, activeQuality: null },
     });
-    const select = screen.getByRole("combobox");
-    await userEvent.selectOptions(select, "1");
+    await userEvent.click(screen.getByRole("button", { name: "Quality" }));
+    await userEvent.click(screen.getByRole("option", { name: /720p HD/ }));
     expect(player.commands.run as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
       "hls-quality:set",
       expect.objectContaining({ id: "1" }),
@@ -58,10 +60,27 @@ describe("<Quality>", () => {
     const { player } = renderWithPlayer(<Quality />, {
       initialState: { qualities: QUALITIES, activeQuality: QUALITIES[0] },
     });
-    const select = screen.getByRole("combobox");
-    await userEvent.selectOptions(select, "auto");
+    await userEvent.click(screen.getByRole("button", { name: "Quality" }));
+    await userEvent.click(screen.getByRole("option", { name: "Auto" }));
     expect(player.commands.run as ReturnType<typeof vi.fn>).toHaveBeenCalledWith(
       "hls-quality:setAuto",
     );
+  });
+
+  it("closes the listbox when clicking elsewhere inside the player", () => {
+    const { container } = renderWithPlayer(
+      <div data-f8-player="">
+        <Quality />
+        <button type="button">Outside inside player</button>
+      </div>,
+      {
+        initialState: { qualities: QUALITIES, activeQuality: null },
+      },
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Quality" }));
+    expect(container.querySelector('[data-f8p-control-popover="quality"]')).not.toBeNull();
+
+    fireEvent.pointerDown(screen.getByRole("button", { name: "Outside inside player" }));
+    expect(container.querySelector('[data-f8p-control-popover="quality"]')).toBeNull();
   });
 });

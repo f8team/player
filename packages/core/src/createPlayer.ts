@@ -441,6 +441,21 @@ export function createPlayer(
     on("playing", () => {
       bus.emit("buffering", { isBuffering: false });
     });
+
+    // `fullscreenchange` fires on `document`, not on the <video> element.
+    // We track it here so `state.fullscreen` stays accurate without requiring
+    // consumers to install the fullscreen plugin.
+    if (typeof document !== "undefined") {
+      const onFullscreenChange = (): void => {
+        const isFullscreen = !!document.fullscreenElement;
+        store.setState({ fullscreen: isFullscreen });
+        bus.emit("fullscreenchange", { fullscreen: isFullscreen });
+      };
+      document.addEventListener("fullscreenchange", onFullscreenChange);
+      nativeListeners.push(() =>
+        document.removeEventListener("fullscreenchange", onFullscreenChange),
+      );
+    }
   }
 
   function unbindNativeEvents(): void {

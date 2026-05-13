@@ -105,7 +105,9 @@ describe("<SeekBar>", () => {
       });
       const tile = container.querySelector("[data-f8p-seek-thumbnail]");
       expect(tile).not.toBeNull();
-      expect((tile as HTMLElement).style.backgroundImage).toContain("https://cdn/sprite.jpg");
+      const image = container.querySelector("[data-f8p-seek-thumbnail-image]") as HTMLElement;
+      expect(image.style.backgroundImage).toContain("https://cdn/sprite.jpg");
+      expect((tile as HTMLElement).style.width).toBe("80px");
 
       // Pointer leaving hides the tile.
       act(() => {
@@ -137,6 +139,36 @@ describe("<SeekBar>", () => {
         dispatchPointerMove(wrap, 50);
       });
       expect(container.querySelector("[data-f8p-seek-thumbnail]")).toBeNull();
+    });
+
+    it("keeps the hover thumbnail inside the player right edge", () => {
+      const { container, mockEmit } = renderWithPlayer(
+        <div data-f8-player="">
+          <SeekBar />
+        </div>,
+        {
+          initialState: { currentTime: 0, duration: 20 },
+        },
+      );
+      act(() => {
+        mockEmit("thumbnails:ready", { cues: SAMPLE_CUES });
+      });
+
+      const host = container.querySelector("[data-f8-player]") as HTMLElement;
+      const wrap = container.querySelector("[data-f8p-seek-wrapper]") as HTMLElement;
+      stubRect(host, 300);
+      Object.defineProperty(wrap, "getBoundingClientRect", {
+        configurable: true,
+        value: () => ({ left: 50, width: 250, top: 0, right: 300, bottom: 18, height: 18 }) as DOMRect,
+      });
+
+      act(() => {
+        dispatchPointerMove(wrap, 300);
+      });
+
+      const tile = container.querySelector("[data-f8p-seek-thumbnail]") as HTMLElement;
+      expect(tile.style.left).toBe("162px");
+      expect(tile.style.width).toBe("80px");
     });
   });
 });

@@ -1,10 +1,11 @@
 import type { Disposer, SubtitleTrack } from "@f8/player-core";
-import { type ChangeEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 import { useLabels } from "../../i18n.js";
 
+import { ControlMenu, type ControlMenuOption } from "./ControlMenu.js";
 import { PlayerIcon } from "./icons.js";
 
 /**
@@ -67,8 +68,7 @@ export function Captions({ className, hidden }: CaptionsProps): JSX.Element | nu
 
   if (hidden || !tracks || tracks.length === 0) return null;
 
-  const handleChange = (e: ChangeEvent<HTMLSelectElement>): void => {
-    const value = e.target.value;
+  const selectCaptions = (value: string): void => {
     if (value === "__off__") {
       player.commands.run("subtitles:off");
       setActiveLang(null);
@@ -79,28 +79,35 @@ export function Captions({ className, hidden }: CaptionsProps): JSX.Element | nu
   };
 
   const isActive = activeLang !== null;
-  const selectValue = activeLang ?? "__off__";
+  const options: ControlMenuOption[] = [
+    {
+      value: "__off__",
+      label: labels.captionsOff,
+      active: !isActive,
+      onSelect: () => selectCaptions("__off__"),
+    },
+    ...tracks.map((t: SubtitleTrack) => ({
+      value: t.srcLang,
+      label: t.label,
+      active: t.srcLang === activeLang,
+      onSelect: () => selectCaptions(t.srcLang),
+    })),
+  ];
 
   return (
-    <span
+    <ControlMenu
       className={className}
-      data-f8-player-control="captions"
-      data-f8-player-captions-active={isActive ? "" : undefined}
-    >
-      <PlayerIcon name="cc" />
-      <select
-        value={selectValue}
-        onChange={handleChange}
-        aria-label={labels.captions}
-        data-f8-player-captions-select=""
-      >
-        <option value="__off__">{labels.captionsOff}</option>
-        {tracks.map((t: SubtitleTrack) => (
-          <option key={t.srcLang} value={t.srcLang}>
-            {t.label}
-          </option>
-        ))}
-      </select>
-    </span>
+      control="captions"
+      menuId="captions"
+      ariaLabel={labels.captions}
+      active={isActive}
+      trigger={
+        <>
+          <PlayerIcon name="cc" />
+          <span data-f8p-trigger-label="">{activeLang ? activeLang.toUpperCase() : "CC"}</span>
+        </>
+      }
+      options={options}
+    />
   );
 }
