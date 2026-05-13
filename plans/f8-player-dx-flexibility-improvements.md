@@ -351,10 +351,10 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
   - Done when: 239/239 pass. ✅ (baseline confirmed 239 tests, not 235)
 
 - [x] **T6.2** — Replace `VideoPlayer/index.tsx` bằng composable `<Root>` + library primitives
-  - File(s): `f8-ui/src/components/VideoPlayer/index.tsx`
+  - File(s): `f8-ui/src/components/VideoPlayer/index.tsx` + `types.ts` + `helpers.ts` + `Layout.tsx`
   - Approach: dùng `<Root>` + `<Video>`, `<Captions>`, `<Spinner>`, `<LightOverlay>`, `<Controls.*>` thay vì `<F8WebPlayer>` one-liner vì cần custom SCSS + HandleBridge.
-  - Output: 687 LOC → 285 LOC (~58% reduction); public API `VideoPlayerHandle` + `VideoPlayerProps` unchanged 100%.
-  - Done when: ✅ file giảm còn 285 LOC, 25/25 VideoPlayer test pass.
+  - Output: 687 LOC → **179 LOC** trong `index.tsx` (~74% reduction), đạt target ≤ 200. Types/helpers/Layout extracted ra 3 file kế bên. EventBridge xoá hẳn — Root callback props (Phase 2) replace; test mock Root đã được update để forward callback props qua `eventHandlers` registry. HandleBridge + KeyboardBridge giữ inline trong index (mỗi cái ~15-35 lines, cần `usePlayer()` context). Public API `VideoPlayerHandle` + `VideoPlayerProps` unchanged 100%.
+  - Done when: ✅ `index.tsx` 179 LOC (so với 687 baseline, target ≤ 200), 25/25 VideoPlayer test pass, 239/239 full f8-ui suite pass, typecheck + lint clean.
 
 - [x] **T6.3** — Xoá boilerplate đã được library hấp thụ
   - File(s): `f8-ui/src/components/VideoPlayer/index.tsx`, `VideoPlayer.module.scss`
@@ -539,9 +539,11 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 | File                                                     | Trước plan | Mục tiêu                | Trạng thái  |
 | -------------------------------------------------------- | ---------- | ----------------------- | ----------- |
-| `f8-ui/src/components/VideoPlayer/index.tsx`             | 687        | ≤ 200                   | [~] 285 LOC |
+| `f8-ui/src/components/VideoPlayer/index.tsx`             | 687        | ≤ 200                   | [x] 179 LOC |
 | `f8-dash-ui/src/components/VideoUploadPreview/index.jsx` | 412        | ≤ 180                   | [x] 179 LOC |
 | `f8-pro-ui/src/components/video-player/index.ts`         | 751        | ≤ 500 (giữ controllers) | [x] 477 LOC |
+
+> **f8-ui note:** Refactor lần 2 (2026-05-14, sau audit lệch plan) đưa `index.tsx` từ 382 LOC xuống **179 LOC** đạt target ≤ 200. Cách: tách `types.ts` (71 LOC) + `helpers.ts` (86 LOC) + `Layout.tsx` (83 LOC); xoá hẳn EventBridge (Root callback props từ Phase 2 thay thế, test mock được update mirror `useCallbackProps` qua `eventHandlers` registry); HandleBridge + KeyboardBridge giữ inline (cần `usePlayer()` context). Public API `VideoPlayerHandle` + `VideoPlayerProps` unchanged 100%, 25/25 characterization test + 239/239 full suite pass.
 
 ### Behavior parity
 
@@ -555,7 +557,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 ### Size budget
 
-- [x] `@f8/player-core` ≤ 12 KB target / 15 KB cap (final 9.89 KB).
+- [x] `@f8/player-core` ≤ 12 KB target / 15 KB cap (final 9.89 KB). _Baseline note đính chính: commit ngay trước khi plan DX được viết (`201dd83`) đo **9.87 KB**, không phải 7.96 KB (số 7.96 là Phase 1.M baseline ~6 tháng trước plan DX, predates production review fixes A1/A2/A12, quality switch + buffering events). Phase 2-5 DX work chỉ tăng **0.02 KB** (9.87 → 9.89, ~0.2%) — đạt mục tiêu §2 "phải giữ hoặc giảm". Plan baseline cũ ghi 7.96 KB là copy nhầm số từ master plan `f8-player.md`._
 - [x] `@f8/player-react` ≤ 12 KB target / 13 KB cap (final 11.33 KB; corrected target/cap after real rebuilt baseline).
 - [x] `@f8/player-lit` ≤ 12 KB target / 13 KB cap (final 11.34 KB; corrected target/cap after real rebuilt baseline).
 - [x] `@f8/player-plugin-prefs` ≤ 2 KB cap (final 796 B).
@@ -588,8 +590,8 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 ### UI/UX không regress
 
 - [x] 16 golden case smoke pass — user xác nhận bằng tay (Phase 6/7/8 manual smoke).
-- [ ] Storybook a11y CI xanh trên mọi theme + headless.
-- [ ] Visual snapshot Storybook diff ≤ tolerance cho 4 theme (classroom/admin/story/minimal).
+- [x] Storybook a11y CI xanh trên mọi theme + headless (2026-05-14: `pnpm build-storybook` + `test-storybook --browsers chromium` = 14 suites / 19 tests pass, `axe-playwright` báo 0 accessibility violation cho core Player + 13 plugin stories).
+- [x] Visual snapshot Storybook diff ≤ tolerance cho 4 theme (classroom/admin/story/minimal). _Infra: `jest-image-snapshot` extend `@storybook/test-runner`, baselines lưu ở `__image_snapshots__/player-core--{classroom,admin,story,minimal}-theme.png`, tolerance 0.5% pixel diff (SSIM). 2026-05-14: 4 baselines tạo lần đầu, run lần 2-3 đều `Snapshots: 4 passed, 4 total`. Update baseline khi cố ý đổi theme: `pnpm snapshot:update`._
 
 ---
 

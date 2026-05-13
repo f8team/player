@@ -41,5 +41,8 @@ yarn-debug.log*
 # Storybook
 storybook-static/
 
+# Visual snapshot diffs (baselines in __image_snapshots__/ ARE committed)
+__image_snapshots__/__diff_output__/
+
 # Size-limit
 .size-snapshot.json

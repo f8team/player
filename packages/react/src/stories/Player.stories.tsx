@@ -95,10 +95,20 @@ const DEMO_MP4 =
   "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 const DEMO_YT = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
+// Visual snapshot gate: tolerance 0.5% per theme (handles font AA / sub-pixel
+// jitter on different host fonts). Run via `pnpm test-storybook` after a
+// Storybook build; baselines live in `__image_snapshots__/`.
+const SNAPSHOT = {
+  enabled: true,
+  failureThreshold: 0.005,
+  failureThresholdType: "percent",
+} as const;
+
 export const ClassroomTheme: Story = {
   name: "Classroom theme (HLS)",
   render: () => <PlayerShell theme="classroom" src={DEMO_HLS} />,
   parameters: {
+    snapshot: SNAPSHOT,
     docs: {
       description: { story: "Default theme for course lessons. Orange accent, dark chrome." },
     },
@@ -109,6 +119,7 @@ export const AdminTheme: Story = {
   name: "Admin theme (MP4)",
   render: () => <PlayerShell theme="admin" src={DEMO_MP4} />,
   parameters: {
+    snapshot: SNAPSHOT,
     docs: {
       description: { story: "Admin upload preview theme. Neutral dark chrome, compact controls." },
     },
@@ -119,6 +130,7 @@ export const StoryTheme: Story = {
   name: "Story theme (HLS)",
   render: () => <PlayerShell theme="story" src={DEMO_HLS} />,
   parameters: {
+    snapshot: SNAPSHOT,
     docs: {
       description: { story: "Story/reel fullscreen theme. Large center play, minimal controls." },
     },
@@ -129,6 +141,7 @@ export const MinimalTheme: Story = {
   name: "Minimal theme (MP4)",
   render: () => <PlayerShell theme="minimal" src={DEMO_MP4} />,
   parameters: {
+    snapshot: SNAPSHOT,
     docs: {
       description: { story: "Minimal theme for embeds with no chrome. Controls appear on hover." },
     },
