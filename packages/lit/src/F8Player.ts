@@ -208,6 +208,11 @@ export class F8PlayerElement extends LitElement {
   /** Disposers returned by `controller.on(...)` for plugin-event subscriptions. */
   private pluginEventDisposers: Disposer[] = [];
 
+  /** Re-render when native `<track>` elements are added/removed or their mode changes. */
+  private readonly _onTextTrackChange = (): void => {
+    this.requestUpdate();
+  };
+
   private readonly onHostMouseLeave = (): void => {
     const ae = document.activeElement;
     if (ae instanceof HTMLElement && this.contains(ae)) {
@@ -246,11 +251,29 @@ export class F8PlayerElement extends LitElement {
     });
     this.installEventBridges();
     this.installPluginEventBridges();
+    // Listen for native <track> additions / mode changes so the CC button
+    // stays in sync with tracks appended directly to <video> (e.g. by
+    // captions-controller in f8-pro-ui). Guard: JSDOM stubs TextTrackList
+    // without addEventListener, so skip in non-browser test environments.
+    const tt = video.textTracks;
+    if (typeof tt.addEventListener === "function") {
+      tt.addEventListener("addtrack", this._onTextTrackChange);
+      tt.addEventListener("removetrack", this._onTextTrackChange);
+      tt.addEventListener("change", this._onTextTrackChange);
+    }
   }
 
   override disconnectedCallback(): void {
     this.removeEventListener("mouseleave", this.onHostMouseLeave);
     super.disconnectedCallback();
+    if (this.videoEl) {
+      const tt = this.videoEl.textTracks;
+      if (typeof tt.removeEventListener === "function") {
+        tt.removeEventListener("addtrack", this._onTextTrackChange);
+        tt.removeEventListener("removetrack", this._onTextTrackChange);
+        tt.removeEventListener("change", this._onTextTrackChange);
+      }
+    }
     this.videoEl = null;
     this.bridgesInstalled = false;
     for (const d of this.pluginEventDisposers) d();
@@ -626,19 +649,54 @@ export class F8PlayerElement extends LitElement {
   }
 
   private renderCaptionsControl(state: PlayerState | null): unknown {
-    const tracks = state?.source?.tracks ?? [];
-    if (tracks.length === 0) return null;
+    const pluginTracks = state?.source?.tracks ?? [];
 
-    // Hydrate the active language from the track defaults the first time the
-    // user hasn't interacted yet (and the plugin hasn't emitted).
-    if (this.activeCaptionsLang === null && !this.captionsTouched) {
-      const def = tracks.find((t) => t.default);
-      if (def) this.activeCaptionsLang = def.srcLang;
+    if (pluginTracks.length > 0) {
+      // Plugin-managed tracks (e.g. @f8/player-plugin-subtitles). Hydrate the
+      // active language from the track defaults the first time the user hasn't
+      // interacted yet (and the plugin hasn't emitted subtitles:changed).
+      if (this.activeCaptionsLang === null && !this.captionsTouched) {
+        const def = pluginTracks.find((t) => t.default);
+        if (def) this.activeCaptionsLang = def.srcLang;
+      }
+      const isActive = this.activeCaptionsLang !== null;
+      const selectValue = this.activeCaptionsLang ?? "__off__";
+      return html`
+        <span
+          class="f8p-captions"
+          data-f8-player-control="captions"
+          ?data-f8-player-captions-active=${isActive}
+        >
+          ${this.renderIcon("cc")}
+          <select
+            class="f8p-native-select"
+            .value=${selectValue}
+            aria-label="Phụ đề"
+            data-f8-player-captions-select
+            @change=${this.handleCaptionsChange}
+          >
+            <option value="__off__">Tắt phụ đề</option>
+            ${pluginTracks.map(
+              (t) => html`<option value=${t.srcLang}>${t.label}</option>`,
+            )}
+          </select>
+        </span>
+      `;
     }
 
-    const isActive = this.activeCaptionsLang !== null;
-    const selectValue = this.activeCaptionsLang ?? "__off__";
+    // Native-track fallback: tracks appended directly to <video> (e.g. by
+    // captions-controller in f8-pro-ui). These are not reflected in
+    // state.source.tracks; we read them from videoEl.textTracks instead.
+    const nativeTracks = this.videoEl
+      ? Array.from(this.videoEl.textTracks).filter(
+          (t) => t.kind === "captions" || t.kind === "subtitles",
+        )
+      : [];
+    if (nativeTracks.length === 0) return null;
 
+    const showingTrack = nativeTracks.find((t) => t.mode === "showing");
+    const isActive = showingTrack != null;
+    const selectValue = showingTrack?.language ?? "__off__";
     return html`
       <span
         class="f8p-captions"
@@ -651,11 +709,11 @@ export class F8PlayerElement extends LitElement {
           .value=${selectValue}
           aria-label="Phụ đề"
           data-f8-player-captions-select
-          @change=${this.handleCaptionsChange}
+          @change=${this.handleNativeCaptionsChange}
         >
           <option value="__off__">Tắt phụ đề</option>
-          ${tracks.map(
-            (t) => html`<option value=${t.srcLang}>${t.label}</option>`,
+          ${nativeTracks.map(
+            (t) => html`<option value=${t.language}>${t.label || t.language}</option>`,
           )}
         </select>
       </span>
@@ -667,44 +725,51 @@ export class F8PlayerElement extends LitElement {
     if (!hover || this.thumbnailCues.length === 0) return null;
     const cue = findCueAt(this.thumbnailCues, hover.time);
     if (!cue) return null;
+    // Tile dims from the VTT cue (`#xywh=`); fall back to sane defaults when
+    // the cue body has no spatial hint (legacy or single-image sprites).
     const tileW = cue.w > 0 ? cue.w : THUMB_PREVIEW_WIDTH;
     const tileH = cue.h > 0 ? cue.h : THUMB_PREVIEW_HEIGHT;
-    const scale = tileW > 0 ? THUMB_PREVIEW_WIDTH / tileW : 1;
-    const renderW = tileW * scale;
-    const renderH = tileH * scale;
-    const sheetW = tileW * scale;
     void max;
-    const style = [
+    // Scale the tile to 50% of its natural sprite dimensions.
+    // `transform-origin: 50% 100%` anchors the bottom-centre so the visual
+    // bottom stays fixed at `calc(100% + 0.8rem)` above the seek bar.
+    // `scale(0.5) translateX(-50%)` then centres the half-size visual on
+    // `hover.x`. Background is not set to `background-size` — the sprite
+    // sheet renders at intrinsic size so the raw `(cue.x, cue.y)` offsets
+    // address the correct tile; CSS transform handles the visual scaling.
+    const tileStyle = [
       "position:absolute",
       `bottom:calc(100% + 0.8rem)`,
       `left:${hover.x}px`,
-      "transform:translateX(-50%)",
-      `width:${renderW}px`,
-      `height:${renderH}px`,
+      "transform:scale(0.5) translateX(-50%)",
+      "transform-origin:50% 100%",
+      `width:${tileW}px`,
+      `height:${tileH}px`,
       `background-image:url("${cue.src}")`,
       "background-repeat:no-repeat",
-      `background-position:-${cue.x * scale}px -${cue.y * scale}px`,
-      `background-size:${sheetW}px auto`,
+      `background-position:-${cue.x}px -${cue.y}px`,
       "pointer-events:none",
       "z-index:2",
     ].join(";");
+    // Render the time label independently so it is not scaled with the tile.
     const labelStyle = [
       "position:absolute",
-      "left:50%",
-      "bottom:-2rem",
+      `left:${hover.x}px`,
+      "bottom:calc(100% + 0.2rem)",
       "transform:translateX(-50%)",
       "color:#fff",
       "font-size:1.2rem",
       "font-variant-numeric:tabular-nums",
       "text-shadow:0 1px 0.2rem rgba(0,0,0,0.55)",
       "white-space:nowrap",
+      "pointer-events:none",
+      "z-index:2",
     ].join(";");
     return html`
-      <div data-f8p-seek-thumbnail aria-hidden="true" style=${style}>
-        <span data-f8p-seek-thumbnail-time style=${labelStyle}>
-          ${this.formatTimeLabel(hover.time)}
-        </span>
-      </div>
+      <div data-f8p-seek-thumbnail aria-hidden="true" style=${tileStyle}></div>
+      <span data-f8p-seek-thumbnail-time aria-hidden="true" style=${labelStyle}>
+        ${this.formatTimeLabel(hover.time)}
+      </span>
     `;
   }
 
@@ -840,6 +905,19 @@ export class F8PlayerElement extends LitElement {
       );
       this.activeCaptionsLang = value;
     }
+    this.requestUpdate();
+  };
+
+  private handleNativeCaptionsChange = (event: Event): void => {
+    if (!this.videoEl) return;
+    const value = (event.currentTarget as HTMLSelectElement).value;
+    const nativeTracks = Array.from(this.videoEl.textTracks).filter(
+      (t) => t.kind === "captions" || t.kind === "subtitles",
+    );
+    for (const t of nativeTracks) {
+      t.mode = value !== "__off__" && t.language === value ? "showing" : "hidden";
+    }
+    this.captionsTouched = true;
     this.requestUpdate();
   };
 

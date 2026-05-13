@@ -519,3 +519,98 @@ describe("<f8-player controls> captions", () => {
     expect(el.querySelector('[data-f8-player-control="captions"]')).toBeNull();
   });
 });
+
+// ── Default controls: native captions (textTracks fallback) ─────────────────
+
+describe("<f8-player controls> native captions (textTracks fallback)", () => {
+  /** Replace videoEl.textTracks with a minimal array-like mock. */
+  function mockVideoTextTracks(
+    el: F8PlayerElement,
+    tracks: { kind: string; language: string; label: string; mode: string }[],
+  ): void {
+    const video = el.querySelector<HTMLVideoElement>("video[data-f8-player-video]")!;
+    // Spread into an array so Array.from() iterates the track entries.
+    const list = Object.assign([...tracks] as unknown[], {
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    }) as unknown as TextTrackList;
+    Object.defineProperty(video, "textTracks", { get: () => list, configurable: true });
+  }
+
+  beforeEach(() => {
+    mockPlayer.getState.mockReturnValue({
+      ...defaultState,
+      source: { src: "video.m3u8" }, // no source.tracks → native path
+    });
+  });
+
+  it("shows CC control from native textTracks when source has no plugin tracks", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    mockVideoTextTracks(el, [
+      { kind: "captions", language: "vi", label: "Tiếng Việt", mode: "hidden" },
+    ]);
+    el.requestUpdate();
+    await el.updateComplete;
+
+    const captions = el.querySelector('[data-f8-player-control="captions"]');
+    expect(captions).not.toBeNull();
+    const options = Array.from(captions!.querySelectorAll("option")).map((o) => o.value);
+    expect(options).toEqual(["__off__", "vi"]);
+  });
+
+  it("sets native track mode to 'showing' when user selects a language", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    const nativeTrack = { kind: "captions", language: "vi", label: "Tiếng Việt", mode: "hidden" };
+    mockVideoTextTracks(el, [nativeTrack]);
+    el.requestUpdate();
+    await el.updateComplete;
+
+    const select = el.querySelector(
+      '[data-f8-player-control="captions"] select',
+    ) as HTMLSelectElement;
+    select.value = "vi";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(nativeTrack.mode).toBe("showing");
+  });
+
+  it("sets all native tracks to 'hidden' when user picks the off option", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    const nativeTrack = { kind: "captions", language: "vi", label: "Tiếng Việt", mode: "showing" };
+    mockVideoTextTracks(el, [nativeTrack]);
+    el.requestUpdate();
+    await el.updateComplete;
+
+    const select = el.querySelector(
+      '[data-f8-player-control="captions"] select',
+    ) as HTMLSelectElement;
+    select.value = "__off__";
+    select.dispatchEvent(new Event("change", { bubbles: true }));
+    expect(nativeTrack.mode).toBe("hidden");
+  });
+
+  it("hides CC control when both source.tracks and textTracks are empty", async () => {
+    const el = document.createElement("f8-player") as F8PlayerElement;
+    el.controls = true;
+    el.options = { source: { src: "video.m3u8" } };
+    document.body.appendChild(el);
+    await el.updateComplete;
+
+    // No mock → JSDOM has an empty TextTrackList by default.
+    expect(el.querySelector('[data-f8-player-control="captions"]')).toBeNull();
+  });
+});
