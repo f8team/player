@@ -285,7 +285,18 @@ export class F8PlayerElement extends LitElement {
 
   /** Re-render when native `<track>` elements are added/removed or their mode changes. */
   private readonly _onTextTrackChange = (): void => {
-    this.requestUpdate();
+    queueMicrotask(() => {
+      if (!this.isConnected) return;
+      this.requestUpdate();
+    });
+  };
+
+  /**
+   * `mousedown.preventDefault()` on listbox items: avoids browsers eating the
+   * subsequent `click` when focus/track-mode churn retriggers renders mid-gesture.
+   */
+  private readonly handleMenuOptionMouseDown = (event: MouseEvent): void => {
+    event.preventDefault();
   };
 
   private readonly onHostMouseLeave = (): void => {
@@ -306,8 +317,15 @@ export class F8PlayerElement extends LitElement {
     const activeMenu = this.querySelector<HTMLElement>(
       `[data-f8p-control-menu="${this.openMenu}"]`,
     );
-    if (activeMenu?.contains(target)) return;
-    this.closeOpenMenu();
+    const contained = !!activeMenu?.contains(target);
+    if (contained) return;
+    // Defer closing so capture-phase pointerdown finishes its path; otherwise the
+    // same gesture targeting another control can lose its click activation.
+    const closingMenu = this.openMenu;
+    queueMicrotask(() => {
+      if (!closingMenu || this.openMenu !== closingMenu) return;
+      this.closeOpenMenu();
+    });
   };
 
   private readonly onDocumentKeydown = (event: KeyboardEvent): void => {
@@ -893,6 +911,7 @@ export class F8PlayerElement extends LitElement {
                       aria-selected=${option.active ? "true" : "false"}
                       data-f8p-control-option
                       data-value=${option.value}
+                      @mousedown=${this.handleMenuOptionMouseDown}
                       @click=${() => this.selectMenuOption(option)}
                     >
                       <span data-f8p-option-label>${option.label}</span>
@@ -1139,9 +1158,8 @@ export class F8PlayerElement extends LitElement {
   }
 
   private selectMenuOption(option: ControlMenuOption): void {
+    this.closeOpenMenu();
     option.onSelect();
-    this.openMenu = null;
-    this.requestUpdate();
   }
 
   private focusSelectedMenuOption(menuId: ControlMenuId): void {

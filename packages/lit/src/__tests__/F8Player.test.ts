@@ -325,6 +325,7 @@ describe("<f8-player> default controls", () => {
     el.querySelector<HTMLButtonElement>('[data-f8-player-control="play-pause"]')!.dispatchEvent(
       new MouseEvent("pointerdown", { bubbles: true }),
     );
+    await Promise.resolve();
     await el.updateComplete;
     expect(el.querySelector('[data-f8p-control-popover="quality"]')).toBeNull();
   });
