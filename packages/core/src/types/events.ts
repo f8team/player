@@ -60,6 +60,12 @@ export interface PlayerEvents {
   buffering: { isBuffering: boolean };
   /** Quality level changed. `auto=true` means ABR picked it. */
   qualitychange: { quality: QualityLevel | null; auto: boolean };
+  /**
+   * Manual HLS rendition switch in flight (manual level or AUTO). Clears once
+   * hls.js reports `LEVEL_SWITCHED` for the awaited target / auto step, or after
+   * a safety timeout. Use for a transient center spinner.
+   */
+  qualityswitch: { active: boolean };
   /** Any error (transport, decode, source). */
   error: PlayerError;
   /** Authentication failure (G13). Fires at most once per source.src. */

@@ -162,6 +162,7 @@ interface PlayerEvents {
   seeked: { time: number };
   buffering: { isBuffering: boolean };
   qualitychange: { quality: QualityLevel | null; auto: boolean };
+  qualitieswitch: { active: boolean };
   error: PlayerError;
   unauthorized: UnauthorizedEvent;
   fullscreenchange: { fullscreen: boolean };

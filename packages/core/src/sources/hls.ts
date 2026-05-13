@@ -73,6 +73,8 @@ export interface HlsProviderOptions {
   onActiveQuality?: (quality: QualityLevel | null, auto: boolean) => void;
   /** Surface a load error to the core. */
   onError?: (error: { message: string; cause?: unknown; status?: number; url?: string }) => void;
+  /** Spinner / overlay: `true` when a user-driven rendition change is in-flight. */
+  onQualitySwitch?: (active: boolean) => void;
   /**
    * Reject the manifest-load Promise if `MANIFEST_PARSED` does not fire within
    * this many milliseconds. Defaults to 30000 (30s). Set to `0` to disable.
@@ -122,6 +124,13 @@ class HlsLoader implements SourceLoader {
   private rejectAttach: ((err: Error) => void) | null = null;
   private manifestTimeout: ReturnType<typeof setTimeout> | null = null;
   private aborted = false;
+
+  /** `false` idle; `'auto'` → first `LEVEL_SWITCHED` clears; otherwise await this level index. */
+  private qualityAwait: false | "auto" | number = false;
+  private qualitySwitchTimer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Tracks consecutive menu selections so redundant "Auto → Auto" skips the spinner. */
+  private lastChosenQualityWasAuto = false;
 
   constructor(private readonly options: HlsProviderOptions) {}
 
@@ -206,7 +215,8 @@ class HlsLoader implements SourceLoader {
         this.refreshQualities();
         settle(() => resolve());
       };
-      const onSwitched = (): void => {
+      const onSwitched = (...args: unknown[]): void => {
+        this.onLevelEventuallyStabilized(...args);
         this.refreshActiveQuality();
       };
       const onError = (..._args: unknown[]): void => {
@@ -315,6 +325,7 @@ class HlsLoader implements SourceLoader {
   }
 
   detach(): void {
+    this.completeQualityAwaitIfBusy();
     // `abort()` first so the in-flight Promise is rejected before we tear
     // down the underlying engine.
     this.abort();
@@ -347,6 +358,63 @@ class HlsLoader implements SourceLoader {
     this.currentSource = null;
     this.unauthorizedFired = false;
     this.aborted = false; // reset so the loader can be reused
+    this.lastChosenQualityWasAuto = false;
+  }
+
+  private clearQualitySwitchTimerOnly(): void {
+    if (this.qualitySwitchTimer !== null) {
+      clearTimeout(this.qualitySwitchTimer);
+      this.qualitySwitchTimer = null;
+    }
+  }
+
+  private armQualitySwitchTimeout(): void {
+    this.clearQualitySwitchTimerOnly();
+    this.qualitySwitchTimer = setTimeout(() => {
+      this.qualitySwitchTimer = null;
+      if (this.qualityAwait !== false) {
+        this.completeQualityAwaitIfBusy();
+      }
+    }, 12_000);
+  }
+
+  /** Start or refresh awaited UI for a rendition change (rapid toggles reuse one spinner). */
+  private armQualityAwait(kind: Exclude<typeof this.qualityAwait, false>): void {
+    const wasIdle = this.qualityAwait === false;
+    this.qualityAwait = kind;
+    if (wasIdle) this.options.onQualitySwitch?.(true);
+    this.armQualitySwitchTimeout();
+  }
+
+  private resolveQualityAwaitIfDone(levelIdx: number): void {
+    const awaiting = this.qualityAwait;
+    if (awaiting === false) return;
+
+    const done =
+      awaiting === "auto" ||
+      (typeof awaiting === "number" && awaiting === levelIdx);
+
+    if (done) this.completeQualityAwaitIfBusy();
+  }
+
+  private onLevelEventuallyStabilized(...args: unknown[]): void {
+    let levelIdx: number | undefined;
+    for (let i = args.length - 1; i >= 0; i--) {
+      const a = args[i];
+      if (a !== null && typeof a === "object" && typeof (a as { level?: unknown }).level === "number") {
+        levelIdx = (a as { level: number }).level;
+        break;
+      }
+    }
+    if (levelIdx === undefined) levelIdx = this.hls?.currentLevel;
+    if (typeof levelIdx === "number") this.resolveQualityAwaitIfDone(levelIdx);
+  }
+
+  private completeQualityAwaitIfBusy(): void {
+    if (this.qualityAwait === false) return;
+    this.qualityAwait = false;
+    this.clearQualitySwitchTimerOnly();
+    this.options.onQualitySwitch?.(false);
   }
 
   private clearManifestTimeout(): void {
@@ -365,13 +433,22 @@ class HlsLoader implements SourceLoader {
     if (level === "auto") {
       this.hls.currentLevel = -1;
       this.options.onActiveQuality?.(null, true);
+      if (!this.lastChosenQualityWasAuto) {
+        this.armQualityAwait("auto");
+      }
+      this.lastChosenQualityWasAuto = true;
       return;
     }
     const idx = this.qualities.findIndex((q) => q.id === level.id);
-    if (idx >= 0) {
-      this.hls.currentLevel = idx;
+    if (idx < 0) return;
+    this.lastChosenQualityWasAuto = false;
+    if (this.hls.currentLevel === idx) {
       this.options.onActiveQuality?.(level, false);
+      return;
     }
+    this.armQualityAwait(idx);
+    this.hls.currentLevel = idx;
+    this.options.onActiveQuality?.(level, false);
   }
 
   private refreshQualities(): void {

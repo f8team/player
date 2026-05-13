@@ -267,9 +267,11 @@ describe("createHlsProvider — loader lifecycle", () => {
 
   it("getQualities and setQuality bridge to hls.currentLevel", async () => {
     const onActiveQuality = vi.fn();
+    const onQualitySwitch = vi.fn();
     const provider = createHlsProvider({
       loadRuntime: () => Promise.resolve(runtime),
       onActiveQuality,
+      onQualitySwitch,
     });
     const loader = provider.createLoader();
     void loader.attach(video, { src: "https://x.com/master.m3u8" });
@@ -288,10 +290,20 @@ describe("createHlsProvider — loader lifecycle", () => {
     loader.setQuality?.(qualities[1]!);
     expect(instance.currentLevel).toBe(1);
     expect(onActiveQuality).toHaveBeenLastCalledWith(qualities[1], false);
+    expect(onQualitySwitch).toHaveBeenCalledWith(true);
+    instance.emit(HLS_EVENTS.LEVEL_SWITCHED, {}, { level: 1 });
+    expect(onQualitySwitch).toHaveBeenLastCalledWith(false);
 
     loader.setQuality?.("auto");
     expect(instance.currentLevel).toBe(-1);
     expect(onActiveQuality).toHaveBeenLastCalledWith(null, true);
+    expect(onQualitySwitch).toHaveBeenLastCalledWith(true);
+    instance.emit(HLS_EVENTS.LEVEL_SWITCHED, {}, { level: 0 });
+    expect(onQualitySwitch).toHaveBeenLastCalledWith(false);
+
+    onQualitySwitch.mockClear();
+    loader.setQuality?.("auto");
+    expect(onQualitySwitch).not.toHaveBeenCalled();
   });
 
   it("falls back to native HLS when isSupported() === false", async () => {

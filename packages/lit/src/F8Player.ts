@@ -252,6 +252,9 @@ export class F8PlayerElement extends LitElement {
   /** Active caption language (null = off). Mirrored from `subtitles:changed`. */
   private activeCaptionsLang: string | null = null;
 
+  /** Center spinner until hls.js finishes a user-triggered rendition change. */
+  private qualitySwitchOverlay = false;
+
   /** Whether the user opened the captions `<select>` overlay at least once. */
   private captionsTouched = false;
 
@@ -395,6 +398,7 @@ export class F8PlayerElement extends LitElement {
       }
     }
     this.videoEl = null;
+    this.qualitySwitchOverlay = false;
     this.bridgesInstalled = false;
     for (const d of this.pluginEventDisposers) d();
     this.pluginEventDisposers = [];
@@ -459,6 +463,15 @@ export class F8PlayerElement extends LitElement {
   protected override render(): unknown {
     return html`
       <video data-f8-player-video class=${this.videoClass ?? ""} playsinline></video>
+      ${this.controls && this.qualitySwitchOverlay
+        ? html`<div
+            class="f8p-spinner"
+            data-f8-player-quality-switch
+            role="status"
+            aria-live="polite"
+            aria-label="Đang đổi độ phân giải"
+          ></div>`
+        : null}
       ${this.controls ? this.renderCenterTapLayer() : null}
       <slot></slot>
       ${this.controls ? this.renderDefaultControls() : null}
@@ -1351,7 +1364,7 @@ export class F8PlayerElement extends LitElement {
 
   private installEventBridges(): void {
     if (this.bridgesInstalled) return;
-    const events: ReadonlyArray<keyof PlayerEvents> = [
+    const events: ReadonlyArray<Exclude<keyof PlayerEvents, "qualityswitch">> = [
       "ready",
       "play",
       "pause",
@@ -1369,6 +1382,17 @@ export class F8PlayerElement extends LitElement {
       "fullscreenchange",
       "pipchange",
     ];
+    this.controller.on("qualityswitch", (payload: PlayerEvents["qualityswitch"]) => {
+      this.qualitySwitchOverlay = payload.active;
+      this.requestUpdate();
+      this.dispatchEvent(
+        new CustomEvent("f8-player:qualityswitch", {
+          detail: payload,
+          bubbles: true,
+          composed: true,
+        }),
+      );
+    });
     for (const event of events) {
       this.controller.on(event, (payload) => {
         this.dispatchEvent(

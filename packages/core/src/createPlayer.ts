@@ -171,6 +171,7 @@ export function createPlayer(
       onQualities: (q) => setQualities(q),
       onActiveQuality: (q, auto) => setActiveQuality(q, auto),
       onError: (err) => applyError(createPlayerError({ ...err, code: "network" })),
+      onQualitySwitch: (active) => bus.emit("qualityswitch", { active }),
     }),
   );
   registry.register(
