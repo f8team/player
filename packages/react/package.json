@@ -1,6 +1,6 @@
 {
   "name": "@f8/player-react",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "React adapter for @f8/player-core — composable slot API, hooks, and a one-liner <Player>.",
   "license": "MIT",
   "homepage": "https://github.com/f8/player/tree/main/packages/react#readme",

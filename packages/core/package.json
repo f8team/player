@@ -1,6 +1,6 @@
 {
   "name": "@f8/player-core",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Headless, framework-agnostic, plugin-driven video player engine. Powers the @f8/player-* adapters.",
   "license": "MIT",
   "homepage": "https://github.com/f8/player/tree/main/packages/core#readme",

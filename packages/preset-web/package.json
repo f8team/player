@@ -1,6 +1,6 @@
 {
   "name": "@f8/player-preset-web",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Shared Default plugin bundles for F8 web apps (learner / admin / pro).",
   "license": "MIT",
   "type": "module",

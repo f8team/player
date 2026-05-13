@@ -1,6 +1,6 @@
 {
   "name": "@f8/player-plugin-fullscreen",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "f8-player plugin: fullscreen",
   "license": "MIT",
   "type": "module",

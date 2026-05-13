@@ -1,6 +1,6 @@
 {
   "name": "@f8/player-lit",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Lit adapter for @f8/player-core — <f8-player> custom element + ReactivePlayerController, parity with @f8/player-react.",
   "license": "MIT",
   "homepage": "https://github.com/f8/player/tree/main/packages/lit#readme",

@@ -1,6 +1,6 @@
 {
   "name": "@f8/player-plugin-prefs",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "f8-player plugin: persist user prefs (volume, muted, playbackRate, qualityHeight, captionsLang) to localStorage with autoplay-muted bootstrap support",
   "license": "MIT",
   "type": "module",

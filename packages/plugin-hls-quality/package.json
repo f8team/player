@@ -1,6 +1,6 @@
 {
   "name": "@f8/player-plugin-hls-quality",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "f8-player plugin: hls-quality",
   "license": "MIT",
   "type": "module",

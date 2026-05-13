@@ -1,6 +1,6 @@
 {
   "name": "@f8/player-themes",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "CSS themes for @f8/player-react: classroom, story, admin, minimal",
   "license": "MIT",
   "type": "module",
