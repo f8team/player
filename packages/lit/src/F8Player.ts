@@ -254,6 +254,8 @@ export class F8PlayerElement extends LitElement {
 
   /** Center spinner until hls.js finishes a user-triggered rendition change. */
   private qualitySwitchOverlay = false;
+  /** Same spinner while buffering / rebuffering after seek (`buffering`). */
+  private bufferingCenterOverlay = false;
 
   /** Whether the user opened the captions `<select>` overlay at least once. */
   private captionsTouched = false;
@@ -399,6 +401,7 @@ export class F8PlayerElement extends LitElement {
     }
     this.videoEl = null;
     this.qualitySwitchOverlay = false;
+    this.bufferingCenterOverlay = false;
     this.bridgesInstalled = false;
     for (const d of this.pluginEventDisposers) d();
     this.pluginEventDisposers = [];
@@ -460,16 +463,26 @@ export class F8PlayerElement extends LitElement {
     );
   }
 
+  private centerSpinnerAriaLabel(): string {
+    if (this.qualitySwitchOverlay && !this.bufferingCenterOverlay) {
+      return "Đang đổi độ phân giải";
+    }
+    if (!this.qualitySwitchOverlay && this.bufferingCenterOverlay) {
+      return "Đang tải để tiếp tục phát";
+    }
+    return "Đang xử lý video";
+  }
+
   protected override render(): unknown {
     return html`
       <video data-f8-player-video class=${this.videoClass ?? ""} playsinline></video>
-      ${this.controls && this.qualitySwitchOverlay
+      ${this.controls && (this.qualitySwitchOverlay || this.bufferingCenterOverlay)
         ? html`<div
             class="f8p-spinner"
-            data-f8-player-quality-switch
+            data-f8-player-center-spinner
             role="status"
             aria-live="polite"
-            aria-label="Đang đổi độ phân giải"
+            aria-label=${this.centerSpinnerAriaLabel()}
           ></div>`
         : null}
       ${this.controls ? this.renderCenterTapLayer() : null}
@@ -1395,6 +1408,10 @@ export class F8PlayerElement extends LitElement {
     });
     for (const event of events) {
       this.controller.on(event, (payload) => {
+        if (event === "buffering") {
+          this.bufferingCenterOverlay = (payload as PlayerEvents["buffering"]).isBuffering;
+          this.requestUpdate();
+        }
         this.dispatchEvent(
           new CustomEvent(`f8-player:${event}`, {
             detail: payload,

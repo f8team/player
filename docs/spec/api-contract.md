@@ -160,7 +160,7 @@ interface PlayerEvents {
   volumechange: { volume: number; muted: boolean };
   seeking: { time: number };
   seeked: { time: number };
-  buffering: { isBuffering: boolean };
+  buffering: { isBuffering: boolean }; // `waiting`/`playing`; also tied to seeking for center-spinner UX
   qualitychange: { quality: QualityLevel | null; auto: boolean };
   qualitieswitch: { active: boolean };
   error: PlayerError;

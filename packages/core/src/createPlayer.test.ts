@@ -940,8 +940,11 @@ describe("createPlayer — native event bridge & runtime errors", () => {
     video.dispatchEvent(new Event("playing"));
     expect(seeking).toHaveBeenCalledWith({ time: 7 });
     expect(seeked).toHaveBeenCalledWith({ time: 7 });
-    expect(buffering).toHaveBeenCalledWith({ isBuffering: true });
-    expect(buffering).toHaveBeenCalledWith({ isBuffering: false });
+    expect(buffering).toHaveBeenCalledTimes(4);
+    expect(buffering).toHaveBeenNthCalledWith(1, { isBuffering: true });
+    expect(buffering).toHaveBeenNthCalledWith(2, { isBuffering: false });
+    expect(buffering).toHaveBeenNthCalledWith(3, { isBuffering: true });
+    expect(buffering).toHaveBeenNthCalledWith(4, { isBuffering: false });
     player.dispose();
   });
 

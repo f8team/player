@@ -56,7 +56,7 @@ export interface PlayerEvents {
   seeking: { time: number };
   /** Seek finished. */
   seeked: { time: number };
-  /** Buffering toggled. `isBuffering=true` means stalled. */
+  /** Buffering toggled. `isBuffering=true` means stalled (`waiting`), including after a seek scrub. */
   buffering: { isBuffering: boolean };
   /** Quality level changed. `auto=true` means ABR picked it. */
   qualitychange: { quality: QualityLevel | null; auto: boolean };

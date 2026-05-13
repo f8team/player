@@ -439,9 +439,22 @@ export function createPlayer(
     });
     on("seeking", () => {
       bus.emit("seeking", { time: target.currentTime });
+      // Seeking flushes the decode pipeline; show the same center spinner as
+      // `waiting` until `seeked` / `playing` settles (avoids a "frozen" feel).
+      bus.emit("buffering", { isBuffering: true });
     });
     on("seeked", () => {
       bus.emit("seeked", { time: target.currentTime });
+      // Paused scrubs: nothing will fire `playing` to clear the seek spinner.
+      if (target.paused) {
+        bus.emit("buffering", { isBuffering: false });
+        return;
+      }
+      // Playing: if the browser already has enough decoded data, clear early;
+      // otherwise keep showing until `waiting` → `playing` (or `playing` alone).
+      if (target.readyState >= 3 /* HAVE_FUTURE_DATA */) {
+        bus.emit("buffering", { isBuffering: false });
+      }
     });
     on("waiting", () => {
       bus.emit("buffering", { isBuffering: true });
