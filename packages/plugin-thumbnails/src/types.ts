@@ -1,5 +1,5 @@
 /**
- * Public types of `@f8/player-plugin-thumbnails`.
+ * Public types of `@f8team/reel-plugin-thumbnails`.
  *
  * The plugin parses a WebVTT cue map (sprite thumbnails) and exposes
  * `thumbnails:getAt(time)` so consumers (React `Controls.SeekBar`, the Lit

@@ -1,8 +1,8 @@
 /**
- * `@f8/player-core` — headless, framework-agnostic video player engine.
+ * `@f8team/reel-core` — headless, framework-agnostic video player engine.
  *
  * Public surface is frozen in `docs/spec/api-contract.md`. Internals live
- * behind the `@f8/player-core/internal` subpath and are not semver-protected.
+ * behind the `@f8team/reel-core/internal` subpath and are not semver-protected.
  */
 
 export { createPlayer } from "./createPlayer.js";

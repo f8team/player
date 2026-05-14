@@ -72,7 +72,7 @@ export function createStore<T extends object>(
       } catch (err) {
         // One bad listener does not abort the rest. Surface for diagnosis.
 
-        console.error("[@f8/player-core] store subscriber threw:", err);
+        console.error("[@f8team/reel-core] store subscriber threw:", err);
       }
     }
   }

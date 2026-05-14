@@ -1,4 +1,4 @@
-import type { Player, PluginHost } from "@f8/player-core";
+import type { Player, PluginHost } from "@f8team/reel-core";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 import { createSubtitlesPlugin } from "./subtitles.js";
@@ -82,7 +82,7 @@ describe("createSubtitlesPlugin", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     videoEl = document.createElement("video");
-    videoEl.setAttribute("data-f8-player-video", "");
+    videoEl.setAttribute("data-reel-video", "");
     viTrack = makeTrack("vi", "Tiếng Việt");
     enTrack = makeTrack("en", "English");
     // Stub textTracks

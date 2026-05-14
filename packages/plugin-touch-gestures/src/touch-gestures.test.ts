@@ -1,4 +1,4 @@
-import type { Player, PluginHost } from "@f8/player-core";
+import type { Player, PluginHost } from "@f8team/reel-core";
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
 
 import { createTouchGesturesPlugin } from "./touch-gestures.js";
@@ -59,7 +59,7 @@ describe("createTouchGesturesPlugin", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     container = document.createElement("div");
-    container.setAttribute("data-f8-player", "");
+    container.setAttribute("data-reel", "");
     // Give the element a bounding rect.
     container.getBoundingClientRect = vi.fn().mockReturnValue({
       left: 0,

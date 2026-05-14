@@ -1,7 +1,7 @@
 {
-  "name": "@f8/player-preset-web",
+  "name": "@f8team/reel-preset-web",
   "version": "1.0.0",
-  "description": "Shared Default plugin bundles for F8 web apps (learner / admin / pro).",
+  "description": "Shared Default plugin bundles for Reel web apps (learner / admin / pro).",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -23,6 +23,10 @@
   "engines": {
     "node": ">=20"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "keywords": [
     "f8",
     "player",
@@ -40,26 +44,26 @@
     "clean": "rm -rf dist coverage .turbo"
   },
   "peerDependencies": {
-    "@f8/player-core": ">=0.0.0",
-    "@f8/player-plugin-auth-aware": ">=0.0.0",
-    "@f8/player-plugin-fullscreen": ">=0.0.0",
-    "@f8/player-plugin-hls-quality": ">=0.0.0",
-    "@f8/player-plugin-keyboard": ">=0.0.0",
-    "@f8/player-plugin-markers": ">=0.0.0",
-    "@f8/player-plugin-pip": ">=0.0.0",
-    "@f8/player-plugin-prefs": ">=0.0.0",
-    "@f8/player-plugin-subtitles": ">=0.0.0",
-    "@f8/player-plugin-thumbnails": ">=0.0.0",
-    "@f8/player-react": ">=0.0.0",
-    "@f8/player-lit": ">=0.0.0",
+    "@f8team/reel-core": "^1.0.0",
+    "@f8team/reel-plugin-auth-aware": "^1.0.0",
+    "@f8team/reel-plugin-fullscreen": "^1.0.0",
+    "@f8team/reel-plugin-hls-quality": "^1.0.0",
+    "@f8team/reel-plugin-keyboard": "^1.0.0",
+    "@f8team/reel-plugin-markers": "^1.0.0",
+    "@f8team/reel-plugin-pip": "^1.0.0",
+    "@f8team/reel-plugin-prefs": "^1.0.0",
+    "@f8team/reel-plugin-subtitles": "^1.0.0",
+    "@f8team/reel-plugin-thumbnails": "^1.0.0",
+    "@f8team/reel-react": "^1.0.0",
+    "@f8team/reel-lit": "^1.0.0",
     "react": ">=18.0.0",
     "lit": ">=3.0.0"
   },
   "peerDependenciesMeta": {
-    "@f8/player-react": {
+    "@f8team/reel-react": {
       "optional": true
     },
-    "@f8/player-lit": {
+    "@f8team/reel-lit": {
       "optional": true
     },
     "react": {
@@ -70,18 +74,18 @@
     }
   },
   "devDependencies": {
-    "@f8/player-core": "workspace:*",
-    "@f8/player-plugin-auth-aware": "workspace:*",
-    "@f8/player-plugin-fullscreen": "workspace:*",
-    "@f8/player-plugin-hls-quality": "workspace:*",
-    "@f8/player-plugin-keyboard": "workspace:*",
-    "@f8/player-plugin-markers": "workspace:*",
-    "@f8/player-plugin-pip": "workspace:*",
-    "@f8/player-plugin-prefs": "workspace:*",
-    "@f8/player-plugin-subtitles": "workspace:*",
-    "@f8/player-plugin-thumbnails": "workspace:*",
-    "@f8/player-react": "workspace:*",
-    "@f8/player-lit": "workspace:*",
+    "@f8team/reel-core": "workspace:*",
+    "@f8team/reel-plugin-auth-aware": "workspace:*",
+    "@f8team/reel-plugin-fullscreen": "workspace:*",
+    "@f8team/reel-plugin-hls-quality": "workspace:*",
+    "@f8team/reel-plugin-keyboard": "workspace:*",
+    "@f8team/reel-plugin-markers": "workspace:*",
+    "@f8team/reel-plugin-pip": "workspace:*",
+    "@f8team/reel-plugin-prefs": "workspace:*",
+    "@f8team/reel-plugin-subtitles": "workspace:*",
+    "@f8team/reel-plugin-thumbnails": "workspace:*",
+    "@f8team/reel-react": "workspace:*",
+    "@f8team/reel-lit": "workspace:*",
     "@types/react": "^18.3.5",
     "react": "^18.3.1",
     "lit": "^3.2.0",

@@ -1,15 +1,15 @@
 # Public API contract — frozen at Phase 0
 
-This contract is the public surface of `@f8/player-core` and `@f8/player-react`. Phases 1–3 implement against it; phases 4–5 migrate F8 surfaces against it; phase 6+ document and ship it.
+This contract is the public surface of `@f8team/reel-core` and `@f8team/reel-react`. Phases 1–3 implement against it; phases 4–5 migrate F8 surfaces against it; phase 6+ document and ship it.
 
 Any change to a public type in this file is a **breaking change** unless explicitly marked `@internal` or covered by a feature flag.
 
-## `@f8/player-core`
+## `@f8team/reel-core`
 
 ### Lifecycle
 
 ```ts
-import { createPlayer, type PlayerOptions, type Player } from "@f8/player-core";
+import { createPlayer, type PlayerOptions, type Player } from "@f8team/reel-core";
 
 const player: Player = createPlayer(options: PlayerOptions);
 await player.attach(videoElement: HTMLVideoElement): Promise<void>;
@@ -228,7 +228,7 @@ declare function registerSource(provider: SourceProvider): void;
 declare function unregisterSource(name: string): void;
 ```
 
-## `@f8/player-react`
+## `@f8team/reel-react`
 
 ### Components
 

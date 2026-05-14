@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PlayerState } from "@f8/player-core";
+import type { Player, PluginHost, PlayerState } from "@f8team/reel-core";
 import { describe, expect, it, vi, beforeEach } from "vitest";
 
 import { createKeyboardPlugin } from "./keyboard.js";

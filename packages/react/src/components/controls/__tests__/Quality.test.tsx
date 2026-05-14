@@ -1,4 +1,4 @@
-import type { PlayerState } from "@f8/player-core";
+import type { PlayerState } from "@f8team/reel-core";
 import { fireEvent, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, type vi } from "vitest";
@@ -69,7 +69,7 @@ describe("<Quality>", () => {
 
   it("closes the listbox when clicking elsewhere inside the player", () => {
     const { container } = renderWithPlayer(
-      <div data-f8-player="">
+      <div data-reel="">
         <Quality />
         <button type="button">Outside inside player</button>
       </div>,
@@ -78,9 +78,9 @@ describe("<Quality>", () => {
       },
     );
     fireEvent.click(screen.getByRole("button", { name: "Quality" }));
-    expect(container.querySelector('[data-f8p-control-popover="quality"]')).not.toBeNull();
+    expect(container.querySelector('[data-reel-control-popover="quality"]')).not.toBeNull();
 
     fireEvent.pointerDown(screen.getByRole("button", { name: "Outside inside player" }));
-    expect(container.querySelector('[data-f8p-control-popover="quality"]')).toBeNull();
+    expect(container.querySelector('[data-reel-control-popover="quality"]')).toBeNull();
   });
 });

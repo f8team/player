@@ -1,4 +1,4 @@
-import { detectSourceType, formatTime } from "@f8/player-core";
+import { detectSourceType, formatTime } from "@f8team/reel-core";
 import type {
   Disposer,
   Player,
@@ -7,14 +7,14 @@ import type {
   PlayerState,
   QualityLevel,
   SourceDescriptor,
-} from "@f8/player-core";
+} from "@f8team/reel-core";
 import { LitElement, html, css, type PropertyValues } from "lit";
 
 import { PlayerController } from "./PlayerController.js";
 
 /**
  * Shape of one parsed sprite-thumbnail cue — structurally compatible with
- * `@f8/player-plugin-thumbnails`'s `ThumbnailCue` without taking a hard
+ * `@f8team/reel-plugin-thumbnails`'s `ThumbnailCue` without taking a hard
  * dependency on the plugin package.
  */
 interface ThumbnailCueLite {
@@ -27,7 +27,7 @@ interface ThumbnailCueLite {
   h: number;
 }
 
-/** Shape emitted by `@f8/player-plugin-subtitles` on `subtitles:changed`. */
+/** Shape emitted by `@f8team/reel-plugin-subtitles` on `subtitles:changed`. */
 interface SubtitleTrackStateLite {
   lang: string;
   label: string;
@@ -137,15 +137,15 @@ interface ThumbnailHoverState {
 }
 
 /**
- * `<f8-player>` — Lit custom element wrapping `@f8/player-core`.
+ * `<reel-player>` — Lit custom element wrapping `@f8team/reel-core`.
  *
  * ## Usage
  *
  * ```html
- * <f8-player .options=${{ source: { src: "https://cdn/video.m3u8" } }}>
+ * <reel-player .options=${{ source: { src: "https://cdn/video.m3u8" } }}>
  *   <!-- Optional consumer-supplied chrome (overlays, controls, markers) -->
  *   <my-controls slot="controls"></my-controls>
- * </f8-player>
+ * </reel-player>
  * ```
  *
  * ## Public API
@@ -160,10 +160,10 @@ interface ThumbnailHoverState {
  * ## Events
  *
  * Every core event is re-emitted as a `CustomEvent` with name
- * `f8-player:<event>` and `detail` set to the core payload. Listen via DOM:
+ * `reel-player:<event>` and `detail` set to the core payload. Listen via DOM:
  *
  * ```js
- * el.addEventListener("f8-player:timeupdate", (e) => console.log(e.detail));
+ * el.addEventListener("reel-player:timeupdate", (e) => console.log(e.detail));
  * ```
  *
  * ## Light DOM
@@ -173,13 +173,13 @@ interface ThumbnailHoverState {
  * APIs, and CSS theming (`classroom.css`, `story.css`, `admin.css`) working
  * without piercing shadow boundaries.
  */
-export class F8PlayerElement extends LitElement {
+export class ReelPlayerElement extends LitElement {
   static override styles = css`
     :host {
       display: block;
       position: relative;
     }
-    [data-f8-player-video] {
+    [data-reel-video] {
       display: block;
       width: 100%;
       height: 100%;
@@ -188,7 +188,7 @@ export class F8PlayerElement extends LitElement {
 
   /**
    * `createPlayer` options. Read once on `hostConnected`; subsequent changes
-   * are ignored (same contract as `@f8/player-react`). Use the imperative
+   * are ignored (same contract as `@f8team/reel-react`). Use the imperative
    * `raw.setSource(...)` / `raw.setPlaybackRate(...)` for reactive updates.
    *
    * @phase-2-target The following reactive properties will be added alongside
@@ -198,7 +198,7 @@ export class F8PlayerElement extends LitElement {
    *   - `poster?: string` — forwarded to player setter on change.
    *   - `playbackRate?: number` — forwarded to player.setPlaybackRate() on change.
    *   - `volume?: number`, `muted?: boolean` — forwarded to respective setters.
-   * Custom events `f8-player:play`, `f8-player:pause`, … (already emitted) will be
+   * Custom events `reel-player:play`, `reel-player:pause`, … (already emitted) will be
    * audited in Phase 2 T2.6 to confirm detail shape matches React callback contract.
    */
   options?: PlayerOptions;
@@ -215,7 +215,7 @@ export class F8PlayerElement extends LitElement {
   controls = false;
 
   /**
-   * Theme name consumed by `@f8/player-themes/*`. Only applied when default
+   * Theme name consumed by `@f8team/reel-themes/*`. Only applied when default
    * controls are enabled so headless consumers stay visually untouched.
    */
   theme = "classroom";
@@ -236,7 +236,7 @@ export class F8PlayerElement extends LitElement {
    * `localStorage` key used when `persistPrefs` is enabled.
    * Override this to isolate prefs when embedding multiple players on one page.
    */
-  prefsKey = "f8-player:prefs";
+  prefsKey = "reel-player:prefs";
 
   /**
    * Reactive source. When the property changes (by `src` string equality +
@@ -266,7 +266,7 @@ export class F8PlayerElement extends LitElement {
   private bridgesInstalled = false;
 
   /**
-   * Sprite-thumbnail cues populated by `@f8/player-plugin-thumbnails` events
+   * Sprite-thumbnail cues populated by `@f8team/reel-plugin-thumbnails` events
    * (`thumbnails:ready` / `thumbnails:cleared`). Empty when the plugin
    * isn't loaded — in which case the hover preview never renders.
    */
@@ -346,7 +346,7 @@ export class F8PlayerElement extends LitElement {
       return;
     }
     const activeMenu = this.querySelector<HTMLElement>(
-      `[data-f8p-control-menu="${this.openMenu}"]`,
+      `[data-reel-control-menu="${this.openMenu}"]`,
     );
     const contained = !!activeMenu?.contains(target);
     if (contained) return;
@@ -419,7 +419,7 @@ export class F8PlayerElement extends LitElement {
   }
 
   protected override firstUpdated(): void {
-    const video = this.querySelector<HTMLVideoElement>("video[data-f8-player-video]");
+    const video = this.querySelector<HTMLVideoElement>("video[data-reel-video]");
     if (!video) return;
     this.videoEl = video;
     this.controller.attach(video).catch(() => {
@@ -465,8 +465,8 @@ export class F8PlayerElement extends LitElement {
   }
 
   /**
-   * Subscribe to optional plugin events (`@f8/player-plugin-thumbnails`,
-   * `@f8/player-plugin-subtitles`). If the plugins aren't loaded the core
+   * Subscribe to optional plugin events (`@f8team/reel-plugin-thumbnails`,
+   * `@f8team/reel-plugin-subtitles`). If the plugins aren't loaded the core
    * bus simply never fires and the fields stay at their defaults.
    */
   private installPluginEventBridges(): void {
@@ -529,11 +529,11 @@ export class F8PlayerElement extends LitElement {
 
   protected override render(): unknown {
     return html`
-      <video data-f8-player-video class=${this.videoClass ?? ""} playsinline></video>
+      <video data-reel-video class=${this.videoClass ?? ""} playsinline></video>
       ${this.controls && (this.qualitySwitchOverlay || this.bufferingCenterOverlay)
         ? html`<div
             class="f8p-spinner"
-            data-f8-player-center-spinner
+            data-reel-center-spinner
             role="status"
             aria-live="polite"
             aria-label=${this.centerSpinnerAriaLabel()}
@@ -593,12 +593,12 @@ export class F8PlayerElement extends LitElement {
 
   private syncHostChromeAttributes(): void {
     if (!this.controls) {
-      this.removeAttribute("data-f8-player");
+      this.removeAttribute("data-reel");
       this.removeAttribute("data-theme");
       return;
     }
 
-    this.setAttribute("data-f8-player", "");
+    this.setAttribute("data-reel", "");
     this.setAttribute("data-theme", this.theme || "classroom");
   }
 
@@ -615,14 +615,14 @@ export class F8PlayerElement extends LitElement {
     const isPlaying = state.status === "playing";
     return html`
       <div
-        data-f8-player-center-tap
+        data-reel-center-tap
         role="button"
         tabindex="0"
         aria-label=${isPlaying ? "Tạm dừng" : "Phát"}
         @click=${this.handleCenterTapClick}
         @keydown=${this.handleCenterTapKeydown}
       >
-        ${isPlaying ? null : html`<span data-f8-player-big-play>${this.renderIcon("play")}</span>`}
+        ${isPlaying ? null : html`<span data-reel-big-play>${this.renderIcon("play")}</span>`}
       </div>
     `;
   }
@@ -646,15 +646,15 @@ export class F8PlayerElement extends LitElement {
         class="f8p-controls"
         role="toolbar"
         aria-label="Điều khiển video"
-        data-f8-player-controls
-        data-f8-player-controls-layout="two-row"
+        data-reel-controls
+        data-reel-controls-layout="two-row"
       >
-        <div data-f8-player-controls-row="timeline">
+        <div data-reel-controls-row="timeline">
           <time
             class="f8p-time"
             aria-label=${`Vị trí hiện tại: ${this.formatTimeLabel(currentTime)}`}
             datetime=${this.toDateTime(currentTime)}
-            data-f8-player-control="time"
+            data-reel-control="time"
             data-variant="current"
           >
             ${this.formatTimeLabel(currentTime)}
@@ -662,12 +662,12 @@ export class F8PlayerElement extends LitElement {
 
           <div
             class="f8p-seek"
-            data-f8p-seek-wrapper
-            style=${`--f8p-seek-progress: ${playedPct}%`}
+            data-reel-seek-wrapper
+            style=${`--reel-seek-progress: ${playedPct}%`}
             @pointermove=${this.handleSeekPointerMove}
             @pointerleave=${this.handleSeekPointerLeave}
           >
-            <div data-f8p-seek-buffered style=${`width: ${bufferedPct}%`} aria-hidden="true"></div>
+            <div data-reel-seek-buffered style=${`width: ${bufferedPct}%`} aria-hidden="true"></div>
             ${this.renderThumbnailTile(max)}
             <input
               type="range"
@@ -680,7 +680,7 @@ export class F8PlayerElement extends LitElement {
               aria-valuenow=${seekValue}
               aria-valuemin="0"
               aria-valuemax=${max}
-              data-f8-player-control="seek-bar"
+              data-reel-control="seek-bar"
               @input=${this.handleSeekInput}
             />
           </div>
@@ -689,19 +689,19 @@ export class F8PlayerElement extends LitElement {
             class="f8p-time"
             aria-label=${`Thời lượng: ${this.formatTimeLabel(duration)}`}
             datetime=${this.toDateTime(duration)}
-            data-f8-player-control="time"
+            data-reel-control="time"
             data-variant="duration"
           >
             ${this.formatTimeLabel(duration)}
           </time>
         </div>
 
-        <div data-f8-player-controls-row="actions">
+        <div data-reel-controls-row="actions">
           <button
             type="button"
             class="f8p-btn"
             aria-label="Tua lại 10 giây"
-            data-f8-player-control="seek-backward"
+            data-reel-control="seek-backward"
             data-seek-offset="-10"
             @click=${this.handleSeekBackwardClick}
           >
@@ -713,7 +713,7 @@ export class F8PlayerElement extends LitElement {
             class="f8p-btn"
             aria-label=${isPlaying ? "Tạm dừng" : "Phát"}
             aria-pressed=${isPlaying}
-            data-f8-player-control="play-pause"
+            data-reel-control="play-pause"
             @click=${this.handlePlayPauseClick}
           >
             ${this.renderIcon(isPlaying ? "pause" : "play")}
@@ -723,7 +723,7 @@ export class F8PlayerElement extends LitElement {
             type="button"
             class="f8p-btn"
             aria-label="Tua tới 10 giây"
-            data-f8-player-control="seek-forward"
+            data-reel-control="seek-forward"
             data-seek-offset="10"
             @click=${this.handleSeekForwardClick}
           >
@@ -736,14 +736,14 @@ export class F8PlayerElement extends LitElement {
               class="f8p-btn"
               aria-label=${muted ? "Bật tiếng" : "Tắt tiếng"}
               aria-pressed=${muted}
-              data-f8-player-control="mute"
+              data-reel-control="mute"
               @click=${this.handleMuteClick}
             >
               ${this.renderIcon(muted || volume <= 0 ? "volumeMuted" : "volume")}
             </button>
             <input
               class="f8p-volume-slider"
-              style=${`--f8p-volume-progress: ${Math.min(Math.max(volume, 0), 1) * 100}%`}
+              style=${`--reel-volume-progress: ${Math.min(Math.max(volume, 0), 1) * 100}%`}
               type="range"
               min="0"
               max="1"
@@ -754,7 +754,7 @@ export class F8PlayerElement extends LitElement {
               aria-valuenow=${volume}
               aria-valuemin="0"
               aria-valuemax="1"
-              data-f8-player-control="volume"
+              data-reel-control="volume"
               @input=${this.handleVolumeInput}
             />
           </div>
@@ -767,7 +767,7 @@ export class F8PlayerElement extends LitElement {
             class="f8p-btn"
             aria-label=${fullscreen ? "Thoát toàn màn hình" : "Toàn màn hình"}
             aria-pressed=${fullscreen}
-            data-f8-player-control="fullscreen"
+            data-reel-control="fullscreen"
             @click=${this.handleFullscreenClick}
           >
             ${this.renderIcon(fullscreen ? "compress" : "maximize")}
@@ -809,10 +809,10 @@ export class F8PlayerElement extends LitElement {
       ariaLabel: "Chất lượng video",
       active: Boolean(activeQuality),
       trigger: html`
-        <span data-f8-player-quality-value aria-hidden="true">
-          <span data-f8-player-quality-text>${activeParts.text}</span>
+        <span data-reel-quality-value aria-hidden="true">
+          <span data-reel-quality-text>${activeParts.text}</span>
           ${activeParts.badge
-            ? html`<span data-f8-player-quality-badge>${activeParts.badge}</span>`
+            ? html`<span data-reel-quality-badge>${activeParts.badge}</span>`
             : null}
         </span>
       `,
@@ -837,7 +837,7 @@ export class F8PlayerElement extends LitElement {
       active: playbackRate !== 1,
       trigger: html`
         ${this.renderIcon("settings")}
-        <span data-f8p-trigger-label>${playbackRate === 1 ? "1×" : `${playbackRate}×`}</span>
+        <span data-reel-trigger-label>${playbackRate === 1 ? "1×" : `${playbackRate}×`}</span>
       `,
       options,
     });
@@ -852,7 +852,7 @@ export class F8PlayerElement extends LitElement {
         class="f8p-btn"
         aria-label=${pip ? "Thoát chế độ hình trong hình" : "Hình trong hình"}
         aria-pressed=${pip}
-        data-f8-player-control="pip"
+        data-reel-control="pip"
         @click=${this.handlePipClick}
       >
         ${this.renderIcon("pip")}
@@ -932,7 +932,7 @@ export class F8PlayerElement extends LitElement {
   private renderCaptionsTrigger(lang: string | null): unknown {
     return html`
       ${this.renderIcon("cc")}
-      <span data-f8p-trigger-label>${lang ? lang.toUpperCase() : "CC"}</span>
+      <span data-reel-trigger-label>${lang ? lang.toUpperCase() : "CC"}</span>
     `;
   }
 
@@ -950,10 +950,10 @@ export class F8PlayerElement extends LitElement {
     return html`
       <span
         class="f8p-menu"
-        data-f8-player-control=${params.control}
-        data-f8p-control-menu=${params.menuId}
-        ?data-f8p-menu-open=${open}
-        ?data-f8-player-captions-active=${params.control === "captions" && Boolean(params.active)}
+        data-reel-control=${params.control}
+        data-reel-control-menu=${params.menuId}
+        ?data-reel-menu-open=${open}
+        ?data-reel-captions-active=${params.control === "captions" && Boolean(params.active)}
       >
         <button
           type="button"
@@ -962,7 +962,7 @@ export class F8PlayerElement extends LitElement {
           aria-haspopup="listbox"
           aria-expanded=${open ? "true" : "false"}
           aria-controls=${panelId}
-          data-f8p-control-trigger=${params.menuId}
+          data-reel-control-trigger=${params.menuId}
           @click=${() => this.toggleMenu(params.menuId)}
           @keydown=${(event: KeyboardEvent) => this.handleMenuTriggerKeydown(event, params.menuId)}
         >
@@ -975,7 +975,7 @@ export class F8PlayerElement extends LitElement {
                 class="f8p-menu-popover"
                 role="listbox"
                 aria-label=${params.ariaLabel}
-                data-f8p-control-popover=${params.menuId}
+                data-reel-control-popover=${params.menuId}
                 @keydown=${this.handleMenuListboxKeydown}
               >
                 ${params.options.map(
@@ -985,17 +985,17 @@ export class F8PlayerElement extends LitElement {
                       class="f8p-menu-option"
                       role="option"
                       aria-selected=${option.active ? "true" : "false"}
-                      data-f8p-control-option
+                      data-reel-control-option
                       data-value=${option.value}
                       @mousedown=${this.handleMenuOptionMouseDown}
                       @click=${() => this.selectMenuOption(option)}
                     >
-                      <span data-f8p-option-label>${option.label}</span>
+                      <span data-reel-option-label>${option.label}</span>
                       ${option.badge
-                        ? html`<span data-f8p-option-badge>${option.badge}</span>`
+                        ? html`<span data-reel-option-badge>${option.badge}</span>`
                         : null}
                       ${option.active
-                        ? html`<span data-f8p-option-check aria-hidden="true">✓</span>`
+                        ? html`<span data-reel-option-check aria-hidden="true">✓</span>`
                         : null}
                     </button>
                   `,
@@ -1061,10 +1061,10 @@ export class F8PlayerElement extends LitElement {
       "z-index:2",
     ].join(";");
     return html`
-      <div data-f8p-seek-thumbnail aria-hidden="true" style=${tileStyle}>
-        <div data-f8p-seek-thumbnail-image style=${imageStyle}></div>
+      <div data-reel-seek-thumbnail aria-hidden="true" style=${tileStyle}>
+        <div data-reel-seek-thumbnail-image style=${imageStyle}></div>
       </div>
-      <span data-f8p-seek-thumbnail-time aria-hidden="true" style=${labelStyle}>
+      <span data-reel-seek-thumbnail-time aria-hidden="true" style=${labelStyle}>
         ${this.formatTimeLabel(hover.time)}
       </span>
     `;
@@ -1074,7 +1074,7 @@ export class F8PlayerElement extends LitElement {
     const icon = ICONS[name];
 
     return html`
-      <svg aria-hidden="true" data-f8-player-icon=${name} focusable="false" viewBox=${icon.viewBox}>
+      <svg aria-hidden="true" data-reel-icon=${name} focusable="false" viewBox=${icon.viewBox}>
         <path d=${icon.path}></path>
       </svg>
     `;
@@ -1239,17 +1239,17 @@ export class F8PlayerElement extends LitElement {
 
   private focusSelectedMenuOption(menuId: ControlMenuId): void {
     void this.updateComplete.then(() => {
-      const popover = this.querySelector<HTMLElement>(`[data-f8p-control-popover="${menuId}"]`);
+      const popover = this.querySelector<HTMLElement>(`[data-reel-control-popover="${menuId}"]`);
       const selected = popover?.querySelector<HTMLElement>(
-        '[data-f8p-control-option][aria-selected="true"]',
+        '[data-reel-control-option][aria-selected="true"]',
       );
-      const first = popover?.querySelector<HTMLElement>("[data-f8p-control-option]");
+      const first = popover?.querySelector<HTMLElement>("[data-reel-control-option]");
       (selected ?? first)?.focus();
     });
   }
 
   private focusMenuTrigger(menuId: ControlMenuId): void {
-    this.querySelector<HTMLElement>(`[data-f8p-control-trigger="${menuId}"]`)?.focus();
+    this.querySelector<HTMLElement>(`[data-reel-control-trigger="${menuId}"]`)?.focus();
   }
 
   private handleMenuTriggerKeydown(event: KeyboardEvent, menuId: ControlMenuId): void {
@@ -1264,7 +1264,7 @@ export class F8PlayerElement extends LitElement {
 
   private handleMenuListboxKeydown = (event: KeyboardEvent): void => {
     const popover = event.currentTarget as HTMLElement;
-    const options = Array.from(popover.querySelectorAll<HTMLElement>("[data-f8p-control-option]"));
+    const options = Array.from(popover.querySelectorAll<HTMLElement>("[data-reel-control-option]"));
     const currentIndex = Math.max(0, options.indexOf(document.activeElement as HTMLElement));
 
     if (event.key === "Escape") {
@@ -1426,7 +1426,7 @@ export class F8PlayerElement extends LitElement {
   }
 
   // ------------------------------------------------------------------------
-  // Internal — re-emit every core event as a CustomEvent("f8-player:<name>")
+  // Internal — re-emit every core event as a CustomEvent("reel-player:<name>")
   // ------------------------------------------------------------------------
 
   private installEventBridges(): void {
@@ -1453,7 +1453,7 @@ export class F8PlayerElement extends LitElement {
       this.qualitySwitchOverlay = payload.active;
       this.requestUpdate();
       this.dispatchEvent(
-        new CustomEvent("f8-player:qualityswitch", {
+        new CustomEvent("reel-player:qualityswitch", {
           detail: payload,
           bubbles: true,
           composed: true,
@@ -1467,7 +1467,7 @@ export class F8PlayerElement extends LitElement {
           this.requestUpdate();
         }
         this.dispatchEvent(
-          new CustomEvent(`f8-player:${event}`, {
+          new CustomEvent(`reel-player:${event}`, {
             detail: payload,
             bubbles: true,
             composed: true,
@@ -1480,21 +1480,21 @@ export class F8PlayerElement extends LitElement {
 }
 
 /**
- * Idempotently register `<f8-player>` on `window.customElements`. Opt-in so
+ * Idempotently register `<reel-player>` on `window.customElements`. Opt-in so
  * apps that ship the package twice don't crash on `customElements.define`.
  *
  * Returns the element constructor for convenience.
  */
-export function defineF8Player(): typeof F8PlayerElement {
+export function defineReelPlayer(): typeof ReelPlayerElement {
   if (typeof customElements !== "undefined") {
-    const existing = customElements.get("f8-player");
-    if (!existing) customElements.define("f8-player", F8PlayerElement);
+    const existing = customElements.get("reel-player");
+    if (!existing) customElements.define("reel-player", ReelPlayerElement);
   }
-  return F8PlayerElement;
+  return ReelPlayerElement;
 }
 
 declare global {
   interface HTMLElementTagNameMap {
-    "f8-player": F8PlayerElement;
+    "reel-player": ReelPlayerElement;
   }
 }

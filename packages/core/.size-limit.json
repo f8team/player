@@ -1,13 +1,13 @@
 [
   {
-    "name": "@f8/player-core (full ESM, gzip)",
+    "name": "@f8team/reel-core (full ESM, gzip)",
     "path": "dist/index.js",
     "limit": "12 KB",
     "gzip": true,
     "ignore": ["hls.js"]
   },
   {
-    "name": "@f8/player-core (hard cap, gzip)",
+    "name": "@f8team/reel-core (hard cap, gzip)",
     "path": "dist/index.js",
     "limit": "15 KB",
     "gzip": true,

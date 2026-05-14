@@ -89,7 +89,7 @@ describe("i18n — defaults and overrides (B1)", () => {
         ],
       },
     });
-    const buffered = document.querySelector<HTMLDivElement>("[data-f8p-seek-buffered]");
+    const buffered = document.querySelector<HTMLDivElement>("[data-reel-seek-buffered]");
     expect(buffered).toBeTruthy();
     // Furthest end is 60 → 60% width.
     expect(buffered?.style.width).toBe("60%");

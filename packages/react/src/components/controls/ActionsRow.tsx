@@ -7,5 +7,5 @@ export type ActionsRowProps = ComponentPropsWithoutRef<"div">;
  * Pair with {@link TimelineRow} and {@link Bar} `layout="two-row"`.
  */
 export function ActionsRow({ ...props }: ActionsRowProps): JSX.Element {
-  return <div data-f8-player-controls-row="actions" {...props} />;
+  return <div data-reel-controls-row="actions" {...props} />;
 }

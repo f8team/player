@@ -1,8 +1,8 @@
-# @f8/player-plugin-subtitles
+# @f8team/reel-plugin-subtitles
 
 ## 1.0.0
 
 ### Patch Changes
 
 - Updated dependencies [b8ac150]
-  - @f8/player-core@1.0.0
+  - @f8team/reel-core@1.0.0

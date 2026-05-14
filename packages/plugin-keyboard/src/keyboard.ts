@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
 
 /**
  * Logical key names used by `blockKeys`. Mirrors `KeyboardEvent.key` for

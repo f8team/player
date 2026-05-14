@@ -1,4 +1,4 @@
-import { Root, Video, Controls } from "@f8/player-react";
+import { Root, Video, Controls } from "@f8team/reel-react";
 import type { Meta, StoryObj } from "@storybook/react";
 import React from "react";
 
@@ -10,7 +10,7 @@ const DEMO_MP4 =
 function ResumeDemo() {
   const plugins = [
     createResumePositionPlugin({
-      storagePrefix: "f8-player-storybook-resume:",
+      storagePrefix: "reel-player-storybook-resume:",
       minSeconds: 5,
     }),
   ];
@@ -26,7 +26,7 @@ function ResumeDemo() {
           borderRadius: "0.8rem",
           overflow: "hidden",
         }}
-        data-f8-player=""
+        data-reel=""
         data-theme="classroom"
       >
         <Root options={{ source: { src: DEMO_MP4, tracks: [] }, plugins, playsInline: true }}>

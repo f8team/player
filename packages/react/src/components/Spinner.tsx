@@ -16,7 +16,7 @@ export interface SpinnerProps {
  *
  * Replaces the boilerplate `CenterPlaybackSpinner` each consumer (f8-ui,
  * f8-dash-ui) used to write. Pure DOM primitive — no visual styling baked in.
- * Style via `data-f8-player-center-spinner` + the `[data-f8-player-…]` set
+ * Style via `data-reel-center-spinner` + the `[data-reel-…]` set
  * documented in `docs/spec/styling-contract.md`, or via Tailwind arbitrary
  * variants.
  *
@@ -47,11 +47,11 @@ export function Spinner({ className, style }: SpinnerProps = {}): JSX.Element | 
       role="status"
       aria-live="polite"
       aria-label={ariaLabel}
-      data-f8-player-center-spinner=""
+      data-reel-center-spinner=""
       className={className}
       style={style}
     >
-      <div data-f8p-spinner-dot="" />
+      <div data-reel-spinner-dot="" />
     </div>
   );
 }

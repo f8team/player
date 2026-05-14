@@ -12,33 +12,34 @@ export default function GettingStartedPage() {
 
       <h2>Cài đặt</h2>
       <pre>
-        <code>{`pnpm add @f8/player-react @f8/player-core
+        <code>{`pnpm add @f8team/reel-react @f8team/reel-core
 
 # Nếu cần theme sẵn
-pnpm add @f8/player-themes
+pnpm add @f8team/reel-themes
 
 # Plugins tuỳ chọn (chỉ cài những gì bạn dùng)
-pnpm add @f8/player-plugin-subtitles
-pnpm add @f8/player-plugin-keyboard
-pnpm add @f8/player-plugin-hls-quality
-pnpm add @f8/player-plugin-markers
-pnpm add @f8/player-plugin-analytics
+pnpm add @f8team/reel-plugin-subtitles
+pnpm add @f8team/reel-plugin-keyboard
+pnpm add @f8team/reel-plugin-hls-quality
+pnpm add @f8team/reel-plugin-markers
+pnpm add @f8team/reel-plugin-analytics
 # ... v.v.`}</code>
       </pre>
 
       <h2>Player cơ bản</h2>
       <p>
-        <code>@f8/player-react</code> cung cấp các primitive: <code>Root</code>, <code>Video</code>,
-        <code>Captions</code> và namespace <code>Controls.*</code>. Bạn tự compose layout.
+        <code>@f8team/reel-react</code> cung cấp các primitive: <code>Root</code>,{" "}
+        <code>Video</code>,<code>Captions</code> và namespace <code>Controls.*</code>. Bạn tự
+        compose layout.
       </p>
       <pre>
-        <code>{`import { Root, Video, Controls } from "@f8/player-react";
-import "@f8/player-themes/classroom.css";
+        <code>{`import { Root, Video, Controls } from "@f8team/reel-react";
+import "@f8team/reel-themes/classroom.css";
 
 function MyPlayer() {
   return (
     <div
-      data-f8-player=""
+      data-reel=""
       data-theme="classroom"
       style={{
         position: "relative",
@@ -80,9 +81,9 @@ function MyPlayer() {
       </p>
       <pre>
         <code>{`import { useMemo } from "react";
-import { createKeyboardPlugin } from "@f8/player-plugin-keyboard";
-import { createHlsQualityPlugin } from "@f8/player-plugin-hls-quality";
-import { createSubtitlesPlugin } from "@f8/player-plugin-subtitles";
+import { createKeyboardPlugin } from "@f8team/reel-plugin-keyboard";
+import { createHlsQualityPlugin } from "@f8team/reel-plugin-hls-quality";
+import { createSubtitlesPlugin } from "@f8team/reel-plugin-subtitles";
 
 function MyPlayer() {
   const plugins = useMemo(() => [
@@ -110,7 +111,7 @@ function MyPlayer() {
       </p>
       <pre>
         <code>{`import { useRef } from "react";
-import { usePlayer } from "@f8/player-react";
+import { usePlayer } from "@f8team/reel-react";
 
 // Bên trong Root:
 function ExternalControls() {
@@ -137,19 +138,19 @@ function ExternalControls() {
         Import CSS theme và thêm <code>data-theme</code> vào wrapper element:
       </p>
       <pre>
-        <code>{`import "@f8/player-themes/classroom.css";
+        <code>{`import "@f8team/reel-themes/classroom.css";
 // hoặc: story.css | admin.css | minimal.css
 
-<div data-f8-player="" data-theme="classroom">
+<div data-reel="" data-theme="classroom">
   <Root ...>...</Root>
 </div>`}</code>
       </pre>
 
       <p>Override token bất kỳ:</p>
       <pre>
-        <code>{`[data-f8-player][data-theme="classroom"] {
-  --f8p-accent: #6366f1; /* đổi màu nhấn */
-  --f8p-bg: #050505;
+        <code>{`[data-reel][data-theme="classroom"] {
+  --reel-accent: #6366f1; /* đổi màu nhấn */
+  --reel-bg: #050505;
 }`}</code>
       </pre>
     </article>

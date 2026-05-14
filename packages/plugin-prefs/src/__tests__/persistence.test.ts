@@ -1,16 +1,16 @@
 /**
- * `@f8/player-plugin-prefs` — persistence semantics (Phase 3 T3.2).
+ * `@f8team/reel-plugin-prefs` — persistence semantics (Phase 3 T3.2).
  *
  * Cross-checked against `f8-ui` `PersistPrefs` (the canonical reference).
  */
-import type { Player, PluginHost, PlayerEvents, PlayerState } from "@f8/player-core";
+import type { Player, PluginHost, PlayerEvents, PlayerState } from "@f8team/reel-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createPrefsPlugin } from "../prefs.js";
 
 // ── Test harness ───────────────────────────────────────────────────────────
 
-const STORAGE_KEY = "f8-player:prefs";
+const STORAGE_KEY = "reel-player:prefs";
 
 type Handler = (payload: unknown) => void;
 

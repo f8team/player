@@ -1,7 +1,7 @@
 {
-  "name": "@f8/player-plugin-prefs",
+  "name": "@f8team/reel-plugin-prefs",
   "version": "1.0.0",
-  "description": "f8-player plugin: persist user prefs (volume, muted, playbackRate, qualityHeight, captionsLang) to localStorage with autoplay-muted bootstrap support",
+  "description": "Reel plugin: persist user prefs (volume, muted, playbackRate, qualityHeight, captionsLang) to localStorage with autoplay-muted bootstrap support",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -47,10 +47,10 @@
     "localStorage"
   ],
   "peerDependencies": {
-    "@f8/player-core": "workspace:*"
+    "@f8team/reel-core": "^1.0.0"
   },
   "devDependencies": {
-    "@f8/player-core": "workspace:*",
+    "@f8team/reel-core": "workspace:*",
     "@size-limit/preset-small-lib": "^11.1.6",
     "@vitest/coverage-v8": "^2.1.2",
     "jsdom": "^25.0.1",

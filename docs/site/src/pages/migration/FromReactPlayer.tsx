@@ -3,9 +3,9 @@ export default function MigrationReactPlayerPage() {
     <article className="prose">
       <h1>Migration từ react-player</h1>
       <p>
-        Hướng dẫn chuyển từ <code>react-player</code> sang <code>@f8/player-react</code>. Hai
-        package có API tương đối khác nhau do <code>@f8/player-react</code> là headless (không có UI
-        mặc định), nhưng việc migrate từng bước là khả thi.
+        Hướng dẫn chuyển từ <code>react-player</code> sang <code>@f8team/reel-react</code>. Hai
+        package có API tương đối khác nhau do <code>@f8team/reel-react</code> là headless (không có
+        UI mặc định), nhưng việc migrate từng bước là khả thi.
       </p>
 
       <h2>Cài đặt</h2>
@@ -14,7 +14,7 @@ export default function MigrationReactPlayerPage() {
 pnpm remove react-player
 
 # Cài package mới
-pnpm add @f8/player-react @f8/player-core @f8/player-themes`}</code>
+pnpm add @f8team/reel-react @f8team/reel-core @f8team/reel-themes`}</code>
       </pre>
 
       <h2>So sánh API</h2>
@@ -39,13 +39,13 @@ pnpm add @f8/player-react @f8/player-core @f8/player-themes`}</code>
       </pre>
 
       <p>
-        <strong>Sau (@f8/player-react):</strong>
+        <strong>Sau (@f8team/reel-react):</strong>
       </p>
       <pre>
-        <code>{`import { Root, Video, Controls } from "@f8/player-react";
-import "@f8/player-themes/classroom.css";
+        <code>{`import { Root, Video, Controls } from "@f8team/reel-react";
+import "@f8team/reel-themes/classroom.css";
 
-<div data-f8-player="" data-theme="classroom"
+<div data-reel="" data-theme="classroom"
      style={{ position: "relative", aspectRatio: "16/9", overflow: "hidden" }}>
   <Root
     options={{ source: { src: "https://example.com/video.mp4" } }}
@@ -101,7 +101,7 @@ function Controls() {
 }
 
 // Hoặc dùng ref bên ngoài với PlayerComponent:
-import { PlayerComponent } from "@f8/player-react";
+import { PlayerComponent } from "@f8team/reel-react";
 const ref = useRef(null);
 <PlayerComponent ref={ref} src="..." />;
 ref.current?.seekTo(30);`}</code>
@@ -109,14 +109,14 @@ ref.current?.seekTo(30);`}</code>
 
       <h2>YouTube</h2>
       <p>
-        <code>@f8/player-react</code> tự detect YouTube URL — không cần config thêm. Controls tuỳ
+        <code>@f8team/reel-react</code> tự detect YouTube URL — không cần config thêm. Controls tuỳ
         chỉnh tự ẩn khi source là YouTube.
       </p>
       <pre>
         <code>{`// react-player:
 <ReactPlayer url="https://youtube.com/watch?v=..." />
 
-// @f8/player-react — giống hệt:
+// @f8team/reel-react — giống hệt:
 <Root options={{ source: { src: "https://youtube.com/watch?v=..." } }}>
   <Video />
   {/* Controls sẽ không hiển thị với YouTube */}
@@ -128,7 +128,7 @@ ref.current?.seekTo(30);`}</code>
         <thead>
           <tr>
             <th>react-player</th>
-            <th>@f8/player-react</th>
+            <th>@f8team/reel-react</th>
           </tr>
         </thead>
         <tbody>
@@ -206,8 +206,8 @@ ref.current?.seekTo(30);`}</code>
           <code>package.json</code>
         </li>
         <li>
-          <input type="checkbox" readOnly /> Cài <code>@f8/player-react</code> +{" "}
-          <code>@f8/player-core</code>
+          <input type="checkbox" readOnly /> Cài <code>@f8team/reel-react</code> +{" "}
+          <code>@f8team/reel-core</code>
         </li>
         <li>
           <input type="checkbox" readOnly /> Thay <code>&lt;ReactPlayer /&gt;</code> bằng{" "}
@@ -226,7 +226,7 @@ ref.current?.seekTo(30);`}</code>
         </li>
         <li>
           <input type="checkbox" readOnly /> Import CSS theme:{" "}
-          <code>@f8/player-themes/classroom.css</code>
+          <code>@f8team/reel-themes/classroom.css</code>
         </li>
       </ul>
     </article>

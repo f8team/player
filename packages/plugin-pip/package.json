@@ -1,7 +1,7 @@
 {
-  "name": "@f8/player-plugin-pip",
+  "name": "@f8team/reel-plugin-pip",
   "version": "1.0.0",
-  "description": "f8-player plugin: pip",
+  "description": "Reel plugin: pip",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -45,15 +45,15 @@
     "pip"
   ],
   "peerDependencies": {
-    "@f8/player-core": "workspace:*"
+    "@f8team/reel-core": "^1.0.0"
   },
   "devDependencies": {
-    "@f8/player-core": "workspace:*",
+    "@f8team/reel-core": "workspace:*",
     "@size-limit/preset-small-lib": "^11.1.6",
     "@vitest/coverage-v8": "^2.1.2",
     "jsdom": "^25.0.1",
     "size-limit": "^11.1.6",
     "tsup": "^8.3.0",
-    "@f8/player-react": "workspace:*"
+    "@f8team/reel-react": "workspace:*"
   }
 }

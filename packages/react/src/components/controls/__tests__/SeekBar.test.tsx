@@ -52,11 +52,11 @@ describe("<SeekBar>", () => {
     expect(slider.getAttribute("aria-valuemax")).toBe("1");
   });
 
-  it("applies wrapperClassName to [data-f8p-seek-wrapper]", () => {
+  it("applies wrapperClassName to [data-reel-seek-wrapper]", () => {
     const { container } = renderWithPlayer(<SeekBar wrapperClassName="grow-me" />, {
       initialState: { currentTime: 0, duration: 60 },
     });
-    const wrap = container.querySelector("[data-f8p-seek-wrapper]");
+    const wrap = container.querySelector("[data-reel-seek-wrapper]");
     expect(wrap?.classList.contains("grow-me")).toBe(true);
   });
 
@@ -65,9 +65,9 @@ describe("<SeekBar>", () => {
       const { container } = renderWithPlayer(<SeekBar />, {
         initialState: { currentTime: 0, duration: 100 },
       });
-      const wrap = container.querySelector("[data-f8p-seek-wrapper]") as HTMLElement;
+      const wrap = container.querySelector("[data-reel-seek-wrapper]") as HTMLElement;
       dispatchPointerMove(wrap, 50);
-      expect(container.querySelector("[data-f8p-seek-thumbnail]")).toBeNull();
+      expect(container.querySelector("[data-reel-seek-thumbnail]")).toBeNull();
     });
 
     function stubRect(el: HTMLElement, width: number): void {
@@ -95,16 +95,16 @@ describe("<SeekBar>", () => {
         mockEmit("thumbnails:ready", { cues: SAMPLE_CUES });
       });
 
-      const wrap = container.querySelector("[data-f8p-seek-wrapper]") as HTMLElement;
+      const wrap = container.querySelector("[data-reel-seek-wrapper]") as HTMLElement;
       stubRect(wrap, 200);
 
       // Hover at x=50px (50 / 200 * duration=20 → t=5s, cue 0).
       act(() => {
         dispatchPointerMove(wrap, 50);
       });
-      const tile = container.querySelector("[data-f8p-seek-thumbnail]");
+      const tile = container.querySelector("[data-reel-seek-thumbnail]");
       expect(tile).not.toBeNull();
-      const image = container.querySelector("[data-f8p-seek-thumbnail-image]") as HTMLElement;
+      const image = container.querySelector("[data-reel-seek-thumbnail-image]") as HTMLElement;
       expect(image.style.backgroundImage).toContain("https://cdn/sprite.jpg");
       expect((tile as HTMLElement).style.width).toBe("80px");
 
@@ -112,7 +112,7 @@ describe("<SeekBar>", () => {
       act(() => {
         fireEvent.pointerLeave(wrap);
       });
-      expect(container.querySelector("[data-f8p-seek-thumbnail]")).toBeNull();
+      expect(container.querySelector("[data-reel-seek-thumbnail]")).toBeNull();
     });
 
     it("clears thumbnails when the plugin emits thumbnails:cleared", () => {
@@ -123,12 +123,12 @@ describe("<SeekBar>", () => {
         mockEmit("thumbnails:ready", { cues: SAMPLE_CUES });
       });
 
-      const wrap = container.querySelector("[data-f8p-seek-wrapper]") as HTMLElement;
+      const wrap = container.querySelector("[data-reel-seek-wrapper]") as HTMLElement;
       stubRect(wrap, 200);
       act(() => {
         dispatchPointerMove(wrap, 50);
       });
-      expect(container.querySelector("[data-f8p-seek-thumbnail]")).not.toBeNull();
+      expect(container.querySelector("[data-reel-seek-thumbnail]")).not.toBeNull();
 
       act(() => {
         mockEmit("thumbnails:cleared");
@@ -137,12 +137,12 @@ describe("<SeekBar>", () => {
       act(() => {
         dispatchPointerMove(wrap, 50);
       });
-      expect(container.querySelector("[data-f8p-seek-thumbnail]")).toBeNull();
+      expect(container.querySelector("[data-reel-seek-thumbnail]")).toBeNull();
     });
 
     it("keeps the hover thumbnail inside the player right edge", () => {
       const { container, mockEmit } = renderWithPlayer(
-        <div data-f8-player="">
+        <div data-reel="">
           <SeekBar />
         </div>,
         {
@@ -153,8 +153,8 @@ describe("<SeekBar>", () => {
         mockEmit("thumbnails:ready", { cues: SAMPLE_CUES });
       });
 
-      const host = container.querySelector("[data-f8-player]") as HTMLElement;
-      const wrap = container.querySelector("[data-f8p-seek-wrapper]") as HTMLElement;
+      const host = container.querySelector("[data-reel]") as HTMLElement;
+      const wrap = container.querySelector("[data-reel-seek-wrapper]") as HTMLElement;
       stubRect(host, 300);
       Object.defineProperty(wrap, "getBoundingClientRect", {
         configurable: true,
@@ -166,7 +166,7 @@ describe("<SeekBar>", () => {
         dispatchPointerMove(wrap, 300);
       });
 
-      const tile = container.querySelector("[data-f8p-seek-thumbnail]") as HTMLElement;
+      const tile = container.querySelector("[data-reel-seek-thumbnail]") as HTMLElement;
       expect(tile.style.left).toBe("162px");
       expect(tile.style.width).toBe("80px");
     });

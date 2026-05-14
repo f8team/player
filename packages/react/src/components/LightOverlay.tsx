@@ -56,7 +56,7 @@ export function LightOverlay({
 
   return (
     <div
-      data-f8p-light-overlay=""
+      data-reel-light-overlay=""
       className={className}
       style={style}
       onClick={handleDismiss}
@@ -64,9 +64,9 @@ export function LightOverlay({
       tabIndex={0}
       aria-label={playLabel ?? labels.posterPlay}
     >
-      {posterUrl && <img data-f8p-light-poster="" src={posterUrl} alt="" />}
+      {posterUrl && <img data-reel-light-poster="" src={posterUrl} alt="" />}
       <button
-        data-f8p-light-play-button=""
+        data-reel-light-play-button=""
         type="button"
         aria-label={playLabel ?? labels.posterPlay}
         onClick={(e) => {

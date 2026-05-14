@@ -1,5 +1,5 @@
-import { detectSourceType } from "@f8/player-core";
-import type { SourceType } from "@f8/player-core";
+import { detectSourceType } from "@f8team/reel-core";
+import type { SourceType } from "@f8team/reel-core";
 
 import { usePlayerState } from "./usePlayerState.js";
 

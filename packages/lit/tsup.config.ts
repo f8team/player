@@ -10,6 +10,6 @@ export default defineConfig({
   splitting: false,
   minify: false,
   target: "es2020",
-  external: ["lit", "@f8/player-core"],
+  external: ["lit", "@f8team/reel-core"],
   outExtension: ({ format }) => ({ js: format === "esm" ? ".js" : ".cjs" }),
 });

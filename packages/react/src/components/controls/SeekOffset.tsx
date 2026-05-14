@@ -43,7 +43,7 @@ export function SeekOffset({ children, seconds, ...rest }: SeekOffsetProps): JSX
     <button
       type="button"
       aria-label={label}
-      data-f8-player-control={isBackward ? "seek-backward" : "seek-forward"}
+      data-reel-control={isBackward ? "seek-backward" : "seek-forward"}
       data-seek-offset={seconds}
       onClick={handleClick}
       {...rest}

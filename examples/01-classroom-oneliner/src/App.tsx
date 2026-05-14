@@ -1,6 +1,6 @@
-import "@f8/player-themes/classroom.css";
+import "@f8team/reel-themes/classroom.css";
 
-import { F8WebPlayer } from "@f8/player-preset-web";
+import { ReelWebPlayer } from "@f8team/reel-preset-web";
 import { createRoot } from "react-dom/client";
 
 import "./styles.css";
@@ -19,12 +19,12 @@ function App(): JSX.Element {
         </p>
       </section>
 
-      <F8WebPlayer
+      <ReelWebPlayer
         className="player"
         src={SOURCE}
         poster="https://interactive-examples.mdn.mozilla.net/media/examples/flower.jpg"
         light
-        plugins={{ prefs: { storageKey: "f8-player:example:classroom" } }}
+        plugins={{ prefs: { storageKey: "reel-player:example:classroom" } }}
       />
     </main>
   );

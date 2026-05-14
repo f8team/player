@@ -31,7 +31,7 @@ export default function Sidebar() {
   return (
     <aside className="site-sidebar">
       <a href="/" className="sidebar-logo">
-        ▶ @f8/player
+        ▶ Reel
       </a>
       {NAV.map((group) => (
         <div key={group.section}>
@@ -50,7 +50,7 @@ export default function Sidebar() {
       ))}
       <div style={{ marginTop: "auto", paddingTop: "2.4rem", borderTop: "1px solid #e5e7eb" }}>
         <a
-          href="https://github.com/f8/player"
+          href="https://github.com/f8team/player"
           className="sidebar-link"
           target="_blank"
           rel="noreferrer"

@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
 
 export interface AnalyticsEvent {
   type: "play" | "pause" | "ended" | "progress" | "seek" | "error";

@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance, QualityLevel } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance, QualityLevel } from "@f8team/reel-core";
 
 const PLUGIN_NAME = "hls-quality";
 
@@ -11,7 +11,7 @@ const PLUGIN_NAME = "hls-quality";
  *
  * Quality switching is delegated to the active HLS loader via
  * `player.commands.run("hls:setQuality", quality)` which is registered by
- * the HLS source provider inside `@f8/player-core`.
+ * the HLS source provider inside `@f8team/reel-core`.
  *
  * If the player is using a non-HLS source or the command doesn't exist,
  * the calls are silently no-ops.

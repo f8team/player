@@ -9,7 +9,7 @@ describe("<Settings>", () => {
   it("renders a gear-backed playback settings select", () => {
     renderWithPlayer(<Settings />, { initialState: { playbackRate: 1 } });
     expect(screen.getByRole("button", { name: "Playback speed" })).toBeDefined();
-    expect(document.querySelector('[data-f8-player-icon="settings"]')).toBeDefined();
+    expect(document.querySelector('[data-reel-icon="settings"]')).toBeDefined();
   });
 
   it("updates the playback rate when a rate is selected", async () => {

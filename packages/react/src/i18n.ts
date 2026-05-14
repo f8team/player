@@ -1,12 +1,12 @@
 /**
- * i18n surface for `@f8/player-react` controls.
+ * i18n surface for `@f8team/reel-react` controls.
  *
  * The default labels are **English** so the package is publishable as an
  * OSS dependency without forcing a language on consumers. F8 apps opt into
  * Vietnamese via:
  *
  * ```tsx
- * import { vietnameseLabels } from "@f8/player-react";
+ * import { vietnameseLabels } from "@f8team/reel-react";
  *
  * <Player.Root options={...} labels={vietnameseLabels}>...</Player.Root>
  * ```

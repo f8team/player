@@ -1,5 +1,5 @@
-import { formatTime } from "@f8/player-core";
-import type { Disposer } from "@f8/player-core";
+import { formatTime } from "@f8team/reel-core";
+import type { Disposer } from "@f8team/reel-core";
 import {
   type ChangeEvent,
   type ComponentPropsWithoutRef,
@@ -18,7 +18,7 @@ import { useLabels } from "../../i18n.js";
 
 /**
  * Shape of one parsed sprite-thumbnail cue. Mirrors the public type of
- * `@f8/player-plugin-thumbnails`. Kept structurally compatible so the
+ * `@f8team/reel-plugin-thumbnails`. Kept structurally compatible so the
  * adapter does not need a peer dependency on the plugin package.
  */
 interface ThumbnailCueLite {
@@ -70,13 +70,13 @@ export type SeekBarProps = Omit<
   /** Override the inline width of the buffered overlay; rarely needed. */
   bufferedClassName?: string;
   /**
-   * CSS class on `[data-f8p-seek-wrapper]` — use for flex-grow, min-width, etc.
+   * CSS class on `[data-reel-seek-wrapper]` — use for flex-grow, min-width, etc.
    * The native `<input type="range">` receives `className`.
    */
   wrapperClassName?: string;
   /** Inline styles merged onto the range input after player defaults (`width: 100%`, stacking context). */
   inputStyle?: CSSProperties;
-  /** CSS class merged onto the hover thumbnail tooltip (`[data-f8p-seek-thumbnail]`). */
+  /** CSS class merged onto the hover thumbnail tooltip (`[data-reel-seek-thumbnail]`). */
   thumbnailClassName?: string;
 };
 
@@ -87,9 +87,9 @@ export type SeekBarProps = Omit<
  * The render output is now a small wrapper:
  *
  * ```html
- * <div data-f8p-seek-wrapper class="(wrapperClassName)">
- *   <div data-f8p-seek-buffered style="width: 42%"></div>
- *   <input type="range" data-f8-player-control="seek-bar" class="(className)" />
+ * <div data-reel-seek-wrapper class="(wrapperClassName)">
+ *   <div data-reel-seek-buffered style="width: 42%"></div>
+ *   <input type="range" data-reel-control="seek-bar" class="(className)" />
  * </div>
  * ```
  *
@@ -130,7 +130,7 @@ export function SeekBar({
   const [dragValue, setDragValue] = useState<number | null>(null);
   const draggingRef = useRef(false);
 
-  // Sprite thumbnails — populated by `@f8/player-plugin-thumbnails` events
+  // Sprite thumbnails — populated by `@f8team/reel-plugin-thumbnails` events
   // when present. Stays empty when the plugin isn't loaded.
   const [cues, setCues] = useState<readonly ThumbnailCueLite[]>([]);
 
@@ -187,7 +187,7 @@ export function SeekBar({
     };
   }, [commitDrag]);
 
-  // Subscribe to `@f8/player-plugin-thumbnails` events. The plugin is
+  // Subscribe to `@f8team/reel-plugin-thumbnails` events. The plugin is
   // optional — if it isn't loaded, `player.on(...)` simply never fires and
   // `cues` stays `[]`, so the thumbnail tooltip never renders.
   useEffect(() => {
@@ -217,7 +217,7 @@ export function SeekBar({
       if (!wrapper || max <= 0) return;
       const rect = wrapper.getBoundingClientRect();
       if (rect.width === 0) return;
-      const host = wrapper.closest<HTMLElement>("[data-f8-player]");
+      const host = wrapper.closest<HTMLElement>("[data-reel]");
       const hostRect = host?.getBoundingClientRect();
       const x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
       const rawTime = (x / rect.width) * max;
@@ -252,7 +252,7 @@ export function SeekBar({
     position: "relative",
     display: "flex",
     alignItems: "center",
-    "--f8p-seek-progress": `${playedPct}%`,
+    "--reel-seek-progress": `${playedPct}%`,
     ...((style as CSSProperties) ?? {}),
   } as CSSProperties;
   const bufferedStyle: CSSProperties = {
@@ -328,14 +328,14 @@ export function SeekBar({
     return (
       <>
         <div
-          data-f8p-seek-thumbnail=""
+          data-reel-seek-thumbnail=""
           className={thumbnailClassName}
           style={tileStyle}
           aria-hidden="true"
         >
-          <div data-f8p-seek-thumbnail-image="" style={imageStyle} />
+          <div data-reel-seek-thumbnail-image="" style={imageStyle} />
         </div>
-        <span data-f8p-seek-thumbnail-time="" style={labelStyle} aria-hidden="true">
+        <span data-reel-seek-thumbnail-time="" style={labelStyle} aria-hidden="true">
           {formatTime(hover.time)}
         </span>
       </>
@@ -344,7 +344,7 @@ export function SeekBar({
 
   return (
     <div
-      data-f8p-seek-wrapper=""
+      data-reel-seek-wrapper=""
       className={wrapperClassName}
       style={wrapperStyle}
       ref={wrapperRef}
@@ -352,7 +352,7 @@ export function SeekBar({
       onPointerLeave={handlePointerLeave}
     >
       <div
-        data-f8p-seek-buffered=""
+        data-reel-seek-buffered=""
         className={bufferedClassName}
         style={bufferedStyle}
         aria-hidden="true"
@@ -374,7 +374,7 @@ export function SeekBar({
         aria-valuemin={0}
         aria-valuemax={max}
         aria-valuetext={`${formatted} / ${total}`}
-        data-f8-player-control="seek-bar"
+        data-reel-control="seek-bar"
         style={mergedInputStyle}
       />
     </div>

@@ -1,8 +1,8 @@
-import "@f8/player-themes/minimal.css";
+import "@f8team/reel-themes/minimal.css";
 
-import { definePlugin, type PluginInstance } from "@f8/player-core";
-import { createF8WebPlayerPlugins, vietnameseLabels } from "@f8/player-preset-web";
-import { Controls, Root, Video } from "@f8/player-react";
+import { definePlugin, type PluginInstance } from "@f8team/reel-core";
+import { createReelWebPlayerPlugins, vietnameseLabels } from "@f8team/reel-preset-web";
+import { Controls, Root, Video } from "@f8team/reel-react";
 import { useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
 
@@ -32,7 +32,7 @@ function App(): JSX.Element {
   const [events, setEvents] = useState<string[]>([]);
   const plugins = useMemo(
     () => [
-      ...createF8WebPlayerPlugins({ auth: false, subtitles: false, thumbnails: false }),
+      ...createReelWebPlayerPlugins({ auth: false, subtitles: false, thumbnails: false }),
       createAnalyticsPlugin((event) => setEvents((prev) => [event, ...prev].slice(0, 6))),
     ],
     [],

@@ -1,4 +1,4 @@
-import type { Player, PlayerState, PluginHost, SourceDescriptor } from "@f8/player-core";
+import type { Player, PlayerState, PluginHost, SourceDescriptor } from "@f8team/reel-core";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { createThumbnailsPlugin } from "../thumbnails.js";

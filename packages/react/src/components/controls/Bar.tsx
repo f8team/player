@@ -35,8 +35,8 @@ export function Bar({
       aria-label={ariaLabel ?? labels.controlsBar}
       className={className}
       style={style}
-      data-f8-player-controls=""
-      data-f8-player-controls-layout={layout === "two-row" ? "two-row" : undefined}
+      data-reel-controls=""
+      data-reel-controls-layout={layout === "two-row" ? "two-row" : undefined}
       {...rest}
     >
       {children}

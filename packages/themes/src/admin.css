@@ -1,110 +1,110 @@
 /**
- * @f8/player-themes — admin
+ * @f8team/reel-themes — admin
  * Editor/admin theme: always-visible controls, markers, chapter timeline.
  * High-contrast, space-efficient, keyboard-first.
  * Golden cases: G7 (quality select), G8 (transcript panel), G9 (chapter list), *               G10 (editor scrubbing), G11 (preview).
  *
- * Usage: import "@f8/player-themes/admin.css";
+ * Usage: import "@f8team/reel-themes/admin.css";
  */
 
-[data-f8-player][data-theme="admin"] {
-  --f8p-bg: #1a1a1a;
-  --f8p-ctrl-bg: #252525;
-  --f8p-ctrl-height: 5.6rem;
-  --f8p-accent: #3b82f6;
-  --f8p-accent-hover: #60a5fa;
-  --f8p-text: #e5e7eb;
-  --f8p-text-secondary: #9ca3af;
-  --f8p-border: #374151;
-  --f8p-seek-track: #374151;
-  --f8p-seek-fill: var(--f8p-accent);
-  --f8p-seek-thumb: var(--f8p-accent);
-  --f8p-radius: 0.4rem;
-  --f8p-btn-size: 2.8rem;
-  --f8p-icon-size: 1.6rem;
-  --f8p-font: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
-  --f8p-font-size: 1.2rem;
-  --f8p-transition: 0.12s ease;
-  --f8p-volume-width: 8rem;
-  --f8p-marker-color: #facc15;
+[data-reel][data-theme="admin"] {
+  --reel-bg: #1a1a1a;
+  --reel-ctrl-bg: #252525;
+  --reel-ctrl-height: 5.6rem;
+  --reel-accent: #3b82f6;
+  --reel-accent-hover: #60a5fa;
+  --reel-text: #e5e7eb;
+  --reel-text-secondary: #9ca3af;
+  --reel-border: #374151;
+  --reel-seek-track: #374151;
+  --reel-seek-fill: var(--reel-accent);
+  --reel-seek-thumb: var(--reel-accent);
+  --reel-radius: 0.4rem;
+  --reel-btn-size: 2.8rem;
+  --reel-icon-size: 1.6rem;
+  --reel-font: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --reel-font-size: 1.2rem;
+  --reel-transition: 0.12s ease;
+  --reel-volume-width: 8rem;
+  --reel-marker-color: #facc15;
 
   /* z-index contract */
-  --f8p-z-buffered: 0;
-  --f8p-z-controls: 5;
-  --f8p-z-watermark: 10;
-  --f8p-z-overlay: 20;
+  --reel-z-buffered: 0;
+  --reel-z-controls: 5;
+  --reel-z-watermark: 10;
+  --reel-z-overlay: 20;
 } /* ─── Container ─────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] {
+[data-reel][data-theme="admin"] {
   position: relative;
-  background: var(--f8p-bg);
-  border: 1px solid var(--f8p-border);
-  border-radius: var(--f8p-radius);
+  background: var(--reel-bg);
+  border: 1px solid var(--reel-border);
+  border-radius: var(--reel-radius);
   overflow: hidden;
-  font-family: var(--f8p-font);
-  font-size: var(--f8p-font-size);
-  color: var(--f8p-text);
+  font-family: var(--reel-font);
+  font-size: var(--reel-font-size);
+  color: var(--reel-text);
   user-select: none;
 } /* ─── Video ──────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] video {
+[data-reel][data-theme="admin"] video {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: contain;
   background: #000;
 } /* ─── Controls bar — always visible ─────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] .f8p-controls {
+[data-reel][data-theme="admin"] .f8p-controls {
   position: relative;
-  height: var(--f8p-ctrl-height);
+  height: var(--reel-ctrl-height);
   padding: 0 1rem;
-  background: var(--f8p-ctrl-bg);
-  border-top: 1px solid var(--f8p-border);
+  background: var(--reel-ctrl-bg);
+  border-top: 1px solid var(--reel-border);
   display: flex;
   align-items: center;
   gap: 0.4rem;
 } /* ─── Seek bar ───────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] .f8p-seek {
+[data-reel][data-theme="admin"] .f8p-seek {
   flex: 1;
   position: relative;
   height: 2rem;
   display: flex;
   align-items: center;
 }
-[data-f8-player][data-theme="admin"] .f8p-seek input[type="range"] {
+[data-reel][data-theme="admin"] .f8p-seek input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   height: 0.4rem;
-  background: var(--f8p-seek-track);
+  background: var(--reel-seek-track);
   cursor: pointer;
   border-radius: 99px;
   outline: none;
 }
-[data-f8-player][data-theme="admin"] .f8p-seek input[type="range"]::-webkit-slider-thumb {
+[data-reel][data-theme="admin"] .f8p-seek input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: var(--f8p-seek-thumb);
+  background: var(--reel-seek-thumb);
 } /* ─── Marker dots on the seek bar ────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] .f8p-marker-dot {
+[data-reel][data-theme="admin"] .f8p-marker-dot {
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
   width: 0.8rem;
   height: 0.8rem;
   border-radius: 50%;
-  background: var(--f8p-marker-color);
+  background: var(--reel-marker-color);
   pointer-events: auto;
   cursor: pointer;
   z-index: 2;
-  transition: transform var(--f8p-transition);
+  transition: transform var(--reel-transition);
 }
-[data-f8-player][data-theme="admin"] .f8p-marker-dot:hover {
+[data-reel][data-theme="admin"] .f8p-marker-dot:hover {
   transform: translate(-50%, -50%) scale(1.5);
 } /* ─── Buttons ────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] .f8p-btn {
-  width: var(--f8p-btn-size);
-  height: var(--f8p-btn-size);
+[data-reel][data-theme="admin"] .f8p-btn {
+  width: var(--reel-btn-size);
+  height: var(--reel-btn-size);
   min-width: 2.8rem;
   min-height: 2.8rem;
   display: flex;
@@ -113,40 +113,40 @@
   flex-shrink: 0;
   border: 1px solid transparent;
   background: transparent;
-  color: var(--f8p-text);
+  color: var(--reel-text);
   cursor: pointer;
-  border-radius: var(--f8p-radius);
+  border-radius: var(--reel-radius);
   transition:
-    background var(--f8p-transition),
-    border-color var(--f8p-transition);
+    background var(--reel-transition),
+    border-color var(--reel-transition);
   padding: 0;
   outline: none;
 }
-[data-f8-player][data-theme="admin"] .f8p-btn:hover {
+[data-reel][data-theme="admin"] .f8p-btn:hover {
   background: rgba(255, 255, 255, 0.08);
-  border-color: var(--f8p-border);
+  border-color: var(--reel-border);
 } /* ─── Time ───────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] .f8p-time {
+[data-reel][data-theme="admin"] .f8p-time {
   font-variant-numeric: tabular-nums;
-  color: var(--f8p-text-secondary);
-  font-size: var(--f8p-font-size);
+  color: var(--reel-text-secondary);
+  font-size: var(--reel-font-size);
   white-space: nowrap;
   padding: 0 0.4rem;
   font-family: "JetBrains Mono", "Fira Code", monospace;
 } /* ─── Quality badge ──────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] .f8p-quality-label {
+[data-reel][data-theme="admin"] .f8p-quality-label {
   font-size: 1rem;
-  color: var(--f8p-text-secondary);
+  color: var(--reel-text-secondary);
   background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--f8p-border);
+  border: 1px solid var(--reel-border);
   border-radius: 0.3rem;
   padding: 0.2rem 0.5rem;
   cursor: pointer;
 } /* ─── Spacer ─────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] .f8p-spacer {
+[data-reel][data-theme="admin"] .f8p-spacer {
   flex: 1;
 } /* ─── Watermark ──────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="admin"] .f8-watermark {
+[data-reel][data-theme="admin"] .f8-watermark {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -159,15 +159,15 @@
 }
 
 /* ─── Native <video> hidden while YouTube iframe owns playback (B6) ── */
-[data-f8-player][data-theme="admin"] video[data-f8-player-yt-hidden] {
+[data-reel][data-theme="admin"] video[data-reel-yt-hidden] {
   visibility: hidden;
 }
 
 /* ─── Reduced motion — disable transitions + animations (C6) ─── */
 @media (prefers-reduced-motion: reduce) {
-  [data-f8-player][data-theme="admin"] *,
-  [data-f8-player][data-theme="admin"] *::before,
-  [data-f8-player][data-theme="admin"] *::after {
+  [data-reel][data-theme="admin"] *,
+  [data-reel][data-theme="admin"] *::before,
+  [data-reel][data-theme="admin"] *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -176,10 +176,10 @@
 
 /* ─── Mobile / coarse-pointer — ≥ 44px touch targets (B3) ─── */
 @media (pointer: coarse), (max-width: 48rem) {
-  [data-f8-player][data-theme="admin"] {
-    --f8p-btn-size: 4.4rem;
+  [data-reel][data-theme="admin"] {
+    --reel-btn-size: 4.4rem;
   }
-  [data-f8-player][data-theme="admin"] [data-f8-player-control="seek-bar"]::-webkit-slider-thumb {
+  [data-reel][data-theme="admin"] [data-reel-control="seek-bar"]::-webkit-slider-thumb {
     width: 1.6rem;
     height: 1.6rem;
   }

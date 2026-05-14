@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance, SourceDescriptor } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance, SourceDescriptor } from "@f8team/reel-core";
 
 export interface SafariMp4FallbackPluginOptions {
   /**

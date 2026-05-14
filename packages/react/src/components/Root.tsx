@@ -1,5 +1,5 @@
-import { createPlayer } from "@f8/player-core";
-import type { PlayerOptions, SourceDescriptor } from "@f8/player-core";
+import { createPlayer } from "@f8team/reel-core";
+import type { PlayerOptions, SourceDescriptor } from "@f8team/reel-core";
 import { type ReactNode, useEffect, useMemo, useRef } from "react";
 
 import { PlayerContext } from "../context/PlayerContext.js";
@@ -45,7 +45,7 @@ export interface RootProps extends PlayerCallbackProps {
   /**
    * Override the user-visible labels for the built-in controls. Defaults
    * to English (`defaultLabels`). Pass `vietnameseLabels` from
-   * `@f8/player-react` for the Vietnamese preset, or any partial override.
+   * `@f8team/reel-react` for the Vietnamese preset, or any partial override.
    */
   labels?: Partial<PlayerLabels>;
   children?: ReactNode;

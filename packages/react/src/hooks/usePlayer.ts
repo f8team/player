@@ -1,4 +1,4 @@
-import type { Player } from "@f8/player-core";
+import type { Player } from "@f8team/reel-core";
 
 import { usePlayerContext } from "../context/PlayerContext.js";
 

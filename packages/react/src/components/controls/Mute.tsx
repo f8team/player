@@ -27,7 +27,7 @@ export function Mute({ children, ...rest }: MuteProps): JSX.Element {
       aria-label={label}
       aria-pressed={muted}
       onClick={() => player.setMuted(!muted)}
-      data-f8-player-control="mute"
+      data-reel-control="mute"
       {...rest}
     >
       {children ?? <PlayerIcon name={muted || volume <= 0 ? "volumeMuted" : "volume"} />}

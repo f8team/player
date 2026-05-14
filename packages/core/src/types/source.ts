@@ -38,7 +38,7 @@ export interface SubtitleTrack {
  * ```
  *
  * Image URLs in the cue body may be absolute or relative; relative paths are
- * resolved against the VTT URL. The `@f8/player-plugin-thumbnails` plugin
+ * resolved against the VTT URL. The `@f8team/reel-plugin-thumbnails` plugin
  * fetches and parses the VTT, then exposes a `thumbnails:getAt(time)` command
  * consumed by the React/Lit `SeekBar` hover preview.
  */
@@ -86,7 +86,7 @@ export interface SourceDescriptor {
   tracks?: SubtitleTrack[];
   /**
    * Sprite-thumbnails VTT descriptor for timeline hover previews. When set,
-   * the `@f8/player-plugin-thumbnails` plugin fetches and parses the VTT;
+   * the `@f8team/reel-plugin-thumbnails` plugin fetches and parses the VTT;
    * the `Controls.SeekBar` (React) and the Lit default chrome render a tile
    * tooltip during pointer hover.
    */

@@ -60,7 +60,7 @@ export function CenterPlayOverlay({
       role="button"
       tabIndex={0}
       aria-label={label}
-      data-f8-player-center-tap=""
+      data-reel-center-tap=""
       className={className}
       style={style}
       onClick={onClick}
@@ -68,7 +68,7 @@ export function CenterPlayOverlay({
       {...rest}
     >
       {!isPlaying ? (
-        <span data-f8-player-big-play="">
+        <span data-reel-big-play="">
           <PlayerIcon name="play" />
         </span>
       ) : null}

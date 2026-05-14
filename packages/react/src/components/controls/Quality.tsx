@@ -1,4 +1,4 @@
-import type { QualityLevel } from "@f8/player-core";
+import type { QualityLevel } from "@f8team/reel-core";
 
 import { usePlayer } from "../../hooks/usePlayer.js";
 import { usePlayerState } from "../../hooks/usePlayerState.js";
@@ -86,11 +86,9 @@ export function Quality({ className, resolutionBadge }: QualityProps): JSX.Eleme
       ariaLabel={labels.quality}
       active={Boolean(activeQuality)}
       trigger={
-        <span data-f8-player-quality-value="" aria-hidden="true">
-          <span data-f8-player-quality-text="">{activeParts.text}</span>
-          {activeParts.badge ? (
-            <span data-f8-player-quality-badge="">{activeParts.badge}</span>
-          ) : null}
+        <span data-reel-quality-value="" aria-hidden="true">
+          <span data-reel-quality-text="">{activeParts.text}</span>
+          {activeParts.badge ? <span data-reel-quality-badge="">{activeParts.badge}</span> : null}
         </span>
       }
       options={options}

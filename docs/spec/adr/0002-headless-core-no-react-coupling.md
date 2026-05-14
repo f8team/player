@@ -12,13 +12,13 @@ want to repeat that mistake.
 
 ## Decision
 
-`@f8/player-core` is **framework-agnostic**. It depends only on
+`@f8team/reel-core` is **framework-agnostic**. It depends only on
 `HTMLMediaElement` and the standard DOM APIs needed for fullscreen / PIP /
 captions. It exports a `createPlayer(options)` factory that returns a
 `Player` instance — a plain TypeScript object with methods, an event bus, and a
 reactive store.
 
-Framework adapters (`@f8/player-react`, `@f8/player-lit`, etc.) are thin layers
+Framework adapters (`@f8team/reel-react`, `@f8team/reel-lit`, etc.) are thin layers
 over the core. They translate framework idioms (hooks, custom elements,
 reactive controllers, signals) to subscriptions on the core's store.
 

@@ -9,6 +9,6 @@ export default defineConfig({
   treeshake: true,
   minify: false,
   target: "es2020",
-  external: ["@f8/player-core"],
+  external: ["@f8team/reel-core"],
   outExtension: ({ format }) => ({ js: format === "esm" ? ".js" : ".cjs" }),
 });

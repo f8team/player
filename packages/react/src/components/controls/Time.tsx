@@ -1,4 +1,4 @@
-import { formatTime } from "@f8/player-core";
+import { formatTime } from "@f8team/reel-core";
 
 import { usePlayerState } from "../../hooks/usePlayerState.js";
 import { useLabels } from "../../i18n.js";
@@ -48,7 +48,7 @@ export function Time({ variant = "current", className }: TimeProps): JSX.Element
       className={className}
       aria-label={label}
       dateTime={`PT${Math.round(seconds)}S`}
-      data-f8-player-control="time"
+      data-reel-control="time"
       data-variant={variant}
     >
       {formatted}

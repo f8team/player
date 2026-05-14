@@ -1,7 +1,7 @@
 {
-  "name": "@f8/player-themes",
+  "name": "@f8team/reel-themes",
   "version": "1.0.0",
-  "description": "CSS themes for @f8/player-react: classroom, story, admin, minimal",
+  "description": "CSS themes for @f8team/reel-react: classroom, story, admin, minimal",
   "license": "MIT",
   "type": "module",
   "sideEffects": true,

@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
 
 export interface SubtitlesPluginOptions {
   /**
@@ -43,7 +43,7 @@ export function createSubtitlesPlugin(options: SubtitlesPluginOptions = {}): Plu
       let videoEl: HTMLVideoElement | null = null;
 
       const getVideo = (): HTMLVideoElement | null =>
-        videoEl ?? document.querySelector<HTMLVideoElement>("video[data-f8-player-video]");
+        videoEl ?? document.querySelector<HTMLVideoElement>("video[data-reel-video]");
 
       const getTracks = (): TextTrack[] => {
         const el = getVideo();
@@ -104,7 +104,7 @@ export function createSubtitlesPlugin(options: SubtitlesPluginOptions = {}): Plu
 
       // Apply defaults when a video element is available.
       const tryInit = (): void => {
-        const el = document.querySelector<HTMLVideoElement>("video[data-f8-player-video]");
+        const el = document.querySelector<HTMLVideoElement>("video[data-reel-video]");
         if (el) {
           videoEl = el;
           applyDefault();

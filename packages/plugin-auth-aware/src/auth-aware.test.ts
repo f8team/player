@@ -4,7 +4,7 @@ import type {
   PlayerState,
   PluginHost,
   SourceDescriptor,
-} from "@f8/player-core";
+} from "@f8team/reel-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createAuthAwarePlugin, __resetTrailingDotWarnForTests } from "./auth-aware.js";

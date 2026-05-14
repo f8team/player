@@ -1,93 +1,93 @@
 /**
- * @f8/player-themes — minimal
+ * @f8team/reel-themes — minimal
  * Landing / hero embed: tiny footprint, clean autoplay muted video.
  * Controls appear on hover only. No chapter / quality UI.
  * Golden case: G6 (marketing landing page hero video).
  *
- * Usage: import "@f8/player-themes/minimal.css";
+ * Usage: import "@f8team/reel-themes/minimal.css";
  */
 
-[data-f8-player][data-theme="minimal"] {
-  --f8p-bg: #000;
-  --f8p-ctrl-bg: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
-  --f8p-ctrl-height: 4.8rem;
-  --f8p-accent: #ffffff;
-  --f8p-text: #ffffff;
-  --f8p-text-secondary: rgba(255, 255, 255, 0.7);
-  --f8p-seek-track: rgba(255, 255, 255, 0.3);
-  --f8p-seek-fill: #fff;
-  --f8p-seek-thumb: #fff;
-  --f8p-radius: 0.6rem;
-  --f8p-btn-size: 3.2rem;
-  --f8p-transition: 0.2s ease;
+[data-reel][data-theme="minimal"] {
+  --reel-bg: #000;
+  --reel-ctrl-bg: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+  --reel-ctrl-height: 4.8rem;
+  --reel-accent: #ffffff;
+  --reel-text: #ffffff;
+  --reel-text-secondary: rgba(255, 255, 255, 0.7);
+  --reel-seek-track: rgba(255, 255, 255, 0.3);
+  --reel-seek-fill: #fff;
+  --reel-seek-thumb: #fff;
+  --reel-radius: 0.6rem;
+  --reel-btn-size: 3.2rem;
+  --reel-transition: 0.2s ease;
 
   /* z-index contract */
-  --f8p-z-buffered: 0;
-  --f8p-z-controls: 5;
-  --f8p-z-watermark: 10;
-  --f8p-z-overlay: 20;
+  --reel-z-buffered: 0;
+  --reel-z-controls: 5;
+  --reel-z-watermark: 10;
+  --reel-z-overlay: 20;
 } /* ─── Container ─────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] {
+[data-reel][data-theme="minimal"] {
   position: relative;
-  background: var(--f8p-bg);
-  border-radius: var(--f8p-radius);
+  background: var(--reel-bg);
+  border-radius: var(--reel-radius);
   overflow: hidden;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 } /* ─── Video ──────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] video {
+[data-reel][data-theme="minimal"] video {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: cover;
 } /* ─── Controls — show on hover/focus only ────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-controls {
+[data-reel][data-theme="minimal"] .f8p-controls {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  height: var(--f8p-ctrl-height);
+  height: var(--reel-ctrl-height);
   padding: 0 1rem 0.8rem;
-  background: var(--f8p-ctrl-bg);
+  background: var(--reel-ctrl-bg);
   display: flex;
   align-items: center;
   gap: 0.6rem;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--f8p-transition);
+  transition: opacity var(--reel-transition);
 }
-[data-f8-player][data-theme="minimal"]:hover .f8p-controls,
-[data-f8-player][data-theme="minimal"]:focus-within .f8p-controls {
+[data-reel][data-theme="minimal"]:hover .f8p-controls,
+[data-reel][data-theme="minimal"]:focus-within .f8p-controls {
   opacity: 1;
   pointer-events: auto;
 } /* ─── Seek bar ───────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-seek {
+[data-reel][data-theme="minimal"] .f8p-seek {
   flex: 1;
 }
-[data-f8-player][data-theme="minimal"] .f8p-seek input[type="range"] {
+[data-reel][data-theme="minimal"] .f8p-seek input[type="range"] {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
   height: 0.3rem;
-  background: var(--f8p-seek-track);
+  background: var(--reel-seek-track);
   cursor: pointer;
   border-radius: 99px;
   outline: none;
 }
-[data-f8-player][data-theme="minimal"] .f8p-seek input[type="range"]::-webkit-slider-thumb {
+[data-reel][data-theme="minimal"] .f8p-seek input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: var(--f8p-seek-thumb);
+  background: var(--reel-seek-thumb);
   opacity: 0;
-  transition: opacity var(--f8p-transition);
+  transition: opacity var(--reel-transition);
 }
-[data-f8-player][data-theme="minimal"]:hover .f8p-seek input[type="range"]::-webkit-slider-thumb {
+[data-reel][data-theme="minimal"]:hover .f8p-seek input[type="range"]::-webkit-slider-thumb {
   opacity: 1;
 } /* ─── Buttons ────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-btn {
-  width: var(--f8p-btn-size);
-  height: var(--f8p-btn-size);
+[data-reel][data-theme="minimal"] .f8p-btn {
+  width: var(--reel-btn-size);
+  height: var(--reel-btn-size);
   min-width: 4.4rem;
   min-height: 4.4rem;
   display: flex;
@@ -96,20 +96,20 @@
   flex-shrink: 0;
   border: none;
   background: transparent;
-  color: var(--f8p-text);
+  color: var(--reel-text);
   cursor: pointer;
   border-radius: 50%;
   padding: 0;
-  transition: background var(--f8p-transition);
+  transition: background var(--reel-transition);
   outline: none;
 }
-[data-f8-player][data-theme="minimal"] .f8p-btn:hover {
+[data-reel][data-theme="minimal"] .f8p-btn:hover {
   background: rgba(255, 255, 255, 0.15);
 } /* ─── Spacer ─────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-spacer {
+[data-reel][data-theme="minimal"] .f8p-spacer {
   flex: 1;
 } /* ─── Muted badge ────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="minimal"] .f8p-muted-badge {
+[data-reel][data-theme="minimal"] .f8p-muted-badge {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -122,15 +122,15 @@
 }
 
 /* ─── Native <video> hidden while YouTube iframe owns playback (B6) ── */
-[data-f8-player][data-theme="minimal"] video[data-f8-player-yt-hidden] {
+[data-reel][data-theme="minimal"] video[data-reel-yt-hidden] {
   visibility: hidden;
 }
 
 /* ─── Reduced motion — disable transitions + animations (C6) ─── */
 @media (prefers-reduced-motion: reduce) {
-  [data-f8-player][data-theme="minimal"] *,
-  [data-f8-player][data-theme="minimal"] *::before,
-  [data-f8-player][data-theme="minimal"] *::after {
+  [data-reel][data-theme="minimal"] *,
+  [data-reel][data-theme="minimal"] *::before,
+  [data-reel][data-theme="minimal"] *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
@@ -139,16 +139,16 @@
 
 /* ─── Mobile / coarse-pointer — ≥ 44px + always-visible thumb/controls (B3) ─── */
 @media (pointer: coarse), (max-width: 48rem) {
-  [data-f8-player][data-theme="minimal"] {
-    --f8p-btn-size: 4.4rem;
+  [data-reel][data-theme="minimal"] {
+    --reel-btn-size: 4.4rem;
   }
-  [data-f8-player][data-theme="minimal"] [data-f8-player-control="seek-bar"]::-webkit-slider-thumb {
+  [data-reel][data-theme="minimal"] [data-reel-control="seek-bar"]::-webkit-slider-thumb {
     opacity: 1;
     width: 1.6rem;
     height: 1.6rem;
   }
   /* :hover is broken on touch — always show the controls overlay. */
-  [data-f8-player][data-theme="minimal"] [data-f8-player-controls] {
+  [data-reel][data-theme="minimal"] [data-reel-controls] {
     opacity: 1;
   }
 }

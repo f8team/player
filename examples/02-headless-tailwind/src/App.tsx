@@ -1,7 +1,7 @@
-import "@f8/player-themes/headless.css";
+import "@f8team/reel-themes/headless.css";
 
-import { createF8WebPlayerPlugins, vietnameseLabels } from "@f8/player-preset-web";
-import { Captions, Controls, Root, Spinner, Video } from "@f8/player-react";
+import { createReelWebPlayerPlugins, vietnameseLabels } from "@f8team/reel-preset-web";
+import { Captions, Controls, Root, Spinner, Video } from "@f8team/reel-react";
 import { createRoot } from "react-dom/client";
 
 import "./styles.css";
@@ -11,7 +11,7 @@ const SOURCE = {
   type: "mp4" as const,
 };
 
-const plugins = createF8WebPlayerPlugins({
+const plugins = createReelWebPlayerPlugins({
   auth: false,
   keyboard: { scope: "container" },
   subtitles: false,

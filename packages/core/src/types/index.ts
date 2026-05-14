@@ -1,5 +1,5 @@
 /**
- * Public types of `@f8/player-core`.
+ * Public types of `@f8team/reel-core`.
  *
  * Every type exported from here is part of the frozen API contract — see
  * `docs/spec/api-contract.md`. Internal types live in `src/internal/`.

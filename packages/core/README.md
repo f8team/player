@@ -1,9 +1,9 @@
-# `@f8/player-core`
+# `@f8team/reel-core`
 
-> Headless, framework-agnostic, plugin-driven video player engine. The foundation for every `@f8/player-*` adapter and plugin.
+> Headless, framework-agnostic, plugin-driven video player engine. The foundation for every `@f8team/reel-*` adapter and plugin.
 
 ```bash
-pnpm add @f8/player-core
+pnpm add @f8team/reel-core
 ```
 
 ## Why headless?
@@ -16,7 +16,7 @@ pnpm add @f8/player-core
 ## Quick start
 
 ```ts
-import { createPlayer } from "@f8/player-core";
+import { createPlayer } from "@f8team/reel-core";
 
 const player = createPlayer({
   source: { src: "https://cdn.example.com/master.m3u8" },

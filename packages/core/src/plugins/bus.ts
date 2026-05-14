@@ -41,7 +41,7 @@ export function createPluginBus({ player, host }: CreatePluginBusArgs): PluginBu
 
   function register(plugin: PluginInstance): void {
     if (findIndex(plugin.name) >= 0) {
-      throw new Error(`[@f8/player-core] plugin "${plugin.name}" is already registered`);
+      throw new Error(`[@f8team/reel-core] plugin "${plugin.name}" is already registered`);
     }
     let teardown: (() => void) | null = null;
     try {
@@ -49,7 +49,7 @@ export function createPluginBus({ player, host }: CreatePluginBusArgs): PluginBu
       teardown = typeof result === "function" ? result : null;
     } catch (err) {
       throw new Error(
-        `[@f8/player-core] plugin "${plugin.name}" setup threw: ${(err as Error).message}`,
+        `[@f8team/reel-core] plugin "${plugin.name}" setup threw: ${(err as Error).message}`,
         { cause: err },
       );
     }
@@ -65,7 +65,7 @@ export function createPluginBus({ player, host }: CreatePluginBusArgs): PluginBu
       try {
         entry.teardown();
       } catch (err) {
-        console.error(`[@f8/player-core] plugin "${name}" teardown threw:`, err);
+        console.error(`[@f8team/reel-core] plugin "${name}" teardown threw:`, err);
       }
     }
   }
@@ -87,7 +87,7 @@ export function createPluginBus({ player, host }: CreatePluginBusArgs): PluginBu
           entry.teardown();
         } catch (err) {
           console.error(
-            `[@f8/player-core] plugin "${entry.plugin.name}" teardown threw on dispose:`,
+            `[@f8team/reel-core] plugin "${entry.plugin.name}" teardown threw on dispose:`,
             err,
           );
         }

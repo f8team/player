@@ -4,16 +4,16 @@
 
 ## 1. Mục tiêu
 
-Bổ sung 3 mảng vào ecosystem `@f8/player`:
+Bổ sung 3 mảng vào ecosystem `Reel`:
 
-1. **Controls polish (cross repo)** — giảm padding hộp button + tăng size icon trong controls bar để cảm giác chặt + dễ đọc. Áp dụng cho `@f8/player-themes/classroom.css`, `f8-ui/VideoPlayer.module.scss`, `f8-dash-ui/VideoUploadPreview` (Tailwind). Padding bar (`1rem 2rem`) giữ nguyên — chỉ thu hộp button, kéo icon to.
-2. **Sprite thumbnails preview** — thêm package `@f8/player-plugin-thumbnails` parse VTT sprite cues (`image#xywh=x,y,w,h`), expose API `getThumbnailAt(time)`. Nâng cấp `Controls.SeekBar` (React) + Lit default seek bar để render hover preview tooltip. Source descriptor mở rộng `thumbnails: { src, withCredentials? }`. Wire `f8-pro-ui` để truyền `video.sprite_url` (legacy field name).
-3. **Captions UI** — thêm `Controls.Captions` (React) + nút Captions trong Lit default chrome: toggle off/on + dropdown chọn ngôn ngữ. Plugin `@f8/player-plugin-subtitles` đã có `subtitles:setLang` / `subtitles:off` commands; chỉ cần UI bind. Wire `f8-ui` (đã có `subtitle_languages[]`) + `f8-pro-ui` (đã có `subtitles_url` qua `captions-controller`).
+1. **Controls polish (cross repo)** — giảm padding hộp button + tăng size icon trong controls bar để cảm giác chặt + dễ đọc. Áp dụng cho `@f8team/reel-themes/classroom.css`, `f8-ui/VideoPlayer.module.scss`, `f8-dash-ui/VideoUploadPreview` (Tailwind). Padding bar (`1rem 2rem`) giữ nguyên — chỉ thu hộp button, kéo icon to.
+2. **Sprite thumbnails preview** — thêm package `@f8team/reel-plugin-thumbnails` parse VTT sprite cues (`image#xywh=x,y,w,h`), expose API `getThumbnailAt(time)`. Nâng cấp `Controls.SeekBar` (React) + Lit default seek bar để render hover preview tooltip. Source descriptor mở rộng `thumbnails: { src, withCredentials? }`. Wire `f8-pro-ui` để truyền `video.sprite_url` (legacy field name).
+3. **Captions UI** — thêm `Controls.Captions` (React) + nút Captions trong Lit default chrome: toggle off/on + dropdown chọn ngôn ngữ. Plugin `@f8team/reel-plugin-subtitles` đã có `subtitles:setLang` / `subtitles:off` commands; chỉ cần UI bind. Wire `f8-ui` (đã có `subtitle_languages[]`) + `f8-pro-ui` (đã có `subtitles_url` qua `captions-controller`).
 
 ## 2. Out of scope
 
 - Quality persistence (vẫn deferred từ 9.F.4 plan).
-- Chapter markers UI khác (vẫn dùng `@f8/player-plugin-markers` hiện tại).
+- Chapter markers UI khác (vẫn dùng `@f8team/reel-plugin-markers` hiện tại).
 - Video.js / videojs.thumbnails legacy port chi tiết — chỉ giữ tương thích VTT format chuẩn (cue body = `image.jpg#xywh=x,y,w,h`).
 - F8 brand orange override / theming khác — chỉ neutral classroom theme.
 - Đổi backend (`sprite_url`/`subtitles_url`/`subtitle_languages` đã sẵn từ BE).
@@ -22,10 +22,10 @@ Bổ sung 3 mảng vào ecosystem `@f8/player`:
 
 ### 3.1 Cấu trúc hiện tại
 
-- `f8-player` workspace: `packages/core` (PlayerOptions/SourceDescriptor), `packages/react` (Controls.\*), `packages/lit` (`<f8-player>` với default chrome khi `controls=true`), `packages/themes/classroom.css` (token `--f8p-btn-size`, `--f8p-icon-size`), 14 plugins độc lập.
+- `f8-player` workspace: `packages/core` (PlayerOptions/SourceDescriptor), `packages/react` (Controls.\*), `packages/lit` (`<reel-player>` với default chrome khi `controls=true`), `packages/themes/classroom.css` (token `--reel-btn-size`, `--reel-icon-size`), 14 plugins độc lập.
 - `f8-ui/src/components/VideoPlayer/index.tsx` + `VideoPlayer.module.scss` — wrapper React dùng `Controls.Bar` + `Controls.SeekBar` + `Controls.Quality` + `Controls.Settings` + `Controls.Fullscreen`. Subtitle: `tracks` prop → `SourceDescriptor.tracks` → `<Captions>` portal `<track>`.
 - `f8-dash-ui/src/components/VideoUploadPreview/index.jsx` — wrapper React Tailwind, cùng Controls.\* + plugin markers/keyboard/hls-quality/auth-aware/fullscreen.
-- `f8-pro-ui/src/components/video-player/index.ts` — outer Lit dùng `<f8-player .controls=true theme="classroom">`, inner chrome do `classroom.css` style (token `--f8p-btn-size: 3.6rem`, `--f8p-icon-size: 1.55rem`). Subtitle qua `captions-controller` (fetch blob + append `<track kind="captions" srclang="vi">`). Chưa có sprite thumbnails (deferred từ 9.F.4).
+- `f8-pro-ui/src/components/video-player/index.ts` — outer Lit dùng `<f8-player .controls=true theme="classroom">`, inner chrome do `classroom.css` style (token `--reel-btn-size: 3.6rem`, `--reel-icon-size: 1.55rem`). Subtitle qua `captions-controller` (fetch blob + append `<track kind="captions" srclang="vi">`). Chưa có sprite thumbnails (deferred từ 9.F.4).
 - `SourceDescriptor` hiện chỉ có `src/type/withCredentials/tracks`. Phải thêm field `thumbnails?` mà không phá tương thích.
 
 ### 3.2 Sprite thumbnails — VTT format
@@ -48,11 +48,11 @@ sprites/00001.jpg#xywh=160,0,160,90
 
 ### 3.3 Controls.SeekBar enhancement
 
-`@f8/player-react/Controls.SeekBar` hiện render `<div data-f8p-seek-wrapper><div data-f8p-seek-buffered/><input type=range data-f8-player-control=seek-bar/></div>`. Cần:
+`@f8team/reel-react/Controls.SeekBar` hiện render `<div data-reel-seek-wrapper><div data-reel-seek-buffered/><input type=range data-reel-control=seek-bar/></div>`. Cần:
 
 - Track pointer X position ⇒ tính `hoverTime`.
 - Subscribe `usePlayerEvent('thumbnails:ready')` (plugin emit khi parse xong) hoặc đọc state từ plugin commands API.
-- Render `<div data-f8p-seek-thumbnail>` absolute, theme styles `background-image/position/size`.
+- Render `<div data-reel-seek-thumbnail>` absolute, theme styles `background-image/position/size`.
 - Lit default chrome (`F8Player.ts > renderDefaultControls`) có cùng pattern wrapper, append element thumbnail tương tự.
 
 ### 3.4 Controls.Captions component
@@ -60,19 +60,19 @@ sprites/00001.jpg#xywh=160,0,160,90
 - React: `<Controls.Captions>` render button SVG CC + native `<select>` overlay (giống Quality/Settings) options: `Off` + 1 option per lang. Subscribe state `subtitles:changed` từ plugin (đã có).
 - Lit: thêm `renderCaptionsControl` trong `F8Player.renderDefaultControls`. SVG CC icon + select.
 - Plugin commands: `subtitles:setLang(lang)` + `subtitles:off()` (đã có).
-- Theme classroom.css thêm style cho `[data-f8-player-control="captions"]`.
+- Theme classroom.css thêm style cho `[data-reel-control="captions"]`.
 
 ### 3.5 Polish padding/icon size
 
 Theme tokens hiện tại:
 
-| Token                       | Hiện tại | Mục tiêu   | Note                                   |
-| --------------------------- | -------- | ---------- | -------------------------------------- |
-| `--f8p-btn-size`            | 3.6rem   | **3.2rem** | Nén bớt hộp button                     |
-| `--f8p-playpause-btn-size`  | 4rem     | **3.6rem** | Tỷ lệ giữ với btn-size                 |
-| `--f8p-icon-size`           | 1.55rem  | **1.8rem** | Icon to hơn, đỡ "lọt thỏm"             |
-| `--f8p-playpause-icon-size` | 2rem     | **2.2rem** | Cân với btn-size mới                   |
-| `--f8p-ctrl-height`         | 8.6rem   | giữ        | Bar height giữ — chỉ nội dung chặt hơn |
+| Token                        | Hiện tại | Mục tiêu   | Note                                   |
+| ---------------------------- | -------- | ---------- | -------------------------------------- |
+| `--reel-btn-size`            | 3.6rem   | **3.2rem** | Nén bớt hộp button                     |
+| `--reel-playpause-btn-size`  | 4rem     | **3.6rem** | Tỷ lệ giữ với btn-size                 |
+| `--reel-icon-size`           | 1.55rem  | **1.8rem** | Icon to hơn, đỡ "lọt thỏm"             |
+| `--reel-playpause-icon-size` | 2rem     | **2.2rem** | Cân với btn-size mới                   |
+| `--reel-ctrl-height`         | 8.6rem   | giữ        | Bar height giữ — chỉ nội dung chặt hơn |
 
 Mobile (`@media (pointer: coarse)`) giữ override 4.4rem / 4.9rem cho touch target ≥ 44px.
 
@@ -88,14 +88,14 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 
 ## 4. Phases (overview)
 
-- **Phase 1 — Player core (logic-only / contract)**: mở rộng `SourceDescriptor`, viết `@f8/player-plugin-thumbnails`, polish theme classroom.css, thêm Controls.Captions (React), nâng cấp Controls.SeekBar render hover preview, thêm CC + thumbnails vào Lit default chrome. Toàn bộ trong `f8-player` repo, có unit tests.
+- **Phase 1 — Player core (logic-only / contract)**: mở rộng `SourceDescriptor`, viết `@f8team/reel-plugin-thumbnails`, polish theme classroom.css, thêm Controls.Captions (React), nâng cấp Controls.SeekBar render hover preview, thêm CC + thumbnails vào Lit default chrome. Toàn bộ trong `f8-player` repo, có unit tests.
 - **Phase 2 — f8-ui wire**: cập nhật `VideoPlayer/index.tsx` truyền `thumbnails` (nếu BE có), thêm `Controls.Captions` vào Bar, đồng bộ SCSS module với token mới. Update `VideoPlayer.test.tsx`.
 - **Phase 3 — f8-dash-ui wire**: cập nhật `VideoUploadPreview/index.jsx` thêm `Controls.Captions`, đồng bộ Tailwind class, polish. Update test 11/11.
 - **Phase 4 — f8-pro-ui wire**: outer `<video-player>` truyền `source.thumbnails = { src: video.sprite_url, withCredentials: ... }`. CC button trong default chrome đã tự kích hoạt qua track render (no FE work in this repo cho captions UI vì dùng default chrome). Update characterization tests.
 
 ## 5. Phase 1 — Player core
 
-**Mục tiêu phase:** ship `@f8/player-plugin-thumbnails` + Controls.Captions + Controls.SeekBar hover preview + theme polish, 100% unit tests xanh, không động consumer repo.
+**Mục tiêu phase:** ship `@f8team/reel-plugin-thumbnails` + Controls.Captions + Controls.SeekBar hover preview + theme polish, 100% unit tests xanh, không động consumer repo.
 
 **Repo:** `f8-player` (monorepo).
 
@@ -116,10 +116,10 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 
 **Test gate:**
 
-- `pnpm --filter @f8/player-plugin-thumbnails test` — green.
-- `pnpm --filter @f8/player-react test` — green (74+ tests).
-- `pnpm --filter @f8/player-lit test` — green (29+ tests).
-- `pnpm --filter @f8/player-core test` — green (314 tests, không suy giảm).
+- `pnpm --filter @f8team/reel-plugin-thumbnails test` — green.
+- `pnpm --filter @f8team/reel-react test` — green (74+ tests).
+- `pnpm --filter @f8team/reel-lit test` — green (29+ tests).
+- `pnpm --filter @f8team/reel-core test` — green (314 tests, không suy giảm).
 - Build: `pnpm build` toàn workspace, không lỗi turbo.
 - Bundle size: `pnpm size` — core <12KB / react <4KB / lit <4KB / new plugin <2KB.
 
@@ -131,13 +131,13 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
   - File(s): `packages/core/src/types/source.ts`, `packages/core/src/types/options.ts` (re-export nếu cần).
   - Input: hiện chỉ có `src/type/withCredentials/tracks`.
   - Output: thêm `thumbnails?: { src: string; withCredentials?: boolean }`. Update JSDoc + golden case ref.
-  - Done when: type exported, không phá test core hiện tại (`pnpm --filter @f8/player-core test`).
+  - Done when: type exported, không phá test core hiện tại (`pnpm --filter @f8team/reel-core test`).
 
-- [x] **T1.2** — Tạo skeleton package `@f8/player-plugin-thumbnails`
+- [x] **T1.2** — Tạo skeleton package `@f8team/reel-plugin-thumbnails`
   - File(s): `packages/plugin-thumbnails/package.json`, `tsup.config.ts`, `tsconfig.json`, `vitest.config.ts`, `src/index.ts`, `src/types.ts`.
   - Input: pattern từ `packages/plugin-markers` hoặc `plugin-subtitles`.
-  - Output: package buildable (empty plugin), version `0.0.0`, peerDeps `@f8/player-core`.
-  - Done when: `pnpm install` resolve, `pnpm --filter @f8/player-plugin-thumbnails build` success.
+  - Output: package buildable (empty plugin), version `0.0.0`, peerDeps `@f8team/reel-core`.
+  - Done when: `pnpm install` resolve, `pnpm --filter @f8team/reel-plugin-thumbnails build` success.
 
 - [x] **T1.3** — Implement VTT sprite parser
   - File(s): `packages/plugin-thumbnails/src/parseSpriteVtt.ts`.
@@ -157,28 +157,28 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 - [x] **T1.5** — Update React Controls.SeekBar hover preview
   - File(s): `packages/react/src/components/controls/SeekBar.tsx`, `packages/react/src/hooks/usePlayer.ts` (đọc nếu cần).
   - Input: hiện wrapper render input + buffered overlay.
-  - Output: thêm `<div data-f8p-seek-thumbnail>` con, position `absolute`. Track `pointermove` trên wrapper ⇒ tính hover time (clamp `[0, duration]`). Gọi `player.commands.run("thumbnails:getAt", time)` để lấy cue. Khi cue có giá trị, set inline style `background-image/-position/-size` + `display: block`. Pointer leave/cancel → `display: none`. Tooltip cũng show formatted time text bên dưới.
+  - Output: thêm `<div data-reel-seek-thumbnail>` con, position `absolute`. Track `pointermove` trên wrapper ⇒ tính hover time (clamp `[0, duration]`). Gọi `player.commands.run("thumbnails:getAt", time)` để lấy cue. Khi cue có giá trị, set inline style `background-image/-position/-size` + `display: block`. Pointer leave/cancel → `display: none`. Tooltip cũng show formatted time text bên dưới.
   - Backwards compat: nếu plugin chưa load (command not registered), bắt lỗi, không render thumbnail. SSR safe: chỉ chạy effect khi `typeof window !== 'undefined'`.
   - Done when: `SeekBar.test.tsx` thêm test "renders thumbnail on hover when plugin available", existing tests vẫn xanh.
 
 - [x] **T1.6** — Add React Controls.Captions
   - File(s): `packages/react/src/components/controls/Captions.tsx` (mới), `packages/react/src/components/controls/icons.tsx` (thêm `cc` icon), `packages/react/src/components/controls/index.ts` (export).
   - Input: state `source.tracks`, plugin commands `subtitles:setLang/off`, event `subtitles:changed` (đã có trong plugin-subtitles).
-  - Output: component render button SVG CC + native `<select>` overlay (giống Settings/Quality). Options: `Tắt` + 1/lang theo `source.tracks`. Hide khi `tracks.length === 0`. Hiển thị data-attr `data-f8-player-control="captions"` để theme target. Active class khi có lang đang showing.
+  - Output: component render button SVG CC + native `<select>` overlay (giống Settings/Quality). Options: `Tắt` + 1/lang theo `source.tracks`. Hide khi `tracks.length === 0`. Hiển thị data-attr `data-reel-control="captions"` để theme target. Active class khi có lang đang showing.
   - Done when: `Captions.test.tsx` cover: render khi có tracks, hide khi không, change → fire `subtitles:setLang`, "Tắt" → fire `subtitles:off`. React tests 74→ 75+ green.
 
 - [x] **T1.7** — Add Lit default chrome: thumbnails + captions + cc icon
   - File(s): `packages/lit/src/F8Player.ts`.
   - Input: `renderDefaultControls`, `ICONS` map.
-  - Output: thêm `renderCaptionsControl(state)` (chỉ render khi state.source.tracks?.length > 0), thêm `<div data-f8p-seek-thumbnail>` vào timeline row giống React. Thêm `cc` icon path vào ICONS. Hover preview attach pointer listener trong `firstUpdated`.
+  - Output: thêm `renderCaptionsControl(state)` (chỉ render khi state.source.tracks?.length > 0), thêm `<div data-reel-seek-thumbnail>` vào timeline row giống React. Thêm `cc` icon path vào ICONS. Hover preview attach pointer listener trong `firstUpdated`.
   - Done when: `F8Player.test.ts` 29→32+ tests green, render captions khi có tracks, hide khi không, hover thumbnail khi có thumbnails.
 
 - [x] **T1.8** — Polish theme classroom.css
   - File(s): `packages/themes/src/classroom.css`.
-  - Input: tokens hiện tại `--f8p-btn-size: 3.6rem`, `--f8p-playpause-btn-size: 4rem`, `--f8p-icon-size: 1.55rem`, `--f8p-playpause-icon-size: 2rem`.
-  - Output: đổi sang `--f8p-btn-size: 3.2rem`, `--f8p-playpause-btn-size: 3.6rem`, `--f8p-icon-size: 1.8rem`, `--f8p-playpause-icon-size: 2.2rem`. Thêm selector cho `[data-f8-player-control="captions"]` (button style giống mute/settings, order 14). Thêm style cho `[data-f8p-seek-thumbnail]`: position absolute, bottom = wrapper height + 0.8rem, transform translateX(-50%), border-radius 0.4rem, box-shadow, transition opacity. Time text dưới thumbnail font 1.2rem.
+  - Input: tokens hiện tại `--reel-btn-size: 3.6rem`, `--reel-playpause-btn-size: 4rem`, `--reel-icon-size: 1.55rem`, `--reel-playpause-icon-size: 2rem`.
+  - Output: đổi sang `--reel-btn-size: 3.2rem`, `--reel-playpause-btn-size: 3.6rem`, `--reel-icon-size: 1.8rem`, `--reel-playpause-icon-size: 2.2rem`. Thêm selector cho `[data-reel-control="captions"]` (button style giống mute/settings, order 14). Thêm style cho `[data-reel-seek-thumbnail]`: position absolute, bottom = wrapper height + 0.8rem, transform translateX(-50%), border-radius 0.4rem, box-shadow, transition opacity. Time text dưới thumbnail font 1.2rem.
   - Mobile override (`@media (pointer: coarse)`): btn-size lên 4rem, playpause 4.4rem (vẫn ≥ 44px touch). Icon size 2rem / 2.4rem.
-  - Done when: visual smoke trong storybook (`pnpm --filter @f8/player-react storybook` nếu có), không vỡ layout. Lit/React tests vẫn xanh.
+  - Done when: visual smoke trong storybook (`pnpm --filter @f8team/reel-react storybook` nếu có), không vỡ layout. Lit/React tests vẫn xanh.
 
 - [x] **T1.9** — Bundle + workspace audit
   - Command: `pnpm install`, `pnpm build`, `pnpm size`.
@@ -204,7 +204,7 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 **Output:**
 
 - `index.tsx`: prop mới `previewThumbnailsUrl?: string` (optional). Truyền `source.thumbnails = { src, withCredentials: false }`. Thêm `<Controls.Captions>` vào ActionsRow. Plugin `createThumbnailsPlugin` add vào list khi prop có.
-- `VideoPlayer.module.scss`: `.btn` width/height 3.2rem (was 3.6rem); `[data-f8-player-icon]` 1.8rem (was 1.55rem); `.btnPlayPause` 3.6rem/2.2rem (was 4rem/2rem). Thêm `.captionsControl` style giống `.qualityControl`. Thêm `.thumbnail` cho `[data-f8p-seek-thumbnail]`.
+- `VideoPlayer.module.scss`: `.btn` width/height 3.2rem (was 3.6rem); `[data-reel-icon]` 1.8rem (was 1.55rem); `.btnPlayPause` 3.6rem/2.2rem (was 4rem/2rem). Thêm `.captionsControl` style giống `.qualityControl`. Thêm `.thumbnail` cho `[data-reel-seek-thumbnail]`.
 - Test: thêm coverage cho Captions render/hidden, ensure VideoPlayer pass `thumbnails` xuống.
 
 **Test gate:**
@@ -218,8 +218,8 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 
 - [x] **T2.1** — Add thumbnails package dependency to `f8-ui`
   - File(s): `package.json`, lockfile if package manager updates it.
-  - Input: existing local `@f8/player-*` file dependencies.
-  - Output: add `@f8/player-plugin-thumbnails` pointing to `../f8-player/packages/plugin-thumbnails`.
+  - Input: existing local `@f8team/reel-*` file dependencies.
+  - Output: add `@f8team/reel-plugin-thumbnails` pointing to `../f8-player/packages/plugin-thumbnails`.
   - Done when: dependency is declared and install metadata is consistent.
 - [x] **T2.2** — Wire `previewThumbnailsUrl` into `VideoPlayer`
   - File(s): `src/components/VideoPlayer/index.tsx`.
@@ -238,7 +238,7 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
   - Done when: desktop controls are tighter while coarse-pointer touch targets remain safe.
 - [x] **T2.5** — Update `VideoPlayer.test.tsx` coverage
   - File(s): `src/components/VideoPlayer/VideoPlayer.test.tsx`.
-  - Input: current mocks for `@f8/player-react`, subtitles/auth plugins.
+  - Input: current mocks for `@f8team/reel-react`, subtitles/auth plugins.
   - Output: mock `Controls.Captions` and thumbnails plugin; assert captions render path and thumbnail option/plugin wiring.
   - Done when: focused VideoPlayer tests cover new wiring.
 - [x] **T2.6** — Run Phase 2 verification
@@ -274,8 +274,8 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 
 - [x] **T3.1** — Add subtitles/thumbnails package dependencies to `f8-dash-ui`
   - File(s): `package.json`, `pnpm-lock.yaml`.
-  - Input: existing local `@f8/player-*` file dependencies.
-  - Output: add `@f8/player-plugin-subtitles` and `@f8/player-plugin-thumbnails` file deps.
+  - Input: existing local `@f8team/reel-*` file dependencies.
+  - Output: add `@f8team/reel-plugin-subtitles` and `@f8team/reel-plugin-thumbnails` file deps.
   - Done when: dependency declarations and lockfile entries are consistent.
 - [x] **T3.2** — Wire `tracks` and `previewThumbnailsUrl` into `VideoUploadPreview`
   - File(s): `src/components/VideoUploadPreview/index.jsx`.
@@ -338,11 +338,11 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
   - Output: `environment: "happy-dom"`, `happy-dom` added as devDep. Pre-existing 52 lit tests turn green.
   - Done when: `npm run test:lit` — 52/52 pass.
 
-- [x] **T4.2** — Add `@f8/player-plugin-thumbnails` dependency
+- [x] **T4.2** — Add `@f8team/reel-plugin-thumbnails` dependency
   - File(s): `package.json`.
-  - Input: existing local `@f8/player-*` file deps.
-  - Output: `"@f8/player-plugin-thumbnails": "file:../../reactjs/f8-player/packages/plugin-thumbnails"` added; `npm install` resolves.
-  - Done when: `node_modules/@f8/player-plugin-thumbnails` present.
+  - Input: existing local `@f8team/reel-*` file deps.
+  - Output: `"@f8team/reel-plugin-thumbnails": "file:../../reactjs/f8-player/packages/plugin-thumbnails"` added; `npm install` resolves.
+  - Done when: `node_modules/@f8team/reel-plugin-thumbnails` present.
 
 - [x] **T4.3** — Extend `VideoPlayerVideoMeta` with `sprite_url`
   - File(s): `src/components/video-player/controllers/types.ts`.
@@ -376,12 +376,12 @@ f8-ui SCSS module + f8-dash-ui Tailwind hardcode `3.6rem/1.55rem/4rem/2rem` ⇒ 
 
 Tóm tắt acceptance theo góc nhìn user/contract — không trùng todo từng phase, mà là tiêu chí "feature đã sống được":
 
-- [ ] `SourceDescriptor.thumbnails` shipped trong `@f8/player-core`, JSDoc + types đồng bộ.
-- [ ] Package mới `@f8/player-plugin-thumbnails` published trong workspace, build + size budget pass.
+- [ ] `SourceDescriptor.thumbnails` shipped trong `@f8team/reel-core`, JSDoc + types đồng bộ.
+- [ ] Package mới `@f8team/reel-plugin-thumbnails` published trong workspace, build + size budget pass.
 - [ ] VTT sprite parser unit tests cover relative/absolute/no-xywh — 100%.
 - [ ] `Controls.SeekBar` (React) render thumbnail tooltip on hover khi plugin available; SSR safe; không phá test 74 hiện tại.
 - [ ] `Controls.Captions` (React) render khi `source.tracks.length > 0`, fire `subtitles:setLang`/`subtitles:off`, hide khi không có track.
-- [ ] Lit `<f8-player>` default chrome có CC button + thumbnail hover; tests xanh.
+- [ ] Lit `<reel-player>` default chrome có CC button + thumbnail hover; tests xanh.
 - [ ] Theme `classroom` button size 3.2rem / icon 1.8rem (mobile override 4rem ≥ 44px touch).
 - [x] `f8-ui` SCSS module đồng bộ size mới, có Captions, có thumbnail. 235+/235+ tests xanh.
 - [x] `f8-dash-ui` Tailwind đồng bộ size mới, có Captions, có thumbnail. 11+/11+ tests xanh.

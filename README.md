@@ -1,6 +1,6 @@
 <div align="center">
 
-# f8-player
+# Reel
 
 **A headless, framework-agnostic, plugin-driven video player engine.**
 
@@ -21,14 +21,14 @@ upload editors) because the existing tools forced us to choose between three bad
 options: ship a 150KB+ `video.js` with seven plugins, fight `react-player`'s
 opinionated DOM, or write yet another bespoke `<video>` wrapper for every surface.
 
-`f8-player` is the result: a small, headless engine you can compose into any UI,
+Reel is the result: a small, headless engine you can compose into any UI,
 extend through tree-shakeable plugins, theme through CSS variables, and swap into
 any framework via thin adapters.
 
 ## Highlights
 
 - **Headless engine** — the core is `HTMLMediaElement`-only and ships <15KB gzip.
-- **Framework adapters** — first-class React (`@f8/player-react`); Lit, Vue, and vanilla on the roadmap.
+- **Framework adapters** — first-class React (`@f8team/reel-react`); Lit, Vue, and vanilla on the roadmap.
 - **Composable Slot API** — Radix-style primitives. Build your own skin without forking.
 - **Plugin system** — subtitles, HLS quality, markers, keyboard, touch gestures, resume position, analytics, PIP, watermark, auth-aware 401/403, story gestures.
 - **Theme tokens** — CSS variables only. No CSS-in-JS, no Tailwind dependency. Override anything.
@@ -44,7 +44,7 @@ phased roadmap and [`docs/spec/`](./docs/spec/) for the locked contracts.
 ## Architecture (one-screen view)
 
 ```text
-@f8/player-core (headless, framework-agnostic, ~15KB gzip)
+@f8team/reel-core (headless, framework-agnostic, ~15KB gzip)
   ├── state machine (idle → loading → ready → playing → paused → ended → error)
   ├── reactive store (selectors + subscribers)
   ├── source registry (Native, HLS lazy, YouTube lazy, DASH future)
@@ -53,9 +53,9 @@ phased roadmap and [`docs/spec/`](./docs/spec/) for the locked contracts.
   ├── a11y model
   └── theme tokens
 
-@f8/player-react ── thin React adapter (hooks + Slot API + ref back-compat)
-@f8/player-themes ── classroom · story · admin · minimal
-@f8/player-plugin-* ── subtitles · hls-quality · markers · keyboard · touch-gestures
+@f8team/reel-react ── thin React adapter (hooks + Slot API + ref back-compat)
+@f8team/reel-themes ── classroom · story · admin · minimal
+@f8team/reel-plugin-* ── subtitles · hls-quality · markers · keyboard · touch-gestures
                      · resume-position · auth-aware · pip · watermark · story-gestures
 ```
 
@@ -63,39 +63,39 @@ Full diagram: [`docs/spec/architecture.md`](./docs/spec/architecture.md).
 
 ## Packages
 
-| Package                                 | Purpose                   | Status  |
-| --------------------------------------- | ------------------------- | ------- |
-| `@f8/player-core`                       | Headless engine           | Phase 1 |
-| `@f8/player-react`                      | React adapter             | Phase 2 |
-| `@f8/player-themes`                     | Built-in themes           | Phase 3 |
-| `@f8/player-plugin-subtitles`           | VTT multi-language        | Phase 3 |
-| `@f8/player-plugin-hls-quality`         | Quality selector          | Phase 3 |
-| `@f8/player-plugin-markers`             | Chapters / transcripts    | Phase 3 |
-| `@f8/player-plugin-keyboard`            | Hotkeys                   | Phase 3 |
-| `@f8/player-plugin-touch-gestures`      | Tap, hold, double-tap     | Phase 3 |
-| `@f8/player-plugin-resume-position`     | Resume from last play     | Phase 3 |
-| `@f8/player-plugin-auth-aware`          | 401/403 cookie + callback | Phase 3 |
-| `@f8/player-plugin-story-gestures`      | Instagram-style stories   | Phase 3 |
-| `@f8/player-plugin-safari-mp4-fallback` | Safari escape hatch       | Phase 3 |
-| `@f8/player-plugin-analytics`           | Progress / view events    | Phase 3 |
-| `@f8/player-plugin-pip`                 | Picture-in-Picture        | Phase 3 |
-| `@f8/player-plugin-watermark`           | Premium watermark         | Phase 3 |
-| `@f8/player-lit`                        | Lit adapter (deferred)    | Phase 9 |
+| Package                                   | Purpose                   | Status  |
+| ----------------------------------------- | ------------------------- | ------- |
+| `@f8team/reel-core`                       | Headless engine           | Phase 1 |
+| `@f8team/reel-react`                      | React adapter             | Phase 2 |
+| `@f8team/reel-themes`                     | Built-in themes           | Phase 3 |
+| `@f8team/reel-plugin-subtitles`           | VTT multi-language        | Phase 3 |
+| `@f8team/reel-plugin-hls-quality`         | Quality selector          | Phase 3 |
+| `@f8team/reel-plugin-markers`             | Chapters / transcripts    | Phase 3 |
+| `@f8team/reel-plugin-keyboard`            | Hotkeys                   | Phase 3 |
+| `@f8team/reel-plugin-touch-gestures`      | Tap, hold, double-tap     | Phase 3 |
+| `@f8team/reel-plugin-resume-position`     | Resume from last play     | Phase 3 |
+| `@f8team/reel-plugin-auth-aware`          | 401/403 cookie + callback | Phase 3 |
+| `@f8team/reel-plugin-story-gestures`      | Instagram-style stories   | Phase 3 |
+| `@f8team/reel-plugin-safari-mp4-fallback` | Safari escape hatch       | Phase 3 |
+| `@f8team/reel-plugin-analytics`           | Progress / view events    | Phase 3 |
+| `@f8team/reel-plugin-pip`                 | Picture-in-Picture        | Phase 3 |
+| `@f8team/reel-plugin-watermark`           | Premium watermark         | Phase 3 |
+| `@f8team/reel-lit`                        | Lit adapter (deferred)    | Phase 9 |
 
 ## Quickstart (preview, not yet published)
 
 ```tsx
 // One-liner
-import { Player } from "@f8/player-react";
-import "@f8/player-themes/classroom.css";
+import { Player } from "@f8team/reel-react";
+import "@f8team/reel-themes/classroom.css";
 
 <Player src="https://cdn.example.com/lesson.m3u8" theme="classroom" />;
 ```
 
 ```tsx
 // Composable
-import { Player } from "@f8/player-react";
-import { markers } from "@f8/player-plugin-markers";
+import { Player } from "@f8team/reel-react";
+import { markers } from "@f8team/reel-plugin-markers";
 
 <Player.Root source={{ src }} plugins={[markers({ data: chapters })]}>
   <Player.Video />
@@ -117,7 +117,7 @@ import { markers } from "@f8/player-plugin-markers";
 ## DX cookbook
 
 - [`docs/spec/plugin-authoring.md`](./docs/spec/plugin-authoring.md) — plugin lifecycle, commands, state subscriptions, SSR guards, tests, and lazy-loading patterns.
-- [`packages/preset-web/README.md`](./packages/preset-web/README.md) — when to use primitives vs `<F8WebPlayer>` / `<f8-web-player>`, plus preset options.
+- [`packages/preset-web/README.md`](./packages/preset-web/README.md) — when to use primitives vs `<ReelWebPlayer>` / `<reel-web-player>`, plus preset options.
 - [`docs/spec/styling-contract.md`](./docs/spec/styling-contract.md) — stable `data-*` hooks, CSS variables, and Tailwind/headless recipes.
 - [`examples/`](./examples/) — classroom one-liner, headless Tailwind, and custom analytics plugin demos.
 

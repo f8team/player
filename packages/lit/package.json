@@ -1,15 +1,15 @@
 {
-  "name": "@f8/player-lit",
+  "name": "@f8team/reel-lit",
   "version": "1.0.0",
-  "description": "Lit adapter for @f8/player-core — <f8-player> custom element + ReactivePlayerController, parity with @f8/player-react.",
+  "description": "Lit adapter for @f8team/reel-core — <reel-player> custom element + ReactivePlayerController, parity with @f8team/reel-react.",
   "license": "MIT",
-  "homepage": "https://github.com/f8/player/tree/main/packages/lit#readme",
+  "homepage": "https://github.com/f8team/player/tree/main/packages/lit#readme",
   "bugs": {
-    "url": "https://github.com/f8/player/issues"
+    "url": "https://github.com/f8team/player/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/f8/player.git",
+    "url": "git+https://github.com/f8team/player.git",
     "directory": "packages/lit"
   },
   "author": "F8 <devs@f8.edu.vn>",
@@ -62,7 +62,7 @@
   ],
   "peerDependencies": {
     "lit": ">=3",
-    "@f8/player-core": ">=0.0.0"
+    "@f8team/reel-core": "^1.0.0"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
@@ -71,6 +71,6 @@
     "lit": "^3.1.0",
     "size-limit": "^11.1.6",
     "tsup": "^8.3.0",
-    "@f8/player-core": "workspace:*"
+    "@f8team/reel-core": "workspace:*"
   }
 }

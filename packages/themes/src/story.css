@@ -1,76 +1,76 @@
 /**
- * @f8/player-themes — story
+ * @f8team/reel-themes — story
  * Full-bleed, vertically-oriented story theme (mobile-first).
  * No visible seek bar by default — tap to seek. Minimal chrome.
  * Golden cases: G2 (story-format learning, mobile full-bleed).
  *
- * Usage: import "@f8/player-themes/story.css";
+ * Usage: import "@f8team/reel-themes/story.css";
  */
 
-[data-f8-player][data-theme="story"] {
-  --f8p-bg: #000;
-  --f8p-accent: #ffffff;
-  --f8p-text: #ffffff;
-  --f8p-text-secondary: rgba(255, 255, 255, 0.75);
-  --f8p-ctrl-bg: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
-  --f8p-ctrl-height: 8rem;
-  --f8p-btn-size: 4rem;
-  --f8p-icon-size: 2.2rem;
-  --f8p-radius: 0;
-  --f8p-transition: 0.15s ease;
-  --f8p-progress-height: 0.3rem;
+[data-reel][data-theme="story"] {
+  --reel-bg: #000;
+  --reel-accent: #ffffff;
+  --reel-text: #ffffff;
+  --reel-text-secondary: rgba(255, 255, 255, 0.75);
+  --reel-ctrl-bg: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 100%);
+  --reel-ctrl-height: 8rem;
+  --reel-btn-size: 4rem;
+  --reel-icon-size: 2.2rem;
+  --reel-radius: 0;
+  --reel-transition: 0.15s ease;
+  --reel-progress-height: 0.3rem;
 
   /* z-index contract */
-  --f8p-z-buffered: 0;
-  --f8p-z-controls: 5;
-  --f8p-z-watermark: 10;
-  --f8p-z-overlay: 20;
+  --reel-z-buffered: 0;
+  --reel-z-controls: 5;
+  --reel-z-watermark: 10;
+  --reel-z-overlay: 20;
 } /* ─── Container ─────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] {
+[data-reel][data-theme="story"] {
   position: relative;
-  background: var(--f8p-bg);
+  background: var(--reel-bg);
   overflow: hidden;
   width: 100%;
   height: 100%;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 } /* ─── Video — cover fill ─────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] video {
+[data-reel][data-theme="story"] video {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 } /* ─── Story progress bar (top) ───────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8p-story-progress {
+[data-reel][data-theme="story"] .f8p-story-progress {
   position: absolute;
   top: 0.8rem;
   inset-inline: 0.8rem;
-  height: var(--f8p-progress-height);
+  height: var(--reel-progress-height);
   background: rgba(255, 255, 255, 0.3);
   border-radius: 99px;
   overflow: hidden;
 }
-[data-f8-player][data-theme="story"] .f8p-story-progress-fill {
+[data-reel][data-theme="story"] .f8p-story-progress-fill {
   height: 100%;
-  background: var(--f8p-accent);
+  background: var(--reel-accent);
   border-radius: 99px;
   transition: width 0.5s linear;
 } /* ─── Controls bar (bottom) ──────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8p-controls {
+[data-reel][data-theme="story"] .f8p-controls {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  height: var(--f8p-ctrl-height);
+  height: var(--reel-ctrl-height);
   padding: 0 1.6rem 2rem;
-  background: var(--f8p-ctrl-bg);
+  background: var(--reel-ctrl-bg);
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  transition: opacity var(--f8p-transition);
+  transition: opacity var(--reel-transition);
 } /* ─── Buttons ────────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8p-btn {
-  width: var(--f8p-btn-size);
-  height: var(--f8p-btn-size);
+[data-reel][data-theme="story"] .f8p-btn {
+  width: var(--reel-btn-size);
+  height: var(--reel-btn-size);
   min-width: 4.4rem;
   min-height: 4.4rem;
   display: flex;
@@ -78,14 +78,14 @@
   justify-content: center;
   border: none;
   background: transparent;
-  color: var(--f8p-text);
+  color: var(--reel-text);
   cursor: pointer;
   padding: 0;
   border-radius: 50%;
   outline: none;
 } /* ─── Left/Right tap zones (visual hint, transparent) ───────────────────── */
-[data-f8-player][data-theme="story"] .f8p-zone-left,
-[data-f8-player][data-theme="story"] .f8p-zone-right {
+[data-reel][data-theme="story"] .f8p-zone-left,
+[data-reel][data-theme="story"] .f8p-zone-right {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -95,20 +95,20 @@
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity var(--f8p-transition);
+  transition: opacity var(--reel-transition);
 }
-[data-f8-player][data-theme="story"] .f8p-zone-left {
+[data-reel][data-theme="story"] .f8p-zone-left {
   left: 0;
 }
-[data-f8-player][data-theme="story"] .f8p-zone-right {
+[data-reel][data-theme="story"] .f8p-zone-right {
   right: 0;
 } /* ─── Time text ──────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8p-time {
+[data-reel][data-theme="story"] .f8p-time {
   font-variant-numeric: tabular-nums;
-  color: var(--f8p-text-secondary);
+  color: var(--reel-text-secondary);
   font-size: 1.3rem;
 } /* ─── Watermark ──────────────────────────────────────────────────────────── */
-[data-f8-player][data-theme="story"] .f8-watermark {
+[data-reel][data-theme="story"] .f8-watermark {
   position: absolute;
   top: 2.4rem;
   right: 1.6rem;
@@ -120,15 +120,15 @@
 }
 
 /* ─── Native <video> hidden while YouTube iframe owns playback (B6) ── */
-[data-f8-player][data-theme="story"] video[data-f8-player-yt-hidden] {
+[data-reel][data-theme="story"] video[data-reel-yt-hidden] {
   visibility: hidden;
 }
 
 /* ─── Reduced motion — disable transitions + animations (C6) ─── */
 @media (prefers-reduced-motion: reduce) {
-  [data-f8-player][data-theme="story"] *,
-  [data-f8-player][data-theme="story"] *::before,
-  [data-f8-player][data-theme="story"] *::after {
+  [data-reel][data-theme="story"] *,
+  [data-reel][data-theme="story"] *::before,
+  [data-reel][data-theme="story"] *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

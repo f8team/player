@@ -1,4 +1,4 @@
-import { Root, Video, Controls } from "@f8/player-react";
+import { Root, Video, Controls } from "@f8team/reel-react";
 import type { Meta, StoryObj } from "@storybook/react";
 import React from "react";
 
@@ -23,7 +23,7 @@ function SafariFallbackDemo() {
           borderRadius: "0.8rem",
           overflow: "hidden",
         }}
-        data-f8-player=""
+        data-reel=""
         data-theme="classroom"
       >
         <Root options={{ source: { src: DEMO_HLS, tracks: [] }, plugins, playsInline: true }}>

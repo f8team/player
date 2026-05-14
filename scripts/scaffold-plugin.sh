@@ -16,9 +16,9 @@ mkdir -p "${DIR}/src"
 # package.json
 cat > "${DIR}/package.json" <<PKG
 {
-  "name": "@f8/player-plugin-${NAME}",
+  "name": "@f8team/reel-plugin-${NAME}",
   "version": "0.0.0",
-  "description": "f8-player plugin: ${NAME}",
+  "description": "Reel plugin: ${NAME}",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -48,9 +48,9 @@ cat > "${DIR}/package.json" <<PKG
     "clean": "rm -rf dist coverage .turbo"
   },
   "keywords": ["video", "player", "f8", "plugin", "${NAME}"],
-  "peerDependencies": { "@f8/player-core": "workspace:*" },
+  "peerDependencies": { "@f8team/reel-core": "workspace:*" },
   "devDependencies": {
-    "@f8/player-core": "workspace:*",
+    "@f8team/reel-core": "workspace:*",
     "@size-limit/preset-small-lib": "^11.1.6",
     "@vitest/coverage-v8": "^2.1.2",
     "jsdom": "^25.0.1",
@@ -88,7 +88,7 @@ export default defineConfig({
   splitting: false,
   minify: false,
   target: "es2020",
-  external: ["@f8/player-core"],
+  external: ["@f8team/reel-core"],
   outExtension: ({ format }) => ({ js: format === "esm" ? ".js" : ".cjs" }),
 });
 TSUP
@@ -117,10 +117,10 @@ VIT
 cat > "${DIR}/.size-limit.json" <<SZ
 [
   {
-    "name": "@f8/player-plugin-${NAME} (gzip)",
+    "name": "@f8team/reel-plugin-${NAME} (gzip)",
     "path": "dist/index.js",
     "import": "*",
-    "ignore": ["@f8/player-core"],
+    "ignore": ["@f8team/reel-core"],
     "limit": "3 KB",
     "gzip": true
   }

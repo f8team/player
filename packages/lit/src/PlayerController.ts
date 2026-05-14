@@ -1,5 +1,5 @@
-import { createPlayer } from "@f8/player-core";
-import type { Disposer, Player, PlayerEvents, PlayerOptions, PlayerState } from "@f8/player-core";
+import { createPlayer } from "@f8team/reel-core";
+import type { Disposer, Player, PlayerEvents, PlayerOptions, PlayerState } from "@f8team/reel-core";
 import type { ReactiveController, ReactiveControllerHost } from "lit";
 
 /**
@@ -12,7 +12,7 @@ import type { ReactiveController, ReactiveControllerHost } from "lit";
  *   work happens until `hostConnected` fires (C5 in the 2026-05-12 review).
  * - `createPlayer` is called once on first host connection; options are read
  *   once and subsequent changes are ignored (use `player.setSource` etc. for
- *   reactive updates — same contract as `@f8/player-react`).
+ *   reactive updates — same contract as `@f8team/reel-react`).
  * - The controller subscribes to the player's state store and requests a host
  *   update on every state change, so Lit re-renders only when the slice the
  *   `render()` reads actually changed.
@@ -34,9 +34,9 @@ import type { ReactiveController, ReactiveControllerHost } from "lit";
 // ─── Phase 2 reactive-prop surface (planned, not yet implemented) ────────────
 //
 // `PlayerController` currently reads options once in `hostConnected`; subsequent
-// changes are silently ignored (same contract as `@f8/player-react`'s Root).
+// changes are silently ignored (same contract as `@f8team/reel-react`'s Root).
 //
-// In Phase 2, `F8PlayerElement` (`<f8-player>`) will expose reactive Lit
+// In Phase 2, `ReelPlayerElement` (`<reel-player>`) will expose reactive Lit
 // properties whose `updated()` lifecycle compares old vs new values before
 // calling imperative setters:
 //
@@ -55,7 +55,7 @@ import type { ReactiveController, ReactiveControllerHost } from "lit";
 //   muted?:        boolean           — @property({ type: Boolean })
 //
 // Reasoning: the controller itself only manages lifecycle + subscriptions.
-// The reactive-prop diffing and setter calls live on `F8PlayerElement.updated()`
+// The reactive-prop diffing and setter calls live on `ReelPlayerElement.updated()`
 // so the controller stays a thin lifecycle wrapper.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -104,7 +104,7 @@ export class PlayerController implements ReactiveController {
     handler: (payload: PlayerEvents[K]) => void,
   ): Disposer {
     if (!this.player) {
-      throw new Error("[@f8/player-lit] PlayerController.on() called before hostConnected.");
+      throw new Error("[@f8team/reel-lit] PlayerController.on() called before hostConnected.");
     }
     const dispose = this.player.on(event, handler);
     this.eventDisposers.push(dispose);
@@ -120,7 +120,7 @@ export class PlayerController implements ReactiveController {
    */
   attach(video: HTMLVideoElement): Promise<void> {
     if (!this.player) {
-      return Promise.reject(new Error("[@f8/player-lit] attach() called before hostConnected."));
+      return Promise.reject(new Error("[@f8team/reel-lit] attach() called before hostConnected."));
     }
     return this.player.attach(video);
   }

@@ -14,8 +14,8 @@ const PLANS = [
     badge: "MIT",
     description: "Core engine, React adapter, themes cơ bản và plugin phổ biến cho sản phẩm F8.",
     items: [
-      "@f8/player-core",
-      "@f8/player-react",
+      "@f8team/reel-core",
+      "@f8team/reel-react",
       "Classroom / Story / Admin / Minimal themes",
       "Community support",
     ],
@@ -54,7 +54,7 @@ export default function PublicLaunchPage() {
             Start with OSS core →
           </Link>
           <a
-            href="https://github.com/f8/player/discussions"
+            href="https://github.com/f8team/player/discussions"
             className="btn-secondary"
             target="_blank"
             rel="noreferrer"

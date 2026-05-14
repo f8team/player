@@ -1,13 +1,13 @@
-import { createPlayer } from "@f8/player-core";
+import { createPlayer } from "@f8team/reel-core";
 import { act, render } from "@testing-library/react";
 import { createRef } from "react";
 import { describe, expect, it, vi } from "vitest";
 
 import { PlayerComponent as Player, type PlayerHandle } from "../PlayerComponent.js";
 
-vi.mock("@f8/player-core", async () => {
+vi.mock("@f8team/reel-core", async () => {
   // eslint-disable-next-line @typescript-eslint/consistent-type-imports
-  const actual = await vi.importActual<typeof import("@f8/player-core")>("@f8/player-core");
+  const actual = await vi.importActual<typeof import("@f8team/reel-core")>("@f8team/reel-core");
   const state = {
     status: "idle" as const,
     source: null,

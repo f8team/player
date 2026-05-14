@@ -1,17 +1,17 @@
 [
   {
-    "name": "@f8/player-react adapter only (gzip)",
+    "name": "@f8team/reel-react adapter only (gzip)",
     "path": "dist/index.js",
     "import": "*",
-    "ignore": ["@f8/player-core", "react", "react-dom"],
+    "ignore": ["@f8team/reel-core", "react", "react-dom"],
     "limit": "12 KB",
     "gzip": true
   },
   {
-    "name": "@f8/player-react adapter hard cap (gzip)",
+    "name": "@f8team/reel-react adapter hard cap (gzip)",
     "path": "dist/index.js",
     "import": "*",
-    "ignore": ["@f8/player-core", "react", "react-dom"],
+    "ignore": ["@f8team/reel-core", "react", "react-dom"],
     "limit": "13 KB",
     "gzip": true
   }

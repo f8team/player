@@ -13,9 +13,9 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 - Không thêm tính năng player mới (no DRM, no live, no analytics dashboard, no premium plugin).
 - Không đổi state machine, không đổi event names, không đổi PlayerError shape.
 - Không đổi kích thước budget core (≤ 12 KB target / 15 KB hard cap) — phải giữ hoặc giảm.
-- Không tách `@f8/player-preset-web` thành paid tier. Mọi thứ trong plan đều OSS.
+- Không tách `@f8team/reel-preset-web` thành paid tier. Mọi thứ trong plan đều OSS.
 - Không sửa Phase 8 owner-approval blockers (community/telemetry/npm). Plan này độc lập.
-- Không động vào `react-player@2.12` / `video.js@8.4` trong `f8-pro-ui` ngoài Phase 8 (migrate sang `@f8/player-lit`). Plan f8-player gốc Phase 9.E/9.F đã bao 1 phần — plan này bổ sung DX layer.
+- Không động vào `react-player@2.12` / `video.js@8.4` trong `f8-pro-ui` ngoài Phase 8 (migrate sang `@f8team/reel-lit`). Plan f8-player gốc Phase 9.E/9.F đã bao 1 phần — plan này bổ sung DX layer.
 
 ## 3. Phân tích công việc
 
@@ -34,7 +34,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 1. Prefs persistence (localStorage volume/muted/playbackRate/qualityHeight + autoplay-muted bootstrap).
 2. Center playback spinner (`buffering` ∨ `qualityswitch`).
 3. Light overlay (poster + click-to-play).
-4. Reactive `source` / `poster` / `playbackRate` / `labels` prop trên `<Root>` + `<f8-player>` (hiện đóng băng ở mount).
+4. Reactive `source` / `poster` / `playbackRate` / `labels` prop trên `<Root>` + `<reel-player>` (hiện đóng băng ở mount).
 5. Callback props trên `<Root>` (`onPlay`, `onPause`, `onTimeUpdate`, `onError`, `onEnded`, `onReady`, `onSeek`, `onProgress`) — bỏ ceremony EventBridge.
 6. Keyboard plugin granular: `blockKeys: Code[]` (`['Space']` cho story auth-gated) — hiện chỉ có `disable()` all-or-nothing.
 7. Auth-aware plugin tự sinh `source.withCredentials` predicate từ allowlist — bỏ duplication.
@@ -42,7 +42,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 **(B) Cần document + Tailwind cookbook**:
 
-9. Headless theme (`@f8/player-themes/headless.css`) — layout/z-index/positioning, không visual bake.
+9. Headless theme (`@f8team/reel-themes/headless.css`) — layout/z-index/positioning, không visual bake.
 10. `data-*` styling contract cho controls (đã có nhưng chưa document tập trung).
 11. Storybook trang Tailwind/shadcn showcase.
 
@@ -63,10 +63,10 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 ## 4. Phases (overview)
 
 - **Phase 1** — Baseline + behavior matrix freeze (`f8-player`): pin contract của 3 consumer thành characterization test trong library + audit API stability.
-- **Phase 2** — React/Lit ergonomic surface (`f8-player`): non-breaking reactive props (`source`/`poster`/`playbackRate`/`labels`) + callback props (`onPlay`/`onPause`/…) trên `<Root>` và `<f8-player>` + plugin-data hook.
-- **Phase 3** — Extract boilerplate thành plugin/option (`f8-player`): `@f8/player-plugin-prefs`, keyboard granular `blockKeys`, auth-aware auto-predicate, default `crossOrigin`/`playsInline`.
+- **Phase 2** — React/Lit ergonomic surface (`f8-player`): non-breaking reactive props (`source`/`poster`/`playbackRate`/`labels`) + callback props (`onPlay`/`onPause`/…) trên `<Root>` và `<reel-player>` + plugin-data hook.
+- **Phase 3** — Extract boilerplate thành plugin/option (`f8-player`): `@f8team/reel-plugin-prefs`, keyboard granular `blockKeys`, auth-aware auto-predicate, default `crossOrigin`/`playsInline`.
 - **Phase 4** — React primitives + headless theme (`f8-player`): `<Player.Spinner />`, `<Player.LightOverlay />`, `headless.css`, Tailwind/shadcn cookbook + Storybook page.
-- **Phase 5** — `@f8/player-preset-web` v2 (`f8-player`): bake plugin/primitive vào tuple + ship opinionated `<F8WebPlayer>` (React) + `<f8-web-player>` (Lit) one-liner.
+- **Phase 5** — `@f8team/reel-preset-web` v2 (`f8-player`): bake plugin/primitive vào tuple + ship opinionated `<ReelWebPlayer>` (React) + `<reel-web-player>` (Lit) one-liner.
 - **Phase 6** — Migrate `f8-ui` consumer (`f8-ui`): replace `VideoPlayer/index.tsx` → giảm còn ~150–200 LOC, characterization test 16 golden case.
 - **Phase 7** — Migrate `f8-dash-ui` consumer (`f8-dash-ui`): replace `VideoUploadPreview/index.jsx` → giảm còn ~120–180 LOC, Tailwind cookbook adoption.
 - **Phase 8** — Migrate `f8-pro-ui` consumer (`f8-pro-ui`): outer `<video-player>` dùng API mới (reactive source, callback props), giữ 5 controllers product-specific; giảm ~150–250 LOC.
@@ -124,7 +124,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 - [x] **T1.7** — Audit `data-*` attribute styling contract
   - File(s): `docs/spec/styling-contract.md` (new)
-  - Input: grep `data-f8p-*` và `data-f8-player-*` trong `packages/react` + `packages/lit` + `packages/themes`.
+  - Input: grep `data-reel-*` và `data-reel-*` trong `packages/react` + `packages/lit` + `packages/themes`.
   - Output: bảng đầy đủ (attribute → component/element → semantic). ≤ 50 dòng. Đánh dấu cái nào stable (semver-protected) vs internal.
   - Done when: file tồn tại, mỗi attribute có ≥ 1 row, lint/format pass.
 
@@ -143,7 +143,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 ## 6. Phase 2 — React/Lit ergonomic surface (reactive props + callback props)
 
-**Mục tiêu phase:** Thêm prop song song trên `<Root>` (React) và `<f8-player>` (Lit) cho `source`, `poster`, `playbackRate`, `volume`, `muted`, `labels`, và callback `onPlay/onPause/onEnded/onError/onReady/onProgress/onDuration/onSeek/onTimeUpdate/onSeeked/onUnauthorized/onQualityChange/onRateChange/onVolumeChange/onBuffering/onQualitySwitch`. **Non-breaking** — `options` vẫn được giữ; nếu cả hai cùng cấp, prop top-level thắng. Bật `it.skip` thành thật ở các test Phase 1.
+**Mục tiêu phase:** Thêm prop song song trên `<Root>` (React) và `<reel-player>` (Lit) cho `source`, `poster`, `playbackRate`, `volume`, `muted`, `labels`, và callback `onPlay/onPause/onEnded/onError/onReady/onProgress/onDuration/onSeek/onTimeUpdate/onSeeked/onUnauthorized/onQualityChange/onRateChange/onVolumeChange/onBuffering/onQualitySwitch`. **Non-breaking** — `options` vẫn được giữ; nếu cả hai cùng cấp, prop top-level thắng. Bật `it.skip` thành thật ở các test Phase 1.
 
 **Repo:** `f8-player`.
 **Test gate:** `pnpm -C packages/react verify && pnpm -C packages/lit verify && pnpm size`.
@@ -175,7 +175,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
   - Output: hook `usePluginCommand(name: string, args: unknown)` chạy command mỗi khi `args` ref thay. Swallow lỗi `command not registered` (giống `_runPlayerCommand` trong f8-pro-ui). Doc TSDoc ví dụ markers + questions + skip-segments.
   - Done when: hook test ≥ 2 case (run on mount, re-run on args change); doc include code sample.
 
-- [x] **T2.5** — Reactive source prop cho `<f8-player>` (Lit)
+- [x] **T2.5** — Reactive source prop cho `<reel-player>` (Lit)
   - File(s): `packages/lit/src/F8Player.ts`, `packages/lit/src/PlayerController.ts`
   - Input: hiện `_syncInnerSource()` được dùng ở `f8-pro-ui` outer.
   - Output: property `source` reactive (`@property({ type: Object })`); `updated()` lifecycle diff src + descriptor identity → `controller.player.setSource()`. Bỏ ràng buộc consumer phải tự gọi `_player.raw.setSource()` cho ca chuẩn.
@@ -183,20 +183,20 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 - [x] **T2.6** — Re-emit Lit custom events cũng pass `detail` chuẩn cho callback-style
   - File(s): `packages/lit/src/F8Player.ts`
-  - Input: hiện re-emit `f8-player:<event>` với `detail` là payload.
+  - Input: hiện re-emit `reel-player:<event>` với `detail` là payload.
   - Output: audit 16 event match React Root callback shape; doc các CustomEvent name + detail shape vào `docs/spec/styling-contract.md` (mở rộng).
   - Done when: test event bridge pass cho 16 event.
 
 - [x] **T2.7** — Run Phase 2 verify gate + size check
   - Command: `pnpm verify && pnpm -C packages/react size && pnpm -C packages/lit size && pnpm -C packages/core size`
-  - Done when: tất cả pass; `@f8/player-react` ≤ 4 KB target / 5 KB cap; Lit ≤ 4 KB; core không đổi.
+  - Done when: tất cả pass; `@f8team/reel-react` ≤ 4 KB target / 5 KB cap; Lit ≤ 4 KB; core không đổi.
 
   **Phase 2 results:**
-  - `@f8/player-core` — 334/334 test pass; size 9.87 KB / 15 KB cap ✅
-  - `@f8/player-react` — 119 pass / 9 skip (Phase 4 targets) / 0 fail ✅
-  - `@f8/player-lit` — 48/48 pass ✅
-  - `@f8/player-plugin-keyboard` — 27/30 (3 skip Phase 3 target) ✅
-  - **Size baseline correction:** `@f8/player-react` đo lại sau rebuild = **10.24 KB** gzipped (không phải 2.28 KB như §14 cũ). Lit = **11.34 KB**. Đây là số đo thực với `dist/index.js` build sạch trên cả pre-Phase-2 và post-Phase-2 (`git stash` verified pre-existing). Master Checklist §14 cần điều chỉnh: target/cap React ≤ 11 KB / 12 KB; Lit ≤ 12 KB / 13 KB cho đến Phase 9 (perf audit + tree-shake review). Kích thước KHÔNG tăng do Phase 2 — pre/post rebuild đều ra cùng số.
+  - `@f8team/reel-core` — 334/334 test pass; size 9.87 KB / 15 KB cap ✅
+  - `@f8team/reel-react` — 119 pass / 9 skip (Phase 4 targets) / 0 fail ✅
+  - `@f8team/reel-lit` — 48/48 pass ✅
+  - `@f8team/reel-plugin-keyboard` — 27/30 (3 skip Phase 3 target) ✅
+  - **Size baseline correction:** `@f8team/reel-react` đo lại sau rebuild = **10.24 KB** gzipped (không phải 2.28 KB như §14 cũ). Lit = **11.34 KB**. Đây là số đo thực với `dist/index.js` build sạch trên cả pre-Phase-2 và post-Phase-2 (`git stash` verified pre-existing). Master Checklist §14 cần điều chỉnh: target/cap React ≤ 11 KB / 12 KB; Lit ≤ 12 KB / 13 KB cho đến Phase 9 (perf audit + tree-shake review). Kích thước KHÔNG tăng do Phase 2 — pre/post rebuild đều ra cùng số.
 
 ---
 
@@ -210,7 +210,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 ### Todos (Phase 3)
 
-- [x] **T3.1** — Tạo `@f8/player-plugin-prefs` skeleton
+- [x] **T3.1** — Tạo `@f8team/reel-plugin-prefs` skeleton
   - File(s): `packages/plugin-prefs/package.json`, `tsconfig.json`, `tsup.config.ts`, `vitest.config.ts`, `.size-limit.json` (target 1.5 KB / cap 2 KB)
   - Input: dựa trên skeleton plugin-resume-position (gần nhất về scope LS persistence).
   - Output: workspace package mới được pnpm pickup; build ESM/CJS/d.ts xanh.
@@ -219,7 +219,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 - [x] **T3.2** — Implement `createPrefsPlugin`
   - File(s): `packages/plugin-prefs/src/prefs.ts`
   - Input: `PersistPrefs` source code trong 3 consumer (cross-check pattern thực sự y hệt).
-  - Output: factory `createPrefsPlugin({ storageKey?, lockVolume?, lockMuted?, lockPlaybackRate?, lockQualityHeight?, restoreOnReady?, saveOnEvents? }): PluginInstance`. SSR guard. Autoplay-muted bootstrap (defer save volume until first real play). Multi-player isolation qua `storageKey` mặc định `f8-player:prefs` (consumer override khi multi).
+  - Output: factory `createPrefsPlugin({ storageKey?, lockVolume?, lockMuted?, lockPlaybackRate?, lockQualityHeight?, restoreOnReady?, saveOnEvents? }): PluginInstance`. SSR guard. Autoplay-muted bootstrap (defer save volume until first real play). Multi-player isolation qua `storageKey` mặc định `reel-player:prefs` (consumer override khi multi).
   - Done when: T1.5 unskip + 6 case pass; size ≤ 1.5 KB gzip.
 
 - [x] **T3.3** — Keyboard plugin `blockKeys` granular
@@ -268,10 +268,10 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
   - Output: nhận `poster?: string`, `playLabel?: string`, render poster + button big-play; click overlay → fire `'light:dismiss'` event + auto `player.play()`. ≤ 50 LOC. ARIA `aria-label` từ `useLabels()`.
   - Done when: T1.6 unskip + 4 case pass.
 
-- [x] **T4.3** — `@f8/player-themes/headless.css`
+- [x] **T4.3** — `@f8team/reel-themes/headless.css`
   - File(s): `packages/themes/src/headless.css` (new), `packages/themes/package.json` exports
   - Input: pattern classroom/admin/story/minimal/f8-brand đang có.
-  - Output: theme tối thiểu: chỉ z-index contract, flex layout cho Bar/TimelineRow/ActionsRow, hide-on-external (`[data-source-type="youtube"] [data-f8-player-control]`), không màu/border/shadow. < 1 KB.
+  - Output: theme tối thiểu: chỉ z-index contract, flex layout cho Bar/TimelineRow/ActionsRow, hide-on-external (`[data-source-type="youtube"] [data-reel-control]`), không màu/border/shadow. < 1 KB.
   - Done when: file tồn tại, test smoke Storybook headless story render OK.
 
 - [x] **T4.4** — Document styling contract đầy đủ
@@ -281,7 +281,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 - [x] **T4.5** — Storybook page Tailwind/shadcn showcase
   - File(s): `packages/react/src/stories/Tailwind.stories.tsx` (new)
-  - Output: 3 story (Tailwind dark, Tailwind light, shadcn-style) tái dùng `@f8/player-themes/headless.css` + Tailwind utilities; mỗi story ≤ 80 LOC để chứng minh dùng dễ.
+  - Output: 3 story (Tailwind dark, Tailwind light, shadcn-style) tái dùng `@f8team/reel-themes/headless.css` + Tailwind utilities; mỗi story ≤ 80 LOC để chứng minh dùng dễ.
   - Done when: `pnpm storybook:build` xanh, axe a11y CI xanh.
 
 - [x] **T4.6** — Run Phase 4 verify + size
@@ -290,9 +290,9 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 ---
 
-## 9. Phase 5 — `@f8/player-preset-web` v2 + opinionated `<F8WebPlayer>`/`<f8-web-player>`
+## 9. Phase 5 — `@f8team/reel-preset-web` v2 + opinionated `<ReelWebPlayer>`/`<reel-web-player>`
 
-**Mục tiêu phase:** Đưa plugin/primitive Phase 3+4 vào preset; ship 2 component one-liner cho ca dùng F8 chuẩn (classroom theme + VN labels + plugin tuple chuẩn + prefs + spinner + light overlay). Consumer dùng `<F8WebPlayer src="..." />` được; tự render bằng primitive `<Player.Root>...</Player.Root>` cũng được.
+**Mục tiêu phase:** Đưa plugin/primitive Phase 3+4 vào preset; ship 2 component one-liner cho ca dùng F8 chuẩn (classroom theme + VN labels + plugin tuple chuẩn + prefs + spinner + light overlay). Consumer dùng `<ReelWebPlayer src="..." />` được; tự render bằng primitive `<Player.Root>...</Player.Root>` cũng được.
 
 **Repo:** `f8-player`.
 **Test gate:** `pnpm -C packages/preset-web verify && pnpm size`.
@@ -300,30 +300,30 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 ### Todos (Phase 5)
 
-- [x] **T5.1** — Thêm `prefs` vào `F8WebPlayerPluginsOptions`
-  - File(s): `packages/preset-web/src/createF8WebPlayerPlugins.ts`
+- [x] **T5.1** — Thêm `prefs` vào `ReelWebPlayerPluginsOptions`
+  - File(s): `packages/preset-web/src/createReelWebPlayerPlugins.ts`
   - Output: option `prefs?: false | PrefsPluginOptions` (default `{}` — bật với defaults). Append vào tuple ngay sau auth.
   - Done when: 3 case test (default on, opt-out via `prefs: false`, custom storageKey).
 
-- [x] **T5.2** — Re-export `vietnameseLabels` từ `@f8/player-preset-web`
+- [x] **T5.2** — Re-export `vietnameseLabels` từ `@f8team/reel-preset-web`
   - File(s): `packages/preset-web/src/index.ts`
-  - Output: barrel re-export để consumer không phải import từ `@f8/player-react`/`@f8/player-lit` riêng.
+  - Output: barrel re-export để consumer không phải import từ `@f8team/reel-react`/`@f8team/reel-lit` riêng.
   - Done when: import path mới hoạt động trong test consumer mock.
 
-- [x] **T5.3** — `<F8WebPlayer>` (React one-liner)
-  - File(s): `packages/preset-web/src/F8WebPlayer.tsx` (new — package phải accept react peer dep)
+- [x] **T5.3** — `<ReelWebPlayer>` (React one-liner)
+  - File(s): `packages/preset-web/src/ReelWebPlayer.tsx` (new — package phải accept react peer dep)
   - Output: bake `Root + Video + Captions + Spinner + Controls.Bar (classroom layout) + plugin tuple chuẩn + vietnameseLabels`. Props mirror React `<Player>` + thêm `theme?: 'classroom' | 'admin' | 'story' | 'minimal' | 'headless'`, `prefs?`, `onUnauthorized?`, `light?: boolean | string`, `poster?`. ≤ 200 LOC.
   - Done when: render test 5 case (classroom HLS, story full-bleed, admin markers, minimal hero, light poster); size delta ≤ 1.5 KB.
 
-- [x] **T5.4** — `<f8-web-player>` (Lit one-liner)
-  - File(s): `packages/preset-web/src/F8WebPlayer.ts` (Lit custom element)
-  - Output: parity với React F8WebPlayer; reactive `src`, `poster`, `theme`, `light`, `playbackRate`, `volume`, `muted`. Re-emit DOM events. ≤ 250 LOC Lit.
+- [x] **T5.4** — `<reel-web-player>` (Lit one-liner)
+  - File(s): `packages/preset-web/src/ReelWebPlayer.ts` (Lit custom element)
+  - Output: parity với React ReelWebPlayer; reactive `src`, `poster`, `theme`, `light`, `playbackRate`, `volume`, `muted`. Re-emit DOM events. ≤ 250 LOC Lit.
   - Done when: 5 case test parity với React; size delta ≤ 2 KB.
 
-- [x] **T5.5** — Size budget cho `@f8/player-preset-web`
+- [x] **T5.5** — Size budget cho `@f8team/reel-preset-web`
   - File(s): `packages/preset-web/.size-limit.json`
-  - Output: budget mới ≤ 6 KB target / 7 KB cap (preset gốc nhỏ vì tree-shake; F8WebPlayer thêm nhưng vẫn dưới cap khi dùng).
-  - Done when: `pnpm -C packages/preset-web size` xanh ở 2 config (preset-only, preset+F8WebPlayer).
+  - Output: budget mới ≤ 6 KB target / 7 KB cap (preset gốc nhỏ vì tree-shake; ReelWebPlayer thêm nhưng vẫn dưới cap khi dùng).
+  - Done when: `pnpm -C packages/preset-web size` xanh ở 2 config (preset-only, preset+ReelWebPlayer).
 
 - [x] **T5.6** — Doc: bảng so sánh "primitive vs one-liner" trong README preset-web
   - File(s): `packages/preset-web/README.md` (new hoặc mở rộng)
@@ -338,7 +338,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 ## 10. Phase 6 — Migrate `f8-ui` consumer
 
-**Mục tiêu phase:** Replace `f8-ui/src/components/VideoPlayer/index.tsx` (687 LOC) bằng wrapper mỏng dùng `<F8WebPlayer>` + reactive props + callback props. **Hành vi không đổi**, characterization test cũ (21 case) phải pass 100%.
+**Mục tiêu phase:** Replace `f8-ui/src/components/VideoPlayer/index.tsx` (687 LOC) bằng wrapper mỏng dùng `<ReelWebPlayer>` + reactive props + callback props. **Hành vi không đổi**, characterization test cũ (21 case) phải pass 100%.
 
 **Repo:** `f8-ui`.
 **Test gate:** `pnpm test` (55 file, 235 test hiện tại).
@@ -352,13 +352,13 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 - [x] **T6.2** — Replace `VideoPlayer/index.tsx` bằng composable `<Root>` + library primitives
   - File(s): `f8-ui/src/components/VideoPlayer/index.tsx` + `types.ts` + `helpers.ts` + `Layout.tsx`
-  - Approach: dùng `<Root>` + `<Video>`, `<Captions>`, `<Spinner>`, `<LightOverlay>`, `<Controls.*>` thay vì `<F8WebPlayer>` one-liner vì cần custom SCSS + HandleBridge.
+  - Approach: dùng `<Root>` + `<Video>`, `<Captions>`, `<Spinner>`, `<LightOverlay>`, `<Controls.*>` thay vì `<ReelWebPlayer>` one-liner vì cần custom SCSS + HandleBridge.
   - Output: 687 LOC → **179 LOC** trong `index.tsx` (~74% reduction), đạt target ≤ 200. Types/helpers/Layout extracted ra 3 file kế bên. EventBridge xoá hẳn — Root callback props (Phase 2) replace; test mock Root đã được update để forward callback props qua `eventHandlers` registry. HandleBridge + KeyboardBridge giữ inline trong index (mỗi cái ~15-35 lines, cần `usePlayer()` context). Public API `VideoPlayerHandle` + `VideoPlayerProps` unchanged 100%.
   - Done when: ✅ `index.tsx` 179 LOC (so với 687 baseline, target ≤ 200), 25/25 VideoPlayer test pass, 239/239 full f8-ui suite pass, typecheck + lint clean.
 
 - [x] **T6.3** — Xoá boilerplate đã được library hấp thụ
   - File(s): `f8-ui/src/components/VideoPlayer/index.tsx`, `VideoPlayer.module.scss`
-  - Output: xoá `PersistPrefs`, `SourceSync`, `CenterPlaybackSpinner`, `LightOverlay` inline (thay bằng `<Spinner>` / `<LightOverlay>` từ library); SCSS cập nhật dùng `data-f8p-*` global selectors.
+  - Output: xoá `PersistPrefs`, `SourceSync`, `CenterPlaybackSpinner`, `LightOverlay` inline (thay bằng `<Spinner>` / `<LightOverlay>` từ library); SCSS cập nhật dùng `data-reel-*` global selectors.
   - `EventBridge`, `HandleBridge`, `KeyboardHandler` giữ lại dạng slim (test-mock compatible, handle-bridge vẫn cần).
   - Done when: ✅ 239/239 tests pass, typecheck clean, VideoPlayer lint clean. Commit `e69ee707`.
 
@@ -396,7 +396,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 - [x] **T7.3** — Drop ~80 dòng Tailwind class string ad-hoc cho controls
   - File(s): `f8-dash-ui/src/components/VideoUploadPreview/index.jsx`, optional `player-badge-overrides.css`
-  - Output: dùng `@f8/player-themes/admin.css` + `player-badge-overrides.css` thay vì recompose từ `BTN_CLS` + `MENU_TRIGGER_CLS` + `MENU_OPTION_CLS` … (~6 const ~80 dòng).
+  - Output: dùng `@f8team/reel-themes/admin.css` + `player-badge-overrides.css` thay vì recompose từ `BTN_CLS` + `MENU_TRIGGER_CLS` + `MENU_OPTION_CLS` … (~6 const ~80 dòng).
   - Done when: ✅ focused test pass, build pass; manual visual smoke còn ở T7.5.
 
 - [x] **T7.4** — Run `f8-dash-ui` test + touched-file lint + build
@@ -410,7 +410,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 ## 12. Phase 8 — Migrate `f8-pro-ui` consumer
 
-**Mục tiêu phase:** Outer `<video-player>` dùng API mới (`<f8-web-player>` reactive `source` + callback props). Bỏ `_syncInnerSource` + `_activeSourceSrc` guard + `_runPlayerCommand` swallow. **Giữ nguyên 5 Reactive Controller F8-specific** (captions, chapters, context-menu, refresh-token, skip-segments) + question overlay logic.
+**Mục tiêu phase:** Outer `<video-player>` dùng API mới (`<reel-web-player>` reactive `source` + callback props). Bỏ `_syncInnerSource` + `_activeSourceSrc` guard + `_runPlayerCommand` swallow. **Giữ nguyên 5 Reactive Controller F8-specific** (captions, chapters, context-menu, refresh-token, skip-segments) + question overlay logic.
 
 **Repo:** `f8-pro-ui`.
 **Test gate:** `npm run type-check && npm run test:lit && npm run test:unit`.
@@ -421,18 +421,18 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 - [x] **T8.1** — Baseline test xanh
   - Done when: ✅ type-check pass + 59/59 lit test + 56/56 unit test pass.
   - Baseline blockers fixed first:
-    - `@f8/player-preset-web/F8WebPlayerLit` switched static `properties` to getter so Lit subclasses work when base exposes getter-only properties.
+    - `@f8team/reel-preset-web/ReelWebPlayerLit` switched static `properties` to getter so Lit subclasses work when base exposes getter-only properties.
     - `f8-pro-ui` Lit test plugin stub now exports `createPrefsPlugin` (preset-web Phase 5 includes prefs).
     - 2 unit tests switched `@vitest-environment jsdom` → `happy-dom` to avoid Node 20 CJS requiring ESM-only `@csstools/css-calc`.
 
-- [x] **T8.2** — Replace inner `<f8-player>` bằng `<f8-web-player>` reactive `source`
+- [x] **T8.2** — Replace inner `<reel-player>` bằng `<reel-web-player>` reactive `source`
   - File(s): `f8-pro-ui/src/components/video-player/index.ts`
-  - Output: ✅ dùng `<f8-web-player>` + reactive `.source`, bỏ `_syncInnerSource`, `_activeSourceSrc`, `_runPlayerCommand`, `_loading` 800ms timer hack; tách `player-config.ts` + `transcoding.ts`.
+  - Output: ✅ dùng `<reel-web-player>` + reactive `.source`, bỏ `_syncInnerSource`, `_activeSourceSrc`, `_runPlayerCommand`, `_loading` 800ms timer hack; tách `player-config.ts` + `transcoding.ts`.
   - Done when: ✅ `index.ts` 477 LOC (≤ 500); 59/59 lit test pass.
 
-- [x] **T8.3** — Refactor 5 controller bằng `usePluginCommand`-style API (Lit reactive controller adopt new helper từ `@f8/player-lit`)
+- [x] **T8.3** — Refactor 5 controller bằng `usePluginCommand`-style API (Lit reactive controller adopt new helper từ `@f8team/reel-lit`)
   - File(s): `f8-pro-ui/src/components/video-player/controllers/*.ts`
-  - Output: ✅ `@f8/player-lit` chưa có helper tương đương `usePluginCommand`; giữ 5 controller như cũ theo fallback của todo.
+  - Output: ✅ `@f8team/reel-lit` chưa có helper tương đương `usePluginCommand`; giữ 5 controller như cũ theo fallback của todo.
   - Done when: ✅ controller lit tests 33/33 pass.
 
 - [x] **T8.4** — Question overlay + `keyboard:disable/enable` chuyển sang `keyboard:setBlockKeys`
@@ -442,7 +442,7 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
 - [x] **T8.5** — Run gate
   - Command: `npm run type-check && npm run test:lit && npm run test:unit`
-  - Done when: ✅ `type-check` pass + `test:lit` 59/59 + `test:unit` 56/56; thêm `npm run build` pass để verify `@f8/player-plugin-prefs` peer dependency runtime.
+  - Done when: ✅ `type-check` pass + `test:lit` 59/59 + `test:unit` 56/56; thêm `npm run build` pass để verify `@f8team/reel-plugin-prefs` peer dependency runtime.
 
 - [x] **T8.6** — Manual smoke 3 case
   - Cases: HLS upload video (captions auto, skip segment, 401 refresh, context menu, watermark), YouTube video, transcoding video.
@@ -466,14 +466,14 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
   - Done when: ✅ bench xanh (`0.0042 ms/frame`, 5 selector subscribers × 3,600 events); số liệu lưu vào `packages/core/perf/results.md`.
 
 - [x] **T9.2** — Lazy-load thumbnails plugin
-  - File(s): `packages/preset-web/src/createF8WebPlayerPlugins.ts`
+  - File(s): `packages/preset-web/src/createReelWebPlayerPlugins.ts`
   - Output: chỉ thêm thumbnails khi `thumbnails === 'always'` AND consumer cấp `previewThumbnailsUrl` (sniff sau khi source set). Nếu không có URL, plugin lazy import — không vào bundle initial.
-  - Done when: ✅ static top-level import `@f8/player-plugin-thumbnails` removed from preset-web initial bundle; `thumbnails-lazy` dynamic import only runs after `source.thumbnails.src`; raw `dist/index.js` 6,972 → 8,192 bytes (bootstrapper +1.2 KB), `size-limit` xanh (factory 912 B gzip / full 1.91 KB gzip).
+  - Done when: ✅ static top-level import `@f8team/reel-plugin-thumbnails` removed from preset-web initial bundle; `thumbnails-lazy` dynamic import only runs after `source.thumbnails.src`; raw `dist/index.js` 6,972 → 8,192 bytes (bootstrapper +1.2 KB), `size-limit` xanh (factory 912 B gzip / full 1.91 KB gzip).
 
 - [x] **T9.3** — Audit subscriber leak + re-render trên consumer migrated
   - File(s): React DevTools profiler scenario; báo cáo trong `plans/f8-player-dx-flexibility-improvements.md` §13.
   - Output: số lần `usePlayerState` re-render trong 60s timeupdate ≤ 60 (1 re-render/timeupdate tick), không có subscriber leak sau unmount.
-  - Done when: ✅ React regression test pins 60 `currentTime` ticks → exactly 60 selected-slice renders; unrelated slice update → 0 renders; unmount calls `usePlayerState` disposer once. `@f8/player-react` full test 133/133 pass; typecheck + lint pass.
+  - Done when: ✅ React regression test pins 60 `currentTime` ticks → exactly 60 selected-slice renders; unrelated slice update → 0 renders; unmount calls `usePlayerState` disposer once. `@f8team/reel-react` full test 133/133 pass; typecheck + lint pass.
 
 - [x] **T9.4** — Tạo `examples/` folder
   - File(s): `examples/01-classroom-oneliner/index.html` + `App.tsx`, `examples/02-headless-tailwind/`, `examples/03-custom-plugin-analytics/`
@@ -492,32 +492,32 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 
   **Final size review (2026-05-13):**
 
-  | Package                                 | Previous recorded | Final measured |                 CI limit | Status |
-  | --------------------------------------- | ----------------: | -------------: | -----------------------: | ------ |
-  | `@f8/player-core`                       |           9.87 KB |        9.89 KB | 12 KB target / 15 KB cap | ✅     |
-  | `@f8/player-react`                      |          10.24 KB |       11.33 KB | 12 KB target / 13 KB cap | ✅     |
-  | `@f8/player-lit`                        |          11.34 KB |       11.34 KB | 12 KB target / 13 KB cap | ✅     |
-  | `@f8/player-preset-web` factory         |             912 B |          912 B |                     6 KB | ✅     |
-  | `@f8/player-preset-web` full export     |           1.91 KB |        1.91 KB |                     7 KB | ✅     |
-  | `@f8/player-themes/classroom.css`       |             ≤4 KB | 2.61 KB brotli |                     4 KB | ✅     |
-  | `@f8/player-themes/story.css`           |             ≤4 KB |   699 B brotli |                     4 KB | ✅     |
-  | `@f8/player-themes/admin.css`           |             ≤4 KB |   981 B brotli |                     4 KB | ✅     |
-  | `@f8/player-themes/minimal.css`         |             ≤4 KB |   771 B brotli |                     4 KB | ✅     |
-  | `@f8/player-plugin-prefs`               |             796 B |          796 B |                     2 KB | ✅     |
-  | `@f8/player-plugin-subtitles`           |             518 B |          517 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-hls-quality`         |             280 B |          279 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-markers`             |             346 B |          345 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-thumbnails`          |               n/a |        1.16 KB |                     3 KB | ✅     |
-  | `@f8/player-plugin-keyboard`            |             642 B |          895 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-touch-gestures`      |             759 B |          808 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-resume-position`     |             542 B |          795 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-auth-aware`          |             407 B |          724 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-story-gestures`      |             701 B |          699 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-safari-mp4-fallback` |             412 B |          412 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-analytics`           |             436 B |          434 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-fullscreen`          |             338 B |          337 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-pip`                 |             294 B |          292 B |                     3 KB | ✅     |
-  | `@f8/player-plugin-watermark`           |             284 B |          284 B |                     3 KB | ✅     |
+  | Package                                   | Previous recorded | Final measured |                 CI limit | Status |
+  | ----------------------------------------- | ----------------: | -------------: | -----------------------: | ------ |
+  | `@f8team/reel-core`                       |           9.87 KB |        9.89 KB | 12 KB target / 15 KB cap | ✅     |
+  | `@f8team/reel-react`                      |          10.24 KB |       11.33 KB | 12 KB target / 13 KB cap | ✅     |
+  | `@f8team/reel-lit`                        |          11.34 KB |       11.34 KB | 12 KB target / 13 KB cap | ✅     |
+  | `@f8team/reel-preset-web` factory         |             912 B |          912 B |                     6 KB | ✅     |
+  | `@f8team/reel-preset-web` full export     |           1.91 KB |        1.91 KB |                     7 KB | ✅     |
+  | `@f8team/reel-themes/classroom.css`       |             ≤4 KB | 2.61 KB brotli |                     4 KB | ✅     |
+  | `@f8team/reel-themes/story.css`           |             ≤4 KB |   699 B brotli |                     4 KB | ✅     |
+  | `@f8team/reel-themes/admin.css`           |             ≤4 KB |   981 B brotli |                     4 KB | ✅     |
+  | `@f8team/reel-themes/minimal.css`         |             ≤4 KB |   771 B brotli |                     4 KB | ✅     |
+  | `@f8team/reel-plugin-prefs`               |             796 B |          796 B |                     2 KB | ✅     |
+  | `@f8team/reel-plugin-subtitles`           |             518 B |          517 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-hls-quality`         |             280 B |          279 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-markers`             |             346 B |          345 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-thumbnails`          |               n/a |        1.16 KB |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-keyboard`            |             642 B |          895 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-touch-gestures`      |             759 B |          808 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-resume-position`     |             542 B |          795 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-auth-aware`          |             407 B |          724 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-story-gestures`      |             701 B |          699 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-safari-mp4-fallback` |             412 B |          412 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-analytics`           |             436 B |          434 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-fullscreen`          |             338 B |          337 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-pip`                 |             294 B |          292 B |                     3 KB | ✅     |
+  | `@f8team/reel-plugin-watermark`           |             284 B |          284 B |                     3 KB | ✅     |
 
 - [x] **T9.7** — Update README + master plan
   - File(s): `README.md`, `plans/f8-player.md` master checklist
@@ -551,31 +551,31 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 - [x] f8-ui 21 characterization test xanh.
 - [x] f8-dash-ui characterization test xanh (18/18 final suite).
 - [x] f8-pro-ui 59 lit + 56 unit test xanh.
-- [x] `@f8/player-core` unit test xanh (339/339 final suite).
-- [x] `@f8/player-react` test xanh (133/133 final suite).
-- [x] `@f8/player-lit` test xanh (48/48 final suite).
+- [x] `@f8team/reel-core` unit test xanh (339/339 final suite).
+- [x] `@f8team/reel-react` test xanh (133/133 final suite).
+- [x] `@f8team/reel-lit` test xanh (48/48 final suite).
 
 ### Size budget
 
-- [x] `@f8/player-core` ≤ 12 KB target / 15 KB cap (final 9.89 KB). _Baseline note đính chính: commit ngay trước khi plan DX được viết (`201dd83`) đo **9.87 KB**, không phải 7.96 KB (số 7.96 là Phase 1.M baseline ~6 tháng trước plan DX, predates production review fixes A1/A2/A12, quality switch + buffering events). Phase 2-5 DX work chỉ tăng **0.02 KB** (9.87 → 9.89, ~0.2%) — đạt mục tiêu §2 "phải giữ hoặc giảm". Plan baseline cũ ghi 7.96 KB là copy nhầm số từ master plan `f8-player.md`._
-- [x] `@f8/player-react` ≤ 12 KB target / 13 KB cap (final 11.33 KB; corrected target/cap after real rebuilt baseline).
-- [x] `@f8/player-lit` ≤ 12 KB target / 13 KB cap (final 11.34 KB; corrected target/cap after real rebuilt baseline).
-- [x] `@f8/player-plugin-prefs` ≤ 2 KB cap (final 796 B).
-- [x] `@f8/player-plugin-thumbnails` ≤ 3 KB cap (final 1.16 KB; lazy-loaded from preset-web).
-- [x] `@f8/player-themes/*.css` ≤ 4 KB cap (classroom 2.61 KB, story 699 B, admin 981 B, minimal 771 B).
-- [x] `@f8/player-preset-web` ≤ 6 KB factory / 7 KB full export (final 912 B / 1.91 KB).
+- [x] `@f8team/reel-core` ≤ 12 KB target / 15 KB cap (final 9.89 KB). _Baseline note đính chính: commit ngay trước khi plan DX được viết (`201dd83`) đo **9.87 KB**, không phải 7.96 KB (số 7.96 là Phase 1.M baseline ~6 tháng trước plan DX, predates production review fixes A1/A2/A12, quality switch + buffering events). Phase 2-5 DX work chỉ tăng **0.02 KB** (9.87 → 9.89, ~0.2%) — đạt mục tiêu §2 "phải giữ hoặc giảm". Plan baseline cũ ghi 7.96 KB là copy nhầm số từ master plan `f8-player.md`._
+- [x] `@f8team/reel-react` ≤ 12 KB target / 13 KB cap (final 11.33 KB; corrected target/cap after real rebuilt baseline).
+- [x] `@f8team/reel-lit` ≤ 12 KB target / 13 KB cap (final 11.34 KB; corrected target/cap after real rebuilt baseline).
+- [x] `@f8team/reel-plugin-prefs` ≤ 2 KB cap (final 796 B).
+- [x] `@f8team/reel-plugin-thumbnails` ≤ 3 KB cap (final 1.16 KB; lazy-loaded from preset-web).
+- [x] `@f8team/reel-themes/*.css` ≤ 4 KB cap (classroom 2.61 KB, story 699 B, admin 981 B, minimal 771 B).
+- [x] `@f8team/reel-preset-web` ≤ 6 KB factory / 7 KB full export (final 912 B / 1.91 KB).
 
 ### DX deliverables
 
 - [x] `<Root>` (React) chấp nhận 5 prop reactive (`source`, `poster`, `playbackRate`, `labels`, `volume`/`muted`).
 - [x] `<Root>` (React) chấp nhận 16 callback prop (`onPlay/onPause/...`).
-- [x] `<f8-player>` (Lit) chấp nhận reactive `source` property + same callback shape qua CustomEvent.
+- [x] `<reel-player>` (Lit) chấp nhận reactive `source` property + same callback shape qua CustomEvent.
 - [x] `<Player.Spinner />` + `<Player.LightOverlay />` shipped + Storybook story.
-- [x] `@f8/player-plugin-prefs` shipped + doc.
+- [x] `@f8team/reel-plugin-prefs` shipped + doc.
 - [x] Keyboard plugin `blockKeys: Code[]` shipped (backward-compat với disable/enable).
 - [x] Auth-aware tự sinh `source.withCredentials` predicate.
 - [x] `headless.css` + Tailwind/shadcn cookbook + Storybook page.
-- [x] `<F8WebPlayer>` (React) + `<f8-web-player>` (Lit) one-liner shipped.
+- [x] `<ReelWebPlayer>` (React) + `<reel-web-player>` (Lit) one-liner shipped.
 - [x] `examples/` folder có 3 demo chạy được.
 - [x] `docs/spec/plugin-authoring.md` shipped.
 - [x] `docs/spec/styling-contract.md` shipped với bảng `data-*` đầy đủ.
@@ -602,4 +602,4 @@ Biến `f8-player` từ "library tốt nhưng consumer phải viết wrapper 400
 - 3 consumer là worktree riêng — không động `git restore`/`reset --hard` toàn cây.
 - `f8-pro-ui` outer dùng `// @ts-nocheck` — không bật strict trong plan này (out of scope).
 - Plan `f8-player.md` gốc vẫn là source of truth cho phase 0–9 cũ; plan này bổ sung layer DX, không thay thế.
-- Khi `prefs` plugin bật trong preset, multi-player surface cần phân biệt `storageKey` — Phase 5 doc khuyến nghị format `f8-player:prefs:<surface>`.
+- Khi `prefs` plugin bật trong preset, multi-player surface cần phân biệt `storageKey` — Phase 5 doc khuyến nghị format `reel-player:prefs:<surface>`.

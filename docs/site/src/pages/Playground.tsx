@@ -4,14 +4,14 @@ import { useState } from "react";
 const RECIPES: Record<string, { label: string; code: string }> = {
   basic: {
     label: "Basic player",
-    code: `import { Root, Video, Controls } from "@f8/player-react";
+    code: `import { Root, Video, Controls } from "@f8team/reel-react";
 
 const HLS_URL = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
 
 export default function App() {
   return (
     <div
-      data-f8-player=""
+      data-reel=""
       data-theme="classroom"
       style={{
         position: "relative",
@@ -45,10 +45,10 @@ export default function App() {
   withPlugins: {
     label: "With plugins",
     code: `import { useMemo } from "react";
-import { Root, Video, Controls } from "@f8/player-react";
-import { createKeyboardPlugin } from "@f8/player-plugin-keyboard";
-import { createMarkersPlugin } from "@f8/player-plugin-markers";
-import { createHlsQualityPlugin } from "@f8/player-plugin-hls-quality";
+import { Root, Video, Controls } from "@f8team/reel-react";
+import { createKeyboardPlugin } from "@f8team/reel-plugin-keyboard";
+import { createMarkersPlugin } from "@f8team/reel-plugin-markers";
+import { createHlsQualityPlugin } from "@f8team/reel-plugin-hls-quality";
 
 const HLS_URL = "https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8";
 const MARKERS = [
@@ -66,7 +66,7 @@ export default function App() {
 
   return (
     <div
-      data-f8-player=""
+      data-reel=""
       data-theme="classroom"
       style={{ position: "relative", width: "100%", aspectRatio: "16/9", overflow: "hidden", background: "#000", borderRadius: "0.8rem" }}
     >
@@ -89,7 +89,7 @@ export default function App() {
   },
   youtube: {
     label: "YouTube embed",
-    code: `import { Root, Video, useSourceType } from "@f8/player-react";
+    code: `import { Root, Video, useSourceType } from "@f8team/reel-react";
 
 const YT_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 
@@ -112,7 +112,7 @@ function PlayerInner() {
 export default function App() {
   return (
     <div
-      data-f8-player=""
+      data-reel=""
       data-theme="minimal"
       style={{ position: "relative", width: "100%", aspectRatio: "16/9", overflow: "hidden", background: "#000", borderRadius: "0.8rem" }}
     >
@@ -126,8 +126,8 @@ export default function App() {
   analytics: {
     label: "Analytics",
     code: `import { useMemo, useState } from "react";
-import { Root, Video, Controls } from "@f8/player-react";
-import { createAnalyticsPlugin } from "@f8/player-plugin-analytics";
+import { Root, Video, Controls } from "@f8team/reel-react";
+import { createAnalyticsPlugin } from "@f8team/reel-plugin-analytics";
 
 const MP4_URL = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4";
 
@@ -145,7 +145,7 @@ export default function App() {
 
   return (
     <div style={{ display: "flex", gap: "1.6rem", flexWrap: "wrap" }}>
-      <div data-f8-player="" data-theme="admin" style={{ position: "relative", width: "50rem", aspectRatio: "16/9", overflow: "hidden", background: "#000", borderRadius: "0.8rem" }}>
+      <div data-reel="" data-theme="admin" style={{ position: "relative", width: "50rem", aspectRatio: "16/9", overflow: "hidden", background: "#000", borderRadius: "0.8rem" }}>
         <Root options={{ source: { src: MP4_URL }, plugins, playsInline: true }}>
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
             <Video style={{ flex: 1, width: "100%", minHeight: 0, objectFit: "contain", display: "block" }} />
@@ -167,13 +167,13 @@ export default function App() {
 };
 
 const SANDPACK_DEPS = {
-  "@f8/player-react": "latest",
-  "@f8/player-core": "latest",
-  "@f8/player-themes": "latest",
-  "@f8/player-plugin-keyboard": "latest",
-  "@f8/player-plugin-markers": "latest",
-  "@f8/player-plugin-hls-quality": "latest",
-  "@f8/player-plugin-analytics": "latest",
+  "@f8team/reel-react": "latest",
+  "@f8team/reel-core": "latest",
+  "@f8team/reel-themes": "latest",
+  "@f8team/reel-plugin-keyboard": "latest",
+  "@f8team/reel-plugin-markers": "latest",
+  "@f8team/reel-plugin-hls-quality": "latest",
+  "@f8team/reel-plugin-analytics": "latest",
 };
 
 export default function PlaygroundPage() {

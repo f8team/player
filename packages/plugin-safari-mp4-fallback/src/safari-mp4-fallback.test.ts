@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PlayerEvents } from "@f8/player-core";
+import type { Player, PluginHost, PlayerEvents } from "@f8team/reel-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createSafariMp4FallbackPlugin } from "./safari-mp4-fallback.js";

@@ -8,7 +8,7 @@
  * announcements queue up and read sequentially.
  */
 
-const REGION_ID = "f8-player-live-region";
+const REGION_ID = "reel-live-region";
 
 let region: HTMLElement | null = null;
 

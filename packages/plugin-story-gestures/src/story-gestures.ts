@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
 
 export interface StoryGesturesPluginOptions {
   /**
@@ -14,7 +14,7 @@ export interface StoryGesturesPluginOptions {
    */
   onHold?: (type: "start" | "end") => void;
   /**
-   * Element to attach gestures to. Defaults to `[data-f8-player]`.
+   * Element to attach gestures to. Defaults to `[data-reel]`.
    */
   getContainer?: () => Element | null;
   /**
@@ -56,8 +56,8 @@ export function createStoryGesturesPlugin(
       const getEl = (): Element | null => {
         if (getContainer) return getContainer();
         return (
-          document.querySelector("[data-f8-player]") ??
-          document.querySelector("video[data-f8-player-video]") ??
+          document.querySelector("[data-reel]") ??
+          document.querySelector("video[data-reel-video]") ??
           null
         );
       };

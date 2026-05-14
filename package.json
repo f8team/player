@@ -1,16 +1,16 @@
 {
-  "name": "f8-player",
+  "name": "reel",
   "version": "0.0.0",
   "private": true,
   "description": "Headless, framework-agnostic, plugin-driven video player engine. Powers F8 learning, story, and admin surfaces.",
   "license": "MIT",
-  "homepage": "https://github.com/f8/player#readme",
+  "homepage": "https://github.com/f8team/player#readme",
   "bugs": {
-    "url": "https://github.com/f8/player/issues"
+    "url": "https://github.com/f8team/player/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/f8/player.git"
+    "url": "git+https://github.com/f8team/player.git"
   },
   "engines": {
     "node": ">=20",

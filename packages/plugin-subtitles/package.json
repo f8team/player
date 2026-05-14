@@ -1,7 +1,7 @@
 {
-  "name": "@f8/player-plugin-subtitles",
+  "name": "@f8team/reel-plugin-subtitles",
   "version": "1.0.0",
-  "description": "f8-player plugin: subtitles",
+  "description": "Reel plugin: subtitles",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -45,7 +45,7 @@
     "subtitles"
   ],
   "peerDependencies": {
-    "@f8/player-core": ">=0.0.0"
+    "@f8team/reel-core": "^1.0.0"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
@@ -53,7 +53,7 @@
     "jsdom": "^25.0.1",
     "size-limit": "^11.1.6",
     "tsup": "^8.3.0",
-    "@f8/player-core": "workspace:*",
-    "@f8/player-react": "workspace:*"
+    "@f8team/reel-core": "workspace:*",
+    "@f8team/reel-react": "workspace:*"
   }
 }

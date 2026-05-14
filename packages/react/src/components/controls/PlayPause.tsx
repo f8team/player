@@ -37,7 +37,7 @@ export function PlayPause({ children, ...rest }: PlayPauseProps): JSX.Element {
       aria-label={label}
       aria-pressed={isPlaying}
       onClick={handleClick}
-      data-f8-player-control="play-pause"
+      data-reel-control="play-pause"
       {...rest}
     >
       {children ?? <PlayerIcon name={isPlaying ? "pause" : "play"} />}

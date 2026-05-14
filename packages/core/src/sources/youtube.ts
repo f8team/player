@@ -115,10 +115,10 @@ export function extractYouTubeId(url: string): string | null {
 /**
  * Marker attribute applied to the underlying `<video>` element while the
  * YouTube iframe owns playback. CSS theme contracts hide the native element
- * via `[data-f8-player-yt-hidden] { visibility: hidden; }` (B6 — replaces
+ * via `[data-reel-yt-hidden] { visibility: hidden; }` (B6 — replaces
  * the inline-style mutation that fought host CSS).
  */
-const YT_HIDDEN_ATTR = "data-f8-player-yt-hidden";
+const YT_HIDDEN_ATTR = "data-reel-yt-hidden";
 
 let staticParentWarned = false;
 
@@ -163,7 +163,7 @@ class YouTubeLoader implements SourceLoader {
         if (computed === "static") {
           staticParentWarned = true;
           console.warn(
-            "[@f8/player-core] YouTube source: <video>'s parent has `position: static`. " +
+            "[@f8team/reel-core] YouTube source: <video>'s parent has `position: static`. " +
               "Set the player container to `position: relative` (or absolute/fixed) so " +
               "the YouTube iframe can fill the stage.",
           );
@@ -175,7 +175,7 @@ class YouTubeLoader implements SourceLoader {
     /* c8 ignore stop */
 
     const host = document.createElement("div");
-    host.setAttribute("data-f8-player-yt-host", "");
+    host.setAttribute("data-reel-yt-host", "");
     // The host must fill the stage absolutely so the YT iframe stretches to 100%.
     host.style.cssText =
       "position:absolute;inset:0;width:100%;height:100%;overflow:hidden;background:#000;";

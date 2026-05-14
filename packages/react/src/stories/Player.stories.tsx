@@ -27,7 +27,7 @@ function PlayerShell({
         background: "#000",
         borderRadius: "0.8rem",
       }}
-      data-f8-player=""
+      data-reel=""
       data-theme={theme}
     >
       <Root
@@ -79,7 +79,7 @@ const meta: Meta = {
     docs: {
       description: {
         component:
-          "`@f8/player-react` headless player. Compose `Root`, `Video`, `Captions`, and `Controls.*` to build any player UI.",
+          "`@f8team/reel-react` headless player. Compose `Root`, `Video`, `Captions`, and `Controls.*` to build any player UI.",
       },
     },
   },

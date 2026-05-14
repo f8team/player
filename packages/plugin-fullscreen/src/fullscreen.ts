@@ -1,9 +1,9 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
 
 export interface FullscreenPluginOptions {
   /**
    * Element to fullscreen. Defaults to the player container
-   * (`data-f8-player` attribute) or the `<video>` element itself.
+   * (`data-reel` attribute) or the `<video>` element itself.
    */
   getContainer?: () => Element | null;
 }
@@ -24,8 +24,8 @@ export function createFullscreenPlugin(options: FullscreenPluginOptions = {}): P
       const getEl = (): Element | null => {
         if (options.getContainer) return options.getContainer();
         return (
-          document.querySelector("[data-f8-player]") ??
-          document.querySelector("video[data-f8-player-video]") ??
+          document.querySelector("[data-reel]") ??
+          document.querySelector("video[data-reel-video]") ??
           null
         );
       };

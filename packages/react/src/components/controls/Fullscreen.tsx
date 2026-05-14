@@ -29,7 +29,7 @@ export function Fullscreen({ children, ...rest }: FullscreenProps): JSX.Element 
       aria-label={label}
       aria-pressed={fullscreen}
       onClick={handleClick}
-      data-f8-player-control="fullscreen"
+      data-reel-control="fullscreen"
       {...rest}
     >
       {children ?? <PlayerIcon name={fullscreen ? "compress" : "maximize"} />}

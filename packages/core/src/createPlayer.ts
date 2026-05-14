@@ -1,5 +1,5 @@
 /**
- * `createPlayer(options)` — wires every piece of `@f8/player-core` into a
+ * `createPlayer(options)` — wires every piece of `@f8team/reel-core` into a
  * single `Player`. The factory is the one and only public entry point.
  *
  * Responsibilities:
@@ -291,7 +291,7 @@ export function createPlayer(
       try {
         loader.abort?.();
       } catch (err) {
-        console.error("[@f8/player-core] loader.abort() threw:", err);
+        console.error("[@f8team/reel-core] loader.abort() threw:", err);
       }
     };
 
@@ -325,7 +325,7 @@ export function createPlayer(
       try {
         activeLoader.detach();
       } catch (err) {
-        console.error("[@f8/player-core] active loader detach threw:", err);
+        console.error("[@f8team/reel-core] active loader detach threw:", err);
       }
       activeLoader = null;
     }
@@ -550,7 +550,7 @@ export function createPlayer(
   }
 
   async function attach(el: HTMLVideoElement): Promise<void> {
-    if (disposed) throw new Error("[@f8/player-core] cannot attach: player disposed");
+    if (disposed) throw new Error("[@f8team/reel-core] cannot attach: player disposed");
     if (video === el) return;
     if (video) detach();
     video = el;
@@ -636,9 +636,9 @@ export function createPlayer(
   }
 
   async function play(): Promise<void> {
-    if (disposed) throw new Error("[@f8/player-core] cannot play: player disposed");
-    if (!video) throw new Error("[@f8/player-core] cannot play: no <video> attached");
-    if (!store.getState().source) throw new Error("[@f8/player-core] cannot play: no source set");
+    if (disposed) throw new Error("[@f8team/reel-core] cannot play: player disposed");
+    if (!video) throw new Error("[@f8team/reel-core] cannot play: no <video> attached");
+    if (!store.getState().source) throw new Error("[@f8team/reel-core] cannot play: no source set");
 
     // In `error`, `dispatch({ type: "play" })` is intentionally a reducer noop — user
     // Space/Play would appear dead. Replay the descriptor through the machine like `retry()`
@@ -646,7 +646,7 @@ export function createPlayer(
     if (status === "error") {
       pendingPlay = false;
       if (!retry()) {
-        throw new Error("[@f8/player-core] cannot play: error state without replayable source");
+        throw new Error("[@f8team/reel-core] cannot play: error state without replayable source");
       }
       // retry() transitioned to loading synchronously via dispatch.
     }

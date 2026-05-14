@@ -35,7 +35,7 @@ export function Pip({ children, ...rest }: PipProps): JSX.Element | null {
       aria-label={label}
       aria-pressed={pip}
       onClick={handleClick}
-      data-f8-player-control="pip"
+      data-reel-control="pip"
       {...rest}
     >
       {children ?? <PlayerIcon name="pip" />}

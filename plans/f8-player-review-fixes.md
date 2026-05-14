@@ -1,6 +1,6 @@
 # Plan — `f8-player-review-fixes`
 
-> Phased fixes for issues found in the 2026-05-12 senior review of the f8-player monorepo. Resume rule: open this file, find the first phase with any `[ ]` todo, continue from the first unchecked item. Check `[x]` immediately when each todo finishes — never batch.
+> Phased fixes for issues found in the 2026-05-12 senior review of the Reel monorepo. Resume rule: open this file, find the first phase with any `[ ]` todo, continue from the first unchecked item. Check `[x]` immediately when each todo finishes — never batch.
 >
 > Source of issues: senior review session (Devin) on 2026-05-12. Reference IDs (A1, A12, B2, C4…) match that review's report.
 
@@ -14,7 +14,7 @@
 
 ---
 
-## Phase 1 — Core engine bug fixes (`@f8/player-core`)
+## Phase 1 — Core engine bug fixes (`@f8team/reel-core`)
 
 **Goal:** Eliminate race conditions, memory leaks, infinite waits in the headless engine. No public API breakage. Tests pinned first.
 
@@ -80,7 +80,7 @@ pnpm -C packages/core size
 - [x] **P1.9 — YouTube: do not modify video inline style (B6 partial)**
   - File: `packages/core/src/sources/youtube.ts` lines 130-131, 211-214.
   - Input: setting `video.style.visibility` directly conflicts with host CSS.
-  - Output: instead of mutating inline style, add data attribute `video.setAttribute("data-f8-player-yt-hidden", "")` and let CSS (in core's default styles + theme contracts) hide via `[data-f8-player-yt-hidden] { visibility: hidden; }`. Remove inline style restore. Document in `docs/spec/architecture.md`.
+  - Output: instead of mutating inline style, add data attribute `video.setAttribute("data-reel-yt-hidden", "")` and let CSS (in core's default styles + theme contracts) hide via `[data-reel-yt-hidden] { visibility: hidden; }`. Remove inline style restore. Document in `docs/spec/architecture.md`.
   - Done when: test asserts `video.style.visibility === ""` after attach; data attribute present; removed on detach.
 
 - [x] **P1.10 — YouTube: warn when parent is statically positioned (B6 partial)**
@@ -95,7 +95,7 @@ pnpm -C packages/core size
 
 ---
 
-## Phase 2 — Plugin fixes (`@f8/player-plugin-*`)
+## Phase 2 — Plugin fixes (`@f8team/reel-plugin-*`)
 
 **Goal:** Plugins handle SSR, lifecycle, edge cases. No new public options unless documented.
 
@@ -169,7 +169,7 @@ pnpm -C packages/core size
 - [x] **P3.3 — SeekBar: buffered visualization + focus-visible (B4 partial)**
   - File: `packages/react/src/components/controls/SeekBar.tsx`.
   - Input: only renders range input, no buffered overlay.
-  - Output: render parent `<div data-f8p-seek-wrapper>` wrapping `<div data-f8p-seek-buffered>` (width = last buffered end / duration \* 100%) + range input. CSS in themes draws the buffered bar.
+  - Output: render parent `<div data-reel-seek-wrapper>` wrapping `<div data-reel-seek-buffered>` (width = last buffered end / duration \* 100%) + range input. CSS in themes draws the buffered bar.
   - Done when: test asserts wrapper + buffered div exist; CSS update in classroom/admin themes.
 
 - [x] **P3.4 — SeekBar: throttle seekTo on drag (C2)**
@@ -182,7 +182,7 @@ pnpm -C packages/core size
   - File: `packages/lit/src/F8Player.ts` line 82.
   - Input: `readonly controller = new PlayerController(this, ...)` runs at construct time.
   - Output: declare `controller!: PlayerController` then assign inside `connectedCallback`. Update PlayerController to be safe if hostConnected called multiple times.
-  - Done when: SSR test (jsdom: false, env: node) imports `F8PlayerElement` without crash.
+  - Done when: SSR test (jsdom: false, env: node) imports `ReelPlayerElement` without crash.
 
 - [x] **P3.6 — Run Phase 3 verification gate**
   - Command: `pnpm -C packages/react verify && pnpm -C packages/lit verify`
@@ -200,34 +200,34 @@ pnpm -C packages/core size
 
 ### Todos (Phase 4)
 
-- [x] **P4.1 — Scope all theme selectors under `[data-f8-player]` only (B5)**
+- [x] **P4.1 — Scope all theme selectors under `[data-reel]` only (B5)**
   - File: `packages/themes/src/{classroom,story,admin,minimal}.css`.
-  - Input: dual selectors `[data-f8-player][data-theme="x"]` AND `.f8-player-x` fallback create leak surface.
-  - Output: keep only `[data-f8-player][data-theme="x"]`. Remove `.f8-player-x` fallback. Update docs (migration guide entry) and adapters that may rely on class.
-  - Done when: grep for `.f8-player-` in themes returns 0; React + Lit adapters set `data-f8-player` + `data-theme` attributes correctly.
+  - Input: dual selectors `[data-reel][data-theme="x"]` AND `.reel-x` fallback create leak surface.
+  - Output: keep only `[data-reel][data-theme="x"]`. Remove `.reel-x` fallback. Update docs (migration guide entry) and adapters that may rely on class.
+  - Done when: grep for `.reel-` in themes returns 0; React + Lit adapters set `data-reel` + `data-theme` attributes correctly.
 
 - [x] **P4.2 — Replace F8 hardcoded accent with neutral default + override (B2)**
   - File: `packages/themes/src/classroom.css` lines 15-16; `admin.css`; `minimal.css`.
-  - Input: `--f8p-accent: #f05123` is F8 orange.
-  - Output: change defaults to neutral (e.g. `#3b82f6` blue). Document `--f8p-accent` as the override surface. Add `f8-brand.css` add-on file that re-sets `--f8p-accent: #f05123` for F8 consumers. Update story/classroom presets so they STILL ship F8 brand when imported via `@f8/player-themes/classroom-f8.css`.
+  - Input: `--reel-accent: #f05123` is F8 orange.
+  - Output: change defaults to neutral (e.g. `#3b82f6` blue). Document `--reel-accent` as the override surface. Add `f8-brand.css` add-on file that re-sets `--reel-accent: #f05123` for F8 consumers. Update story/classroom presets so they STILL ship F8 brand when imported via `@f8team/reel-themes/classroom-f8.css`.
   - Done when: importing `classroom.css` alone produces blue; importing `classroom.css` then `f8-brand.css` produces orange.
 
 - [x] **P4.3 — Touch target ≥ 44px on mobile (B3)**
   - File: `packages/themes/src/{classroom,admin,minimal}.css` (story already correct).
-  - Input: `--f8p-btn-size: 3.2rem` = 32px → fails mobile.
-  - Output: add `@media (pointer: coarse), (max-width: 48rem)` block bumping `--f8p-btn-size: 4.4rem` and seek bar height `0.8rem` + extending the tap area with padding around the range thumb.
+  - Input: `--reel-btn-size: 3.2rem` = 32px → fails mobile.
+  - Output: add `@media (pointer: coarse), (max-width: 48rem)` block bumping `--reel-btn-size: 4.4rem` and seek bar height `0.8rem` + extending the tap area with padding around the range thumb.
   - Done when: visual smoke at 375px width shows ≥ 44px buttons; axe a11y passes.
 
 - [x] **P4.4 — Restore focus-visible on range input (B4 partial)**
   - File: `packages/themes/src/classroom.css` lines 105 + admin/minimal equivalents.
   - Input: `outline: none` on `input[type=range]` without replacement.
-  - Output: add `input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--f8p-accent); }` (and `::-moz-range-thumb`). Keep `outline: none` only on track, not thumb.
+  - Output: add `input[type="range"]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--reel-accent); }` (and `::-moz-range-thumb`). Keep `outline: none` only on track, not thumb.
   - Done when: tab focus on seek bar shows visible ring; axe-core stops warning.
 
 - [x] **P4.5 — Document z-index contract (B7)**
   - File: `docs/spec/architecture.md` + `packages/themes/README.md`.
   - Input: themes use `position: absolute` without z-index documentation.
-  - Output: define `--f8p-z-controls`, `--f8p-z-watermark`, `--f8p-z-overlay`. Document that host modal backdrops should be ≥ these values.
+  - Output: define `--reel-z-controls`, `--reel-z-watermark`, `--reel-z-overlay`. Document that host modal backdrops should be ≥ these values.
   - Done when: theme CSS files reference variables, docs page exists.
 
 - [x] **P4.6 — Respect prefers-reduced-motion (C6)**
@@ -291,7 +291,7 @@ pnpm -C packages/core size
 
 - [x] **P6.3 — Remove duplicate KeyboardHandler from VideoPlayer wrapper (A10)**
   - File: `f8-ui/src/components/VideoPlayer/index.tsx` lines 227-261, plus relevant imports.
-  - Input: wrapper inlines window keypress/keydown listeners; package.json has `@f8/player-plugin-keyboard` installed.
+  - Input: wrapper inlines window keypress/keydown listeners; package.json has `@f8team/reel-plugin-keyboard` installed.
   - Output: replace `KeyboardHandler` with `createKeyboardPlugin({ scope: "global", seekStep: 5 })` added to the plugins memo. Keep `blockSpaceToggle` semantic via `keyboard:disable`/`keyboard:enable` commands toggled by an effect.
   - Done when: `VideoPlayer.test.tsx` (characterization) still green; Space still toggles play/pause; blockSpaceToggle still suppresses Space.
 
@@ -379,7 +379,7 @@ pnpm -C packages/* size
   **Manual (owner-side, requires real browsers):**
   - Run `f8-ui` dev server: open a course lesson HLS player, StoryViewer, VideoDetail; verify keyboard hotkeys, auth-gated play, resume-position works after page reload.
   - Run `f8-dash-ui` dev server: open VideoUploadPreview with HLS authenticated source, transcripts/markers, switch quality, YouTube preview.
-  - Verify in DevTools: no console errors, focus visible on every control, F8 brand orange after `import "@f8/player-themes/f8-brand.css"`.
+  - Verify in DevTools: no console errors, focus visible on every control, F8 brand orange after `import "@f8team/reel-themes/f8-brand.css"`.
   - BrowserStack / real device: iOS Safari touch targets ≥ 44px, pagehide saves resume position, mobile control bar always visible.
 
 ---
@@ -402,7 +402,7 @@ pnpm -C packages/* size
 - [x] Theme default not F8-branded (B2)
 - [x] Themes pass mobile touch target (B3)
 - [x] SeekBar shows buffered + has focus-visible (B4)
-- [x] Theme CSS scoped exclusively under `[data-f8-player]` (B5)
+- [x] Theme CSS scoped exclusively under `[data-reel]` (B5)
 - [x] YouTube no longer mutates `video.style` inline (B6)
 - [x] Theme z-index documented (B7)
 - [x] f8-ui shim/types gone (B8)

@@ -11,7 +11,7 @@ export function createCommandRegistry(): CommandRegistry {
 
   function add<P>(name: string, handler: (payload: P) => void): () => void {
     if (handlers.has(name)) {
-      throw new Error(`[@f8/player-core] command "${name}" is already registered`);
+      throw new Error(`[@f8team/reel-core] command "${name}" is already registered`);
     }
     handlers.set(name, handler as Handler);
     return () => {
@@ -26,7 +26,7 @@ export function createCommandRegistry(): CommandRegistry {
     try {
       handler(payload);
     } catch (err) {
-      console.error(`[@f8/player-core] command "${name}" threw:`, err);
+      console.error(`[@f8team/reel-core] command "${name}" threw:`, err);
     }
   }
 

@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Reproducible regression in f8-player
+about: Reproducible regression in Reel
 title: "bug: "
 labels: bug
 ---

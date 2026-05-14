@@ -67,7 +67,7 @@ export function PlayerIcon({ name, title, ...props }: PlayerIconProps): JSX.Elem
   return (
     <svg
       aria-hidden={title ? undefined : true}
-      data-f8-player-icon={name}
+      data-reel-icon={name}
       focusable="false"
       role={title ? "img" : undefined}
       viewBox={icon.viewBox}

@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
 
 /**
  * Matcher for the auth-aware allowlist. Three forms are accepted so
@@ -81,7 +81,7 @@ export function createAuthAwarePlugin(options: AuthAwarePluginOptions = {}): Plu
     ) {
       trailingDotWarned = true;
       console.warn(
-        "[@f8/player-plugin-auth-aware] allowlist entry ends with '.': `" +
+        "[@f8team/reel-plugin-auth-aware] allowlist entry ends with '.': `" +
           entry +
           "`. String entries are treated as literal prefixes — if you want " +
           "to require the dot as a separator use a RegExp instead, e.g. " +

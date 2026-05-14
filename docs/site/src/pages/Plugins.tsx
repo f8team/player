@@ -54,9 +54,9 @@ export default function PluginsPage() {
 const PLUGIN_DOCS = [
   {
     id: "subtitles",
-    name: "@f8/player-plugin-subtitles",
+    name: "@f8team/reel-plugin-subtitles",
     desc: "VTT multi-language captions với auto-activate và language selector.",
-    example: `import { createSubtitlesPlugin } from "@f8/player-plugin-subtitles";
+    example: `import { createSubtitlesPlugin } from "@f8team/reel-plugin-subtitles";
 
 const plugin = createSubtitlesPlugin({
   tracks: [
@@ -72,9 +72,9 @@ const plugin = createSubtitlesPlugin({
   },
   {
     id: "markers",
-    name: "@f8/player-plugin-markers",
+    name: "@f8team/reel-plugin-markers",
     desc: "Chapter/transcript markers trên seek bar. Click để seek. Cập nhật runtime qua command.",
-    example: `import { createMarkersPlugin } from "@f8/player-plugin-markers";
+    example: `import { createMarkersPlugin } from "@f8team/reel-plugin-markers";
 
 const plugin = createMarkersPlugin({
   markers: [
@@ -99,9 +99,9 @@ player.command("markers:setMarkers", newMarkers);`,
   },
   {
     id: "keyboard",
-    name: "@f8/player-plugin-keyboard",
+    name: "@f8team/reel-plugin-keyboard",
     desc: "Keyboard shortcuts scoped tới player container.",
-    example: `import { createKeyboardPlugin } from "@f8/player-plugin-keyboard";
+    example: `import { createKeyboardPlugin } from "@f8team/reel-plugin-keyboard";
 
 const plugin = createKeyboardPlugin({
   seekStep: 10,      // seconds
@@ -120,9 +120,9 @@ const plugin = createKeyboardPlugin({
   },
   {
     id: "hls-quality",
-    name: "@f8/player-plugin-hls-quality",
+    name: "@f8team/reel-plugin-hls-quality",
     desc: "Manual/auto ABR quality selection cho HLS streams.",
-    example: `import { createHlsQualityPlugin } from "@f8/player-plugin-hls-quality";
+    example: `import { createHlsQualityPlugin } from "@f8team/reel-plugin-hls-quality";
 
 const plugin = createHlsQualityPlugin({
   defaultQuality: "auto",
@@ -138,9 +138,9 @@ const plugin = createHlsQualityPlugin({
   },
   {
     id: "analytics",
-    name: "@f8/player-plugin-analytics",
+    name: "@f8team/reel-plugin-analytics",
     desc: "Phát events analytics qua sink callback. Hỗ trợ: play, pause, progress, ended, seek, error.",
-    example: `import { createAnalyticsPlugin } from "@f8/player-plugin-analytics";
+    example: `import { createAnalyticsPlugin } from "@f8team/reel-plugin-analytics";
 
 const plugin = createAnalyticsPlugin({
   progressInterval: 30_000, // ms
@@ -165,9 +165,9 @@ const plugin = createAnalyticsPlugin({
   },
   {
     id: "watermark",
-    name: "@f8/player-plugin-watermark",
+    name: "@f8team/reel-plugin-watermark",
     desc: "Premium text/image overlay với 5 vị trí.",
-    example: `import { createWatermarkPlugin } from "@f8/player-plugin-watermark";
+    example: `import { createWatermarkPlugin } from "@f8team/reel-plugin-watermark";
 
 const plugin = createWatermarkPlugin({
   text: "F8 Premium",
@@ -189,9 +189,9 @@ const plugin = createWatermarkPlugin({
   },
   {
     id: "resume-position",
-    name: "@f8/player-plugin-resume-position",
+    name: "@f8team/reel-plugin-resume-position",
     desc: "Lưu vị trí phát vào localStorage và tự resume lần sau.",
-    example: `import { createResumePositionPlugin } from "@f8/player-plugin-resume-position";
+    example: `import { createResumePositionPlugin } from "@f8team/reel-plugin-resume-position";
 
 const plugin = createResumePositionPlugin({
   storageKey: "my-app-resume",
@@ -215,9 +215,9 @@ const plugin = createResumePositionPlugin({
   },
   {
     id: "auth-aware",
-    name: "@f8/player-plugin-auth-aware",
+    name: "@f8team/reel-plugin-auth-aware",
     desc: "Intercept 401/403 từ allowlisted domains, tự pause và gọi callback.",
-    example: `import { createAuthAwarePlugin } from "@f8/player-plugin-auth-aware";
+    example: `import { createAuthAwarePlugin } from "@f8team/reel-plugin-auth-aware";
 
 const plugin = createAuthAwarePlugin({
   allowlist: ["https://api.example.com"],
@@ -242,33 +242,33 @@ const plugin = createAuthAwarePlugin({
   },
   {
     id: "pip",
-    name: "@f8/player-plugin-pip",
+    name: "@f8team/reel-plugin-pip",
     desc: "Picture-in-Picture qua native browser API.",
-    example: `import { createPipPlugin } from "@f8/player-plugin-pip";
+    example: `import { createPipPlugin } from "@f8team/reel-plugin-pip";
 const plugin = createPipPlugin();`,
     options: [],
   },
   {
     id: "fullscreen",
-    name: "@f8/player-plugin-fullscreen",
+    name: "@f8team/reel-plugin-fullscreen",
     desc: "Native Fullscreen API. Wires Controls.Fullscreen và phím F (cần keyboard plugin).",
-    example: `import { createFullscreenPlugin } from "@f8/player-plugin-fullscreen";
+    example: `import { createFullscreenPlugin } from "@f8team/reel-plugin-fullscreen";
 const plugin = createFullscreenPlugin();`,
     options: [],
   },
   {
     id: "touch-gestures",
-    name: "@f8/player-plugin-touch-gestures",
+    name: "@f8team/reel-plugin-touch-gestures",
     desc: "Mobile touch: single tap (toggle controls), double-tap (seek ±10s), long press (pause).",
-    example: `import { createTouchGesturesPlugin } from "@f8/player-plugin-touch-gestures";
+    example: `import { createTouchGesturesPlugin } from "@f8team/reel-plugin-touch-gestures";
 const plugin = createTouchGesturesPlugin({ seekStep: 10 });`,
     options: [{ key: "seekStep", type: "number", default: "10", desc: "Giây seek khi double-tap" }],
   },
   {
     id: "story-gestures",
-    name: "@f8/player-plugin-story-gestures",
+    name: "@f8team/reel-plugin-story-gestures",
     desc: "Story-reel: swipe left/right (next/prev), tap thirds (seek), hold (pause).",
-    example: `import { createStoryGesturesPlugin } from "@f8/player-plugin-story-gestures";
+    example: `import { createStoryGesturesPlugin } from "@f8team/reel-plugin-story-gestures";
 
 const plugin = createStoryGesturesPlugin({
   onNext: () => goToNextStory(),
@@ -286,9 +286,9 @@ const plugin = createStoryGesturesPlugin({
   },
   {
     id: "safari-fallback",
-    name: "@f8/player-plugin-safari-mp4-fallback",
+    name: "@f8team/reel-plugin-safari-mp4-fallback",
     desc: "Dùng MP4 URL trực tiếp trên desktop Safari hoặc khi source type là mp4, bỏ qua hls.js.",
-    example: `import { createSafariMp4FallbackPlugin } from "@f8/player-plugin-safari-mp4-fallback";
+    example: `import { createSafariMp4FallbackPlugin } from "@f8team/reel-plugin-safari-mp4-fallback";
 
 const plugin = createSafariMp4FallbackPlugin({
   mp4Url: "https://cdn.example.com/video.mp4",

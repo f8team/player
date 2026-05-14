@@ -1,4 +1,4 @@
-import type { Disposer, SubtitleTrack } from "@f8/player-core";
+import type { Disposer, SubtitleTrack } from "@f8team/reel-core";
 import { useEffect, useState } from "react";
 
 import { usePlayer } from "../../hooks/usePlayer.js";
@@ -9,7 +9,7 @@ import { ControlMenu, type ControlMenuOption } from "./ControlMenu.js";
 import { PlayerIcon } from "./icons.js";
 
 /**
- * State payload emitted by `@f8/player-plugin-subtitles`. Mirrors
+ * State payload emitted by `@f8team/reel-plugin-subtitles`. Mirrors
  * `SubtitleTrackState` from the plugin without taking a hard dependency.
  */
 interface SubtitleTrackStateLite {
@@ -31,7 +31,7 @@ export interface CaptionsProps {
  * `<Player.Controls.Captions>` — toggle subtitles on/off and pick a
  * language from the active source's `tracks`. Hidden when no tracks exist.
  *
- * Wires through `@f8/player-plugin-subtitles` commands:
+ * Wires through `@f8team/reel-plugin-subtitles` commands:
  * - `subtitles:setLang` — switch language (shows that track).
  * - `subtitles:off` — hide all tracks.
  *
@@ -104,7 +104,7 @@ export function Captions({ className, hidden }: CaptionsProps): JSX.Element | nu
       trigger={
         <>
           <PlayerIcon name="cc" />
-          <span data-f8p-trigger-label="">{activeLang ? activeLang.toUpperCase() : "CC"}</span>
+          <span data-reel-trigger-label="">{activeLang ? activeLang.toUpperCase() : "CC"}</span>
         </>
       }
       options={options}

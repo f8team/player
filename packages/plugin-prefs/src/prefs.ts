@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance, QualityLevel } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance, QualityLevel } from "@f8team/reel-core";
 
 /** Persisted user preferences stored in `localStorage`. */
 export interface PlayerPrefs {
@@ -13,9 +13,9 @@ export interface PlayerPrefs {
 
 export interface PrefsPluginOptions {
   /**
-   * `localStorage` key. Default `"f8-player:prefs"`. Override when embedding
+   * `localStorage` key. Default `"reel-player:prefs"`. Override when embedding
    * multiple players on the same page so their prefs don't bleed
-   * (e.g. `"f8-player:prefs:lesson"`, `"f8-player:prefs:preview"`).
+   * (e.g. `"reel-player:prefs:lesson"`, `"reel-player:prefs:preview"`).
    */
   storageKey?: string;
   /** Skip persisting volume changes. Default `false`. */
@@ -33,7 +33,7 @@ export interface PrefsPluginOptions {
   restoreOnReady?: boolean;
 }
 
-const DEFAULT_STORAGE_KEY = "f8-player:prefs";
+const DEFAULT_STORAGE_KEY = "reel-player:prefs";
 const PLUGIN_NAME = "prefs";
 
 function isBrowser(): boolean {

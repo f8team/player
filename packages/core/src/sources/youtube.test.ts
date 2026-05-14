@@ -183,7 +183,7 @@ describe("createYouTubeProvider — loader lifecycle", () => {
     });
     const loader = provider.createLoader();
     await loader.attach(video, { src: "https://youtube.com/watch?v=abc" });
-    expect(parent.querySelector("[data-f8-player-yt-host]")).toBeTruthy();
+    expect(parent.querySelector("[data-reel-yt-host]")).toBeTruthy();
     expect(onStateChange).toHaveBeenCalledWith("ready");
   });
 
@@ -192,7 +192,7 @@ describe("createYouTubeProvider — loader lifecycle", () => {
     const provider = createYouTubeProvider({ loadRuntime: () => Promise.resolve(runtime) });
     const loader = provider.createLoader();
     await loader.attach(video, { src: "https://youtube.com/watch?v=abc" });
-    const host = parent.querySelector<HTMLElement>("[data-f8-player-yt-host]")!;
+    const host = parent.querySelector<HTMLElement>("[data-reel-yt-host]")!;
     expect(host.style.position).toBe("absolute");
     expect(host.style.width).toBe("100%");
     expect(host.style.height).toBe("100%");
@@ -207,10 +207,10 @@ describe("createYouTubeProvider — loader lifecycle", () => {
     // CSS theme contract owns the actual visibility rule; the loader only
     // toggles the data-attribute so host CSS / dark mode / transitions are
     // never overwritten by inline styles (B6).
-    expect(video.hasAttribute("data-f8-player-yt-hidden")).toBe(true);
+    expect(video.hasAttribute("data-reel-yt-hidden")).toBe(true);
     expect(video.style.visibility).toBe("");
     loader.detach();
-    expect(video.hasAttribute("data-f8-player-yt-hidden")).toBe(false);
+    expect(video.hasAttribute("data-reel-yt-hidden")).toBe(false);
   });
 
   it("rejects + onError when YT fires onError", async () => {
@@ -237,7 +237,7 @@ describe("createYouTubeProvider — loader lifecycle", () => {
     await loader.attach(video, { src: "https://youtube.com/watch?v=abc" });
     loader.detach();
     expect((instances[0] as unknown as { destroyed: boolean }).destroyed).toBe(true);
-    expect(parent.querySelector("[data-f8-player-yt-host]")).toBeNull();
+    expect(parent.querySelector("[data-reel-yt-host]")).toBeNull();
   });
 
   it("detach is idempotent", async () => {

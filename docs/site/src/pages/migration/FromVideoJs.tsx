@@ -4,8 +4,8 @@ export default function MigrationVideoJsPage() {
       <h1>Migration từ video.js</h1>
       <p>
         Hướng dẫn chuyển từ <code>video.js</code> (+ các plugin videojs-*) sang{" "}
-        <code>@f8/player-react</code>. Video.js là thư viện trưởng thành với UI mặc định;
-        <code>@f8/player-react</code> headless hơn nhưng linh hoạt hơn và bundle nhỏ hơn nhiều.
+        <code>@f8team/reel-react</code>. Video.js là thư viện trưởng thành với UI mặc định;
+        <code>@f8team/reel-react</code> headless hơn nhưng linh hoạt hơn và bundle nhỏ hơn nhiều.
       </p>
 
       <h2>So sánh bundle</h2>
@@ -14,7 +14,7 @@ export default function MigrationVideoJsPage() {
           <tr>
             <th></th>
             <th>video.js + plugins</th>
-            <th>@f8/player-react</th>
+            <th>@f8team/reel-react</th>
           </tr>
         </thead>
         <tbody>
@@ -58,8 +58,8 @@ pnpm remove video.js videojs-contrib-quality-levels videojs-hls-quality-selector
   videojs-hotkeys videojs-markers videojs-playbackrate-adjuster
 
 # Cài packages mới
-pnpm add @f8/player-react @f8/player-core @f8/player-themes
-pnpm add @f8/player-plugin-keyboard @f8/player-plugin-hls-quality @f8/player-plugin-markers`}</code>
+pnpm add @f8team/reel-react @f8team/reel-core @f8team/reel-themes
+pnpm add @f8team/reel-plugin-keyboard @f8team/reel-plugin-hls-quality @f8team/reel-plugin-markers`}</code>
       </pre>
 
       <h2>Render cơ bản</h2>
@@ -92,15 +92,15 @@ function VideoPlayer({ src }) {
       </pre>
 
       <p>
-        <strong>Sau (@f8/player-react):</strong>
+        <strong>Sau (@f8team/reel-react):</strong>
       </p>
       <pre>
-        <code>{`import { Root, Video, Controls } from "@f8/player-react";
-import "@f8/player-themes/classroom.css";
+        <code>{`import { Root, Video, Controls } from "@f8team/reel-react";
+import "@f8team/reel-themes/classroom.css";
 
 function VideoPlayer({ src }) {
   return (
-    <div data-f8-player="" data-theme="classroom"
+    <div data-reel="" data-theme="classroom"
          style={{ position: "relative", width: "100%", aspectRatio: "16/9", overflow: "hidden", background: "#000" }}>
       <Root options={{ source: { src }, playsInline: true }}>
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column" }}>
@@ -125,7 +125,7 @@ function VideoPlayer({ src }) {
         <thead>
           <tr>
             <th>video.js plugin</th>
-            <th>@f8/player equivalent</th>
+            <th>Reel equivalent</th>
           </tr>
         </thead>
         <tbody>
@@ -203,7 +203,7 @@ function VideoPlayer({ src }) {
         <strong>Sau:</strong>
       </p>
       <pre>
-        <code>{`import { createMarkersPlugin } from "@f8/player-plugin-markers";
+        <code>{`import { createMarkersPlugin } from "@f8team/reel-plugin-markers";
 
 const plugins = useMemo(() => [
   createMarkersPlugin({
@@ -224,7 +224,7 @@ player.command("markers:setMarkers", newMarkers);`}</code>
         <thead>
           <tr>
             <th>video.js</th>
-            <th>@f8/player-react</th>
+            <th>@f8team/reel-react</th>
           </tr>
         </thead>
         <tbody>
@@ -303,8 +303,8 @@ player.command("markers:setMarkers", newMarkers);`}</code>
           <input type="checkbox" readOnly /> Gỡ import <code>video-js.css</code>
         </li>
         <li>
-          <input type="checkbox" readOnly /> Cài <code>@f8/player-react</code>,{" "}
-          <code>@f8/player-core</code>, <code>@f8/player-themes</code>
+          <input type="checkbox" readOnly /> Cài <code>@f8team/reel-react</code>,{" "}
+          <code>@f8team/reel-core</code>, <code>@f8team/reel-themes</code>
         </li>
         <li>
           <input type="checkbox" readOnly /> Cài các plugin tương đương cần dùng

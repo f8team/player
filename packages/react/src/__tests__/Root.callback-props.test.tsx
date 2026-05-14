@@ -4,15 +4,15 @@
  * Replaces the consumer `EventBridge` boilerplate with first-class props.
  * Each callback uses a stable ref so prop identity changes do NOT re-subscribe.
  */
-import { createPlayer, type Player } from "@f8/player-core";
-import type * as PlayerCore from "@f8/player-core";
+import { createPlayer, type Player } from "@f8team/reel-core";
+import type * as PlayerCore from "@f8team/reel-core";
 import { render } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 import { Root } from "../components/Root.js";
 
-vi.mock("@f8/player-core", async () => {
-  const actual = await vi.importActual<typeof PlayerCore>("@f8/player-core");
+vi.mock("@f8team/reel-core", async () => {
+  const actual = await vi.importActual<typeof PlayerCore>("@f8team/reel-core");
   return {
     ...actual,
     createPlayer: vi.fn(() => ({

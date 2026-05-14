@@ -17,7 +17,7 @@ describe("<Controls.Captions>", () => {
     const { container } = renderWithPlayer(<Captions />, {
       initialState: { source: { src: "video.m3u8" } },
     });
-    expect(container.querySelector('[data-f8-player-control="captions"]')).toBeNull();
+    expect(container.querySelector('[data-reel-control="captions"]')).toBeNull();
   });
 
   it("renders a dropdown with an 'off' option plus one per track", () => {
@@ -26,7 +26,9 @@ describe("<Controls.Captions>", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "Captions" }));
     const optionValues = Array.from(
-      container.querySelectorAll<HTMLElement>('[data-f8p-control-popover="captions"] [data-value]'),
+      container.querySelectorAll<HTMLElement>(
+        '[data-reel-control-popover="captions"] [data-value]',
+      ),
     ).map((o) => o.dataset.value);
     expect(optionValues).toEqual(["__off__", "vi", "en"]);
   });
@@ -81,14 +83,14 @@ describe("<Controls.Captions>", () => {
     expect(screen.getByText("CC")).toBeDefined();
 
     // Host-level element should expose the active-state attribute flip.
-    const host = container.querySelector('[data-f8-player-control="captions"]');
-    expect(host?.hasAttribute("data-f8-player-captions-active")).toBe(false);
+    const host = container.querySelector('[data-reel-control="captions"]');
+    expect(host?.hasAttribute("data-reel-captions-active")).toBe(false);
   });
 
   it("respects the `hidden` prop and renders nothing", () => {
     const { container } = renderWithPlayer(<Captions hidden />, {
       initialState: { source: { ...SOURCE_WITH_TRACKS } },
     });
-    expect(container.querySelector('[data-f8-player-control="captions"]')).toBeNull();
+    expect(container.querySelector('[data-reel-control="captions"]')).toBeNull();
   });
 });

@@ -47,8 +47,8 @@ describe("applyTheme", () => {
 
   it("writes CSS custom properties to the element style", () => {
     applyTheme(el, { preset: "admin" });
-    expect(el.style.getPropertyValue("--f8p-color-bg")).toBe("#1a1d23");
-    expect(el.style.getPropertyValue("--f8p-color-accent")).toBe("#3ea6ff");
+    expect(el.style.getPropertyValue("--reel-color-bg")).toBe("#1a1d23");
+    expect(el.style.getPropertyValue("--reel-color-accent")).toBe("#3ea6ff");
   });
 
   it("overrides win over the preset", () => {
@@ -56,22 +56,22 @@ describe("applyTheme", () => {
       preset: "admin",
       overrides: { "color-accent": "#fff" },
     });
-    expect(el.style.getPropertyValue("--f8p-color-accent")).toBe("#fff");
+    expect(el.style.getPropertyValue("--reel-color-accent")).toBe("#fff");
   });
 
   it("returned disposer reverts to previous values", () => {
-    el.style.setProperty("--f8p-color-bg", "#000");
+    el.style.setProperty("--reel-color-bg", "#000");
     const dispose = applyTheme(el, { preset: "admin" });
-    expect(el.style.getPropertyValue("--f8p-color-bg")).toBe("#1a1d23");
+    expect(el.style.getPropertyValue("--reel-color-bg")).toBe("#1a1d23");
     dispose();
-    expect(el.style.getPropertyValue("--f8p-color-bg")).toBe("#000");
+    expect(el.style.getPropertyValue("--reel-color-bg")).toBe("#000");
   });
 
   it("disposer removes properties that did not exist before", () => {
     const dispose = applyTheme(el, { overrides: { "color-fg": "#abc" } });
-    expect(el.style.getPropertyValue("--f8p-color-fg")).toBe("#abc");
+    expect(el.style.getPropertyValue("--reel-color-fg")).toBe("#abc");
     dispose();
-    expect(el.style.getPropertyValue("--f8p-color-fg")).toBe("");
+    expect(el.style.getPropertyValue("--reel-color-fg")).toBe("");
   });
 
   it("ignores tokens without a string value", () => {

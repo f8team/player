@@ -1,26 +1,26 @@
 /**
- * `@f8/player-lit` — Lit adapter for `@f8/player-core`.
+ * `@f8team/reel-lit` — Lit adapter for `@f8team/reel-core`.
  *
- * Ships a single custom element `<f8-player>` + a `PlayerController` Reactive
+ * Ships a single custom element `<reel-player>` + a `PlayerController` Reactive
  * Controller for advanced consumers who want to compose their own elements.
  *
  * ## Quick start
  *
  * ```ts
- * import { defineF8Player } from "@f8/player-lit";
- * defineF8Player();
+ * import { defineReelPlayer } from "@f8team/reel-lit";
+ * defineReelPlayer();
  * ```
  *
  * ```html
- * <f8-player .options=${{ source: { src: "https://cdn/video.m3u8" } }}>
+ * <reel-player .options=${{ source: { src: "https://cdn/video.m3u8" } }}>
  *   <my-controls slot="controls"></my-controls>
- * </f8-player>
+ * </reel-player>
  * ```
  *
  * ## Advanced — Reactive Controller
  *
  * ```ts
- * import { PlayerController } from "@f8/player-lit";
+ * import { PlayerController } from "@f8team/reel-lit";
  *
  * class MyPlayer extends LitElement {
  *   readonly player = new PlayerController(this, () => this.options);
@@ -32,12 +32,12 @@
  * }
  * ```
  *
- * Element registration is **opt-in**: call `defineF8Player()` once at app
+ * Element registration is **opt-in**: call `defineReelPlayer()` once at app
  * startup. This avoids `customElements.define` crashes when the package is
  * loaded twice (e.g. across micro-frontends).
  */
 
-export { F8PlayerElement, defineF8Player } from "./F8Player.js";
+export { ReelPlayerElement, defineReelPlayer } from "./ReelPlayer.js";
 export { PlayerController } from "./PlayerController.js";
 
 // Re-export core types so consumers don't need a second import for typing.
@@ -48,4 +48,4 @@ export type {
   PlayerState,
   SourceDescriptor,
   SubtitleTrack,
-} from "@f8/player-core";
+} from "@f8team/reel-core";

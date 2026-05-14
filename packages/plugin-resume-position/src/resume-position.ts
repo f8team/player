@@ -1,5 +1,5 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
-import type { SourceDescriptor } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
+import type { SourceDescriptor } from "@f8team/reel-core";
 
 export interface ResumePositionStorage {
   get(key: string): number | undefined;
@@ -15,7 +15,7 @@ export interface ResumePositionPluginOptions {
    */
   storage?: ResumePositionStorage;
   /**
-   * Namespace prefix for localStorage keys. Defaults to `"f8-player:resume:"`.
+   * Namespace prefix for localStorage keys. Defaults to `"reel-player:resume:"`.
    */
   storagePrefix?: string;
   /**
@@ -107,7 +107,7 @@ export function createResumePositionPlugin(
 ): PluginInstance {
   const {
     storage,
-    storagePrefix = "f8-player:resume:",
+    storagePrefix = "reel-player:resume:",
     minSeconds = 3,
     endThreshold = 5,
     saveIntervalMs = 10_000,

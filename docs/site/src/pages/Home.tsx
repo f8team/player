@@ -28,7 +28,7 @@ export default function HomePage() {
       {/* ─── Features ─────────────────────────────────────────────────────── */}
       <section>
         <div className="prose">
-          <h2>Tại sao chọn @f8/player?</h2>
+          <h2>Tại sao chọn Reel?</h2>
         </div>
         <div className="feature-grid">
           {FEATURES.map((f) => (
@@ -46,18 +46,18 @@ export default function HomePage() {
       <section className="prose">
         <h2>Quick start</h2>
         <pre className="code-block">{`# pnpm
-pnpm add @f8/player-react @f8/player-core
-pnpm add @f8/player-themes        # optional CSS themes
+pnpm add @f8team/reel-react @f8team/reel-core
+pnpm add @f8team/reel-themes        # optional CSS themes
 
 # npm
-npm install @f8/player-react @f8/player-core`}</pre>
+npm install @f8team/reel-react @f8team/reel-core`}</pre>
 
-        <pre className="code-block">{`import { Root, Video, Controls } from "@f8/player-react";
-import "@f8/player-themes/classroom.css"; // optional
+        <pre className="code-block">{`import { Root, Video, Controls } from "@f8team/reel-react";
+import "@f8team/reel-themes/classroom.css"; // optional
 
 export default function MyPlayer() {
   return (
-    <div data-f8-player="" data-theme="classroom"
+    <div data-reel="" data-theme="classroom"
          style={{ position: "relative", aspectRatio: "16/9" }}>
       <Root options={{ source: { src: "https://example.com/video.m3u8" } }}>
         <Video style={{ position: "absolute", inset: 0 }} />

@@ -1,4 +1,4 @@
-# Contributing to f8-player
+# Contributing to Reel
 
 Thanks for taking the time to contribute. This document is intentionally short:
 the rules below catch >95% of pitfalls; everything else lives in the code review
@@ -17,9 +17,9 @@ Node 20+, pnpm 9+. The repo is a Turbo + pnpm workspace.
 
 ```
 packages/
-  core/                 # @f8/player-core         (headless, no DOM beyond HTMLMediaElement)
-  react/                # @f8/player-react        (React adapter)
-  themes/               # @f8/player-themes       (CSS variables presets)
+  core/                 # @f8team/reel-core         (headless, no DOM beyond HTMLMediaElement)
+  react/                # @f8team/reel-react        (React adapter)
+  themes/               # @f8team/reel-themes       (CSS variables presets)
   plugin-*/             # individual plugins; each ships its own bundle
 examples/               # consumer demo apps
 docs/spec/              # locked contracts (golden cases, API, architecture, ADRs)

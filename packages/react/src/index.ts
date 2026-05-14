@@ -1,16 +1,16 @@
 /**
- * `@f8/player-react` — React adapter for `@f8/player-core`.
+ * `@f8team/reel-react` — React adapter for `@f8team/reel-core`.
  *
  * ## Quick start (one-liner)
  * ```tsx
- * import { Player } from "@f8/player-react";
+ * import { Player } from "@f8team/reel-react";
  *
  * <Player options={{ source: { src: "https://cdn.example.com/video.m3u8" } }} />
  * ```
  *
  * ## Composable (Slot API)
  * ```tsx
- * import { Player } from "@f8/player-react";
+ * import { Player } from "@f8team/reel-react";
  *
  * <Player.Root options={{ source: { src: "..." } }}>
  *   <Player.Video className="w-full" />

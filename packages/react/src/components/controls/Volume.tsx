@@ -25,7 +25,7 @@ export function Volume({ style, ...props }: VolumeProps): JSX.Element {
   };
 
   const inputStyle = {
-    "--f8p-volume-progress": `${safeVolume * 100}%`,
+    "--reel-volume-progress": `${safeVolume * 100}%`,
     ...(style as CSSProperties | undefined),
   } as CSSProperties;
 
@@ -44,7 +44,7 @@ export function Volume({ style, ...props }: VolumeProps): JSX.Element {
       aria-valuenow={safeVolume}
       aria-valuemin={0}
       aria-valuemax={1}
-      data-f8-player-control="volume"
+      data-reel-control="volume"
     />
   );
 }

@@ -1,6 +1,6 @@
 # Caption / subtitle integration (F8 players)
 
-Consumers should agree with the backend on **one delivery shape** per surface. `@f8/player-preset-web` only ships the **`@f8/player-plugin-subtitles`** path when configured with `{ subtitles: { … } }`.
+Consumers should agree with the backend on **one delivery shape** per surface. `@f8team/reel-preset-web` only ships the **`@f8team/reel-plugin-subtitles`** path when configured with `{ subtitles: { … } }`.
 
 ## Mode A — Tracks on source + subtitles plugin (`f8-ui`, `f8-dash-ui`)
 
@@ -11,7 +11,7 @@ Consumers should agree with the backend on **one delivery shape** per surface. `
 ## Mode B — Signed subtitle URL + native `<track>` (`f8-pro-ui`)
 
 - API exposes `subtitles_url` (often signed).
-- **`createF8WebPlayerPlugins({ subtitles: false })`** — Pro skips the subtitles plugin on purpose.
+- **`createReelWebPlayerPlugins({ subtitles: false })`** — Pro skips the subtitles plugin on purpose.
 - `createCaptionsController` fetches the URL, attaches `<track>`, and keeps caption UI in sync (`vjs-captions` visibility policy).
 - **Auth / 401**: Pro keeps **`createRefreshTokenController`** (and gateway `withCredentials` on `SourceDescriptor`). Do **not** add **`createAuthAwarePlugin`** alongside it unless an explicit audit shows both are required; duplicate refresh paths race.
 

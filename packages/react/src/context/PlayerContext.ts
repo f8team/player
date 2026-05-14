@@ -1,4 +1,4 @@
-import type { Player, PlayerOptions } from "@f8/player-core";
+import type { Player, PlayerOptions } from "@f8team/reel-core";
 import { createContext, useContext } from "react";
 
 export interface PlayerContextValue {
@@ -17,7 +17,7 @@ export const PlayerContext = createContext<PlayerContextValue | null>(null);
 export function usePlayerContext(): PlayerContextValue {
   const ctx = useContext(PlayerContext);
   if (!ctx) {
-    throw new Error("[@f8/player-react] usePlayer* hooks must be used inside <Player.Root>.");
+    throw new Error("[@f8team/reel-react] usePlayer* hooks must be used inside <Player.Root>.");
   }
   return ctx;
 }

@@ -4,7 +4,7 @@
  * Replaces the consumer-side `KeyboardHandler` (f8-ui) that was needed to
  * block Space while keeping arrow seek active.
  */
-import type { Player, PluginHost, PlayerState } from "@f8/player-core";
+import type { Player, PluginHost, PlayerState } from "@f8team/reel-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createKeyboardPlugin } from "../keyboard.js";

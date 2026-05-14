@@ -13,7 +13,7 @@ import { renderWithPlayer } from "../test-utils/renderWithPlayer.js";
 describe("Player.LightOverlay — renders poster when posterUrl is provided (T4.1)", () => {
   it("renders an <img> with the given posterUrl as src", () => {
     const { container } = renderWithPlayer(<LightOverlay posterUrl="https://cdn/thumb.jpg" />);
-    const img = container.querySelector<HTMLImageElement>("[data-f8p-light-poster]");
+    const img = container.querySelector<HTMLImageElement>("[data-reel-light-poster]");
     expect(img).toBeTruthy();
     expect(img?.getAttribute("src")).toBe("https://cdn/thumb.jpg");
     expect(img?.getAttribute("alt")).toBe("");
@@ -26,7 +26,7 @@ describe("Player.LightOverlay — calls onDismiss + player.play() on click (T4.1
     const { container, player } = renderWithPlayer(
       <LightOverlay posterUrl="https://cdn/a.jpg" onDismiss={onDismiss} />,
     );
-    const overlay = container.querySelector<HTMLDivElement>("[data-f8p-light-overlay]");
+    const overlay = container.querySelector<HTMLDivElement>("[data-reel-light-overlay]");
     expect(overlay).toBeTruthy();
     fireEvent.click(overlay!);
     expect(onDismiss).toHaveBeenCalledTimes(1);
@@ -42,7 +42,7 @@ describe("Player.LightOverlay — calls onDismiss + player.play() on click (T4.1
         autoPlayOnDismiss={false}
       />,
     );
-    fireEvent.click(container.querySelector("[data-f8p-light-overlay]")!);
+    fireEvent.click(container.querySelector("[data-reel-light-overlay]")!);
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(player.play).not.toHaveBeenCalled();
   });
@@ -63,14 +63,14 @@ describe("Player.LightOverlay — no-poster fallback (T4.1)", () => {
   it("renders the big-play button even when posterUrl is undefined", () => {
     const { container } = renderWithPlayer(<LightOverlay />);
     expect(container.querySelector("img")).toBeNull();
-    expect(container.querySelector("[data-f8p-light-play-button]")).toBeTruthy();
+    expect(container.querySelector("[data-reel-light-play-button]")).toBeTruthy();
   });
 
   it("uses localized aria-label from useLabels() (Vietnamese preset)", () => {
     const { container } = renderWithPlayer(<LightOverlay />, {
       labels: vietnameseLabels,
     });
-    const btn = container.querySelector("[data-f8p-light-play-button]");
+    const btn = container.querySelector("[data-reel-light-play-button]");
     expect(btn?.getAttribute("aria-label")).toBe("Phát video");
   });
 });

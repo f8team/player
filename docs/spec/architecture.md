@@ -4,7 +4,7 @@
 
 ```mermaid
 flowchart TB
-  subgraph core ["@f8/player-core (headless, framework-agnostic)"]
+  subgraph core ["@f8team/reel-core (headless, framework-agnostic)"]
     SM["State Machine"]
     Store["Reactive Store"]
     SrcReg["Source Registry"]
@@ -15,20 +15,20 @@ flowchart TB
   end
 
   subgraph adapters ["Adapters"]
-    React["@f8/player-react"]
-    Lit["@f8/player-lit (Phase 9)"]
-    Vue["@f8/player-vue (later)"]
-    Vanilla["@f8/player-vanilla (later)"]
+    React["@f8team/reel-react"]
+    Lit["@f8team/reel-lit (Phase 9)"]
+    Vue["@f8team/reel-vue (later)"]
+    Vanilla["@f8team/reel-vanilla (later)"]
   end
 
-  subgraph themes ["@f8/player-themes"]
+  subgraph themes ["@f8team/reel-themes"]
     Classroom["classroom"]
     Story["story"]
     Admin["admin"]
     Minimal["minimal"]
   end
 
-  subgraph plugins ["@f8/player-plugin-*"]
+  subgraph plugins ["@f8team/reel-plugin-*"]
     PSubs["subtitles"]
     PQual["hls-quality"]
     PMark["markers"]
@@ -173,21 +173,21 @@ packages/plugin-<name>/
 
 ## Lazy loading
 
-| Asset              | Strategy                                                                                                |
-| ------------------ | ------------------------------------------------------------------------------------------------------- |
-| `hls.js`           | Dynamic `import("hls.js")` on first HLS source attach. Cached on the source provider.                   |
-| YouTube IFrame API | Inject `<script>` once per page, gated behind a Promise.                                                |
-| Theme CSS          | Imported by the consumer (`import "@f8/player-themes/classroom.css"`). Bundlers tree-shake unused ones. |
-| Plugins            | Always tree-shaken — only imported plugins ship.                                                        |
+| Asset              | Strategy                                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------------------------- |
+| `hls.js`           | Dynamic `import("hls.js")` on first HLS source attach. Cached on the source provider.                     |
+| YouTube IFrame API | Inject `<script>` once per page, gated behind a Promise.                                                  |
+| Theme CSS          | Imported by the consumer (`import "@f8team/reel-themes/classroom.css"`). Bundlers tree-shake unused ones. |
+| Plugins            | Always tree-shaken — only imported plugins ship.                                                          |
 
 ## Bundle budgets
 
-| Package            | Target gzip | Hard CI fail |
-| ------------------ | ----------- | ------------ |
-| `@f8/player-core`  | <12 KB      | >15 KB       |
-| `@f8/player-react` | <4 KB       | >5 KB        |
-| Each plugin        | <2.5 KB     | >3 KB        |
-| Each theme CSS     | <1.5 KB     | >2 KB        |
+| Package              | Target gzip | Hard CI fail |
+| -------------------- | ----------- | ------------ |
+| `@f8team/reel-core`  | <12 KB      | >15 KB       |
+| `@f8team/reel-react` | <4 KB       | >5 KB        |
+| Each plugin          | <2.5 KB     | >3 KB        |
+| Each theme CSS       | <1.5 KB     | >2 KB        |
 
 Enforcement: `size-limit` runs in CI per package and blocks the merge.
 

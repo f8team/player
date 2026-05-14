@@ -74,7 +74,7 @@ export function createEventBus<TMap = PlayerEvents>(): EventBus<TMap> {
       try {
         listener(payload);
       } catch (err) {
-        console.error(`[@f8/player-core] listener for "${key}" threw:`, err);
+        console.error(`[@f8team/reel-core] listener for "${key}" threw:`, err);
       }
     }
   }

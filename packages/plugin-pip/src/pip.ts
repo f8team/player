@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
 
 const PLUGIN_NAME = "pip";
 
@@ -23,7 +23,7 @@ export function createPipPlugin(): PluginInstance {
       // We piggyback on the "ready" event which fires after attach.
       const offReady = player.on("ready", () => {
         // Access the underlying <video> by inspecting the document.
-        const el = document.querySelector<HTMLVideoElement>("video[data-f8-player-video]");
+        const el = document.querySelector<HTMLVideoElement>("video[data-reel-video]");
         if (el) videoEl = el;
       });
 

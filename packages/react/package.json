@@ -1,15 +1,15 @@
 {
-  "name": "@f8/player-react",
+  "name": "@f8team/reel-react",
   "version": "1.0.0",
-  "description": "React adapter for @f8/player-core — composable slot API, hooks, and a one-liner <Player>.",
+  "description": "React adapter for @f8team/reel-core — composable slot API, hooks, and a one-liner <Player>.",
   "license": "MIT",
-  "homepage": "https://github.com/f8/player/tree/main/packages/react#readme",
+  "homepage": "https://github.com/f8team/player/tree/main/packages/react#readme",
   "bugs": {
-    "url": "https://github.com/f8/player/issues"
+    "url": "https://github.com/f8team/player/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/f8/player.git",
+    "url": "git+https://github.com/f8team/player.git",
     "directory": "packages/react"
   },
   "author": "F8 <devs@f8.edu.vn>",
@@ -62,7 +62,7 @@
   "peerDependencies": {
     "react": ">=17",
     "react-dom": ">=17",
-    "@f8/player-core": ">=0.0.0"
+    "@f8team/reel-core": "^1.0.0"
   },
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.1.6",
@@ -76,6 +76,6 @@
     "react-dom": "^18.3.1",
     "size-limit": "^11.1.6",
     "tsup": "^8.3.0",
-    "@f8/player-core": "workspace:*"
+    "@f8team/reel-core": "workspace:*"
   }
 }

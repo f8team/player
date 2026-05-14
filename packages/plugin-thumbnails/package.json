@@ -1,7 +1,7 @@
 {
-  "name": "@f8/player-plugin-thumbnails",
+  "name": "@f8team/reel-plugin-thumbnails",
   "version": "1.0.0",
-  "description": "f8-player plugin: sprite thumbnails (timeline hover preview from a WebVTT cue map)",
+  "description": "Reel plugin: sprite thumbnails (timeline hover preview from a WebVTT cue map)",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,
@@ -47,10 +47,10 @@
     "sprite"
   ],
   "peerDependencies": {
-    "@f8/player-core": "workspace:*"
+    "@f8team/reel-core": "^1.0.0"
   },
   "devDependencies": {
-    "@f8/player-core": "workspace:*",
+    "@f8team/reel-core": "workspace:*",
     "@size-limit/preset-small-lib": "^11.1.6",
     "@vitest/coverage-v8": "^2.1.2",
     "jsdom": "^25.0.1",

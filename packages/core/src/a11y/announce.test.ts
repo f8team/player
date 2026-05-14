@@ -15,7 +15,7 @@ describe("announce", () => {
   it("creates a single off-screen live region on first call", async () => {
     announce("Hello");
     await Promise.resolve();
-    const region = document.getElementById("f8-player-live-region");
+    const region = document.getElementById("reel-live-region");
     expect(region).toBeTruthy();
     expect(region?.getAttribute("aria-live")).toBe("polite");
     expect(region?.getAttribute("role")).toBe("status");
@@ -25,10 +25,10 @@ describe("announce", () => {
   it("reuses the same region on subsequent calls", async () => {
     announce("a");
     await Promise.resolve();
-    const first = document.getElementById("f8-player-live-region");
+    const first = document.getElementById("reel-live-region");
     announce("b");
     await Promise.resolve();
-    const second = document.getElementById("f8-player-live-region");
+    const second = document.getElementById("reel-live-region");
     expect(first).toBe(second);
     expect(second?.textContent).toBe("b");
   });
@@ -36,7 +36,7 @@ describe("announce", () => {
   it("re-announces the same string by blanking and re-setting", async () => {
     announce("Same");
     await Promise.resolve();
-    const region = document.getElementById("f8-player-live-region");
+    const region = document.getElementById("reel-live-region");
     expect(region?.textContent).toBe("Same");
     announce("Same");
     expect(region?.textContent).toBe("");
@@ -47,16 +47,16 @@ describe("announce", () => {
   it("ignores empty strings", async () => {
     announce("");
     await Promise.resolve();
-    expect(document.getElementById("f8-player-live-region")).toBeNull();
+    expect(document.getElementById("reel-live-region")).toBeNull();
   });
 
   it("recovers if the region was removed externally", async () => {
     announce("a");
     await Promise.resolve();
-    document.getElementById("f8-player-live-region")?.remove();
+    document.getElementById("reel-live-region")?.remove();
     announce("b");
     await Promise.resolve();
-    const region = document.getElementById("f8-player-live-region");
+    const region = document.getElementById("reel-live-region");
     expect(region?.textContent).toBe("b");
   });
 });

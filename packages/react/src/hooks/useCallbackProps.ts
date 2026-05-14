@@ -1,4 +1,4 @@
-import type { Player, PlayerError, QualityLevel, UnauthorizedEvent } from "@f8/player-core";
+import type { Player, PlayerError, QualityLevel, UnauthorizedEvent } from "@f8team/reel-core";
 import { useEffect, useRef } from "react";
 
 /**

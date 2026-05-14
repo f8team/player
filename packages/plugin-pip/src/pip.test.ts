@@ -1,4 +1,4 @@
-import type { Player, PluginHost } from "@f8/player-core";
+import type { Player, PluginHost } from "@f8team/reel-core";
 import { describe, expect, it, vi } from "vitest";
 
 import { createPipPlugin } from "./pip.js";

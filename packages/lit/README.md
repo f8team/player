@@ -1,35 +1,35 @@
-# @f8/player-lit
+# @f8team/reel-lit
 
-Lit adapter for [`@f8/player-core`](../core). Ships `<f8-player>` — a tiny
+Lit adapter for [`@f8team/reel-core`](../core). Ships `<reel-player>` — a tiny
 custom element wrapping the headless player engine — and a `PlayerController`
 Reactive Controller for advanced composition.
 
-Bundle size: target **≤ 4 KB gzip** (adapter only; `lit` + `@f8/player-core`
+Bundle size: target **≤ 4 KB gzip** (adapter only; `lit` + `@f8team/reel-core`
 are peer dependencies and not counted).
 
 ## Install
 
 ```bash
-pnpm add @f8/player-lit @f8/player-core lit
+pnpm add @f8team/reel-lit @f8team/reel-core lit
 ```
 
 ## Quick start
 
 ```ts
-import { defineF8Player } from "@f8/player-lit";
+import { defineReelPlayer } from "@f8team/reel-lit";
 
-defineF8Player(); // register <f8-player>
+defineReelPlayer(); // register <reel-player>
 ```
 
 ```html
-<f8-player .options=${{ source: { src: "https://cdn.example.com/video.m3u8" } }}>
+<reel-player .options=${{ source: { src: "https://cdn.example.com/video.m3u8" } }}>
   <!-- Optional consumer-supplied chrome (your overlays, your controls) -->
   <my-controls slot="controls"></my-controls>
-</f8-player>
+</reel-player>
 
 <script>
-  const el = document.querySelector("f8-player");
-  el.addEventListener("f8-player:timeupdate", (e) => console.log(e.detail));
+  const el = document.querySelector("reel-player");
+  el.addEventListener("reel-player:timeupdate", (e) => console.log(e.detail));
   el.play();
   el.seekTo(42);
 </script>
@@ -37,7 +37,7 @@ defineF8Player(); // register <f8-player>
 
 ## API
 
-### `<f8-player>` element
+### `<reel-player>` element
 
 | Member            | Type                  | Notes                                                       |
 | ----------------- | --------------------- | ----------------------------------------------------------- |
@@ -52,7 +52,7 @@ defineF8Player(); // register <f8-player>
 
 ### Events
 
-Every core event is re-emitted as `CustomEvent("f8-player:<name>")` with
+Every core event is re-emitted as `CustomEvent("reel-player:<name>")` with
 `detail` set to the core payload. Bubbles + composed so it works through
 slots.
 

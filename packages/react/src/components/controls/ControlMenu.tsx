@@ -74,12 +74,12 @@ export function ControlMenu({
   useEffect(() => {
     if (!open) return;
     const popover = rootRef.current?.querySelector<HTMLElement>(
-      `[data-f8p-control-popover="${menuId}"]`,
+      `[data-reel-control-popover="${menuId}"]`,
     );
     const selected = popover?.querySelector<HTMLElement>(
-      '[data-f8p-control-option][aria-selected="true"]',
+      '[data-reel-control-option][aria-selected="true"]',
     );
-    const first = popover?.querySelector<HTMLElement>("[data-f8p-control-option]");
+    const first = popover?.querySelector<HTMLElement>("[data-reel-control-option]");
     (selected ?? first)?.focus();
   }, [menuId, open]);
 
@@ -91,7 +91,7 @@ export function ControlMenu({
 
   const handleListboxKeydown = (event: ReactKeyboardEvent<HTMLDivElement>): void => {
     const popover = event.currentTarget;
-    const items = Array.from(popover.querySelectorAll<HTMLElement>("[data-f8p-control-option]"));
+    const items = Array.from(popover.querySelectorAll<HTMLElement>("[data-reel-control-option]"));
     const currentIndex = Math.max(0, items.indexOf(document.activeElement as HTMLElement));
 
     if (event.key === "Escape") {
@@ -122,10 +122,10 @@ export function ControlMenu({
       ref={rootRef}
       className={className}
       title={title}
-      data-f8-player-control={control}
-      data-f8p-control-menu={menuId}
-      data-f8p-menu-open={open ? "" : undefined}
-      data-f8-player-captions-active={control === "captions" && active ? "" : undefined}
+      data-reel-control={control}
+      data-reel-control-menu={menuId}
+      data-reel-menu-open={open ? "" : undefined}
+      data-reel-captions-active={control === "captions" && active ? "" : undefined}
       {...rootAttributes}
     >
       <button
@@ -136,7 +136,7 @@ export function ControlMenu({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={panelId}
-        data-f8p-control-trigger={menuId}
+        data-reel-control-trigger={menuId}
         onClick={() => setOpen((value) => !value)}
         onKeyDown={handleTriggerKeydown}
       >
@@ -148,7 +148,7 @@ export function ControlMenu({
           className="f8p-menu-popover"
           role="listbox"
           aria-label={ariaLabel}
-          data-f8p-control-popover={menuId}
+          data-reel-control-popover={menuId}
           onKeyDown={handleListboxKeydown}
         >
           {options.map((option) => (
@@ -158,7 +158,7 @@ export function ControlMenu({
               className="f8p-menu-option"
               role="option"
               aria-selected={option.active}
-              data-f8p-control-option=""
+              data-reel-control-option=""
               data-active={option.active ? "" : undefined}
               data-value={option.value}
               onClick={() => {
@@ -166,10 +166,10 @@ export function ControlMenu({
                 setOpen(false);
               }}
             >
-              <span data-f8p-option-label="">{option.label}</span>
-              {option.badge ? <span data-f8p-option-badge="">{option.badge}</span> : null}
+              <span data-reel-option-label="">{option.label}</span>
+              {option.badge ? <span data-reel-option-badge="">{option.badge}</span> : null}
               {option.active ? (
-                <span data-f8p-option-check="" aria-hidden="true">
+                <span data-reel-option-check="" aria-hidden="true">
                   ✓
                 </span>
               ) : null}

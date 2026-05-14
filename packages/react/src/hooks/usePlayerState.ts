@@ -1,4 +1,4 @@
-import type { PlayerState } from "@f8/player-core";
+import type { PlayerState } from "@f8team/reel-core";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { usePlayerContext } from "../context/PlayerContext.js";

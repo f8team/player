@@ -1,6 +1,6 @@
 # Plugin authoring cookbook
 
-This cookbook shows how to write a small `@f8/player-core` plugin and wire it to
+This cookbook shows how to write a small `@f8team/reel-core` plugin and wire it to
 React/Lit consumers without leaking subscribers or coupling UI to implementation
 details.
 
@@ -9,7 +9,7 @@ details.
 A plugin is a `PluginInstance`:
 
 ```ts
-import { definePlugin } from "@f8/player-core";
+import { definePlugin } from "@f8team/reel-core";
 
 export const myPlugin = definePlugin({
   name: "my-plugin",
@@ -73,7 +73,7 @@ React consumers can update the command from props/state:
 
 ```tsx
 import { useMemo } from "react";
-import { usePluginCommand } from "@f8/player-react";
+import { usePluginCommand } from "@f8team/reel-react";
 
 function ChaptersBridge({ items }: { items: Chapter[] }) {
   const stableItems = useMemo(() => items, [items]);
@@ -133,7 +133,7 @@ setup() {
 ```
 
 For optional heavy plugins, install a tiny bootstrap plugin and dynamic-import the
-real plugin after the source proves it is needed. `@f8/player-preset-web` uses
+real plugin after the source proves it is needed. `@f8team/reel-preset-web` uses
 this pattern for thumbnails.
 
 ## 7. Testing pattern
@@ -154,7 +154,7 @@ the consumer relies on.
 ## 8. Walkthrough: analytics sink plugin
 
 ```ts
-import { definePlugin, type PluginInstance } from "@f8/player-core";
+import { definePlugin, type PluginInstance } from "@f8team/reel-core";
 
 export interface AnalyticsSink {
   track(event: string, payload?: Record<string, unknown>): void;

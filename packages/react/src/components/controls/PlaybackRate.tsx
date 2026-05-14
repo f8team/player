@@ -49,7 +49,7 @@ export function PlaybackRate({
       ariaLabel={labels.playbackRate}
       active={playbackRate !== 1}
       trigger={
-        <span data-f8p-trigger-label="">{playbackRate === 1 ? "1×" : `${playbackRate}×`}</span>
+        <span data-reel-trigger-label="">{playbackRate === 1 ? "1×" : `${playbackRate}×`}</span>
       }
       options={options}
     />

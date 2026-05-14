@@ -1,4 +1,4 @@
-import type { PlayerState } from "@f8/player-core";
+import type { PlayerState } from "@f8team/reel-core";
 import { act } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 

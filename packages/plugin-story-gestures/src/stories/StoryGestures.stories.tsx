@@ -1,4 +1,4 @@
-import { Root, Video } from "@f8/player-react";
+import { Root, Video } from "@f8team/reel-react";
 import type { Meta, StoryObj } from "@storybook/react";
 import React from "react";
 
@@ -26,7 +26,7 @@ function StoryGesturesDemo({ onPrev, onNext }: { onPrev?: () => void; onNext?: (
           borderRadius: "1.2rem",
           overflow: "hidden",
         }}
-        data-f8-player=""
+        data-reel=""
         data-theme="story"
       >
         <Root options={{ source: { src: DEMO_MP4, tracks: [] }, plugins, playsInline: true }}>

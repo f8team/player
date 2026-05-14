@@ -5,7 +5,7 @@
 
 ## Context
 
-We need to ship `@f8/player-core`, a React adapter, an eventual Lit/Vue/Vanilla
+We need to ship `@f8team/reel-core`, a React adapter, an eventual Lit/Vue/Vanilla
 adapter, plus 12 plugins and 4 themes. Each is independently versioned and
 independently consumable, but they share TypeScript build settings, ESLint,
 Prettier, Vitest, and CI gates. Some plugins depend on the core's TypeScript

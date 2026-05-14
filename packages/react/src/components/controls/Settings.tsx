@@ -45,7 +45,7 @@ export function Settings({
       trigger={
         <>
           <PlayerIcon name="settings" />
-          <span data-f8p-trigger-label="">{playbackRate === 1 ? "1×" : `${playbackRate}×`}</span>
+          <span data-reel-trigger-label="">{playbackRate === 1 ? "1×" : `${playbackRate}×`}</span>
         </>
       }
       options={options}

@@ -5,11 +5,11 @@ import { renderWithPlayer } from "../../test-utils/renderWithPlayer.js";
 import { Video } from "../Video.js";
 
 describe("<Video>", () => {
-  it("renders a <video> element with data-f8-player-video attribute", () => {
+  it("renders a <video> element with data-reel-video attribute", () => {
     const { container } = renderWithPlayer(<Video />);
     const video = container.querySelector("video");
     expect(video).not.toBeNull();
-    expect(video?.getAttribute("data-f8-player-video")).toBe("");
+    expect(video?.getAttribute("data-reel-video")).toBe("");
   });
 
   it("calls player.attach with the video element on mount", async () => {

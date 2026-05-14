@@ -1,4 +1,4 @@
-import type { PlayerOptions, SourceDescriptor } from "@f8/player-core";
+import type { PlayerOptions, SourceDescriptor } from "@f8team/reel-core";
 import {
   Captions,
   Controls,
@@ -10,21 +10,21 @@ import {
   type PlayerCallbackProps,
   type PlayerLabels,
   type RootProps,
-} from "@f8/player-react";
+} from "@f8team/reel-react";
 import { type CSSProperties, type ReactNode, useCallback, useMemo, useState } from "react";
 
 import {
-  DEFAULT_F8_GATEWAY_ALLOWLIST,
-  createF8WebPlayerPlugins,
-  type F8WebPlayerPluginsOptions,
-} from "./createF8WebPlayerPlugins.js";
+  DEFAULT_REEL_GATEWAY_ALLOWLIST,
+  createReelWebPlayerPlugins,
+  type ReelWebPlayerPluginsOptions,
+} from "./createReelWebPlayerPlugins.js";
 
 /** Built-in playback rate menu used when consumer does not specify one. */
 const DEFAULT_PLAYBACK_RATES = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2] as const;
 
-export type F8WebPlayerLight = boolean | string;
+export type ReelWebPlayerLight = boolean | string;
 
-export interface F8WebPlayerProps extends PlayerCallbackProps {
+export interface ReelWebPlayerProps extends PlayerCallbackProps {
   /** Quick-source convenience: forwarded to `source.src`. Wins over `options.source`. */
   src?: string;
   /** Full source descriptor (subtitles, thumbnails, withCredentials). */
@@ -43,9 +43,9 @@ export interface F8WebPlayerProps extends PlayerCallbackProps {
    * Light overlay: show a poster + play button before first play. Set `true`
    * to use `poster`; set a string to use a custom URL.
    */
-  light?: F8WebPlayerLight;
-  /** Plugin tuple overrides — merged into `createF8WebPlayerPlugins(options)`. */
-  plugins?: F8WebPlayerPluginsOptions;
+  light?: ReelWebPlayerLight;
+  /** Plugin tuple overrides — merged into `createReelWebPlayerPlugins(options)`. */
+  plugins?: ReelWebPlayerPluginsOptions;
   /** Extra raw player options (preload, autoplay, startTime, …). */
   options?: PlayerOptions;
   /** Forwarded to `<Player.Root playerRef />` for imperative access. */
@@ -60,9 +60,9 @@ export interface F8WebPlayerProps extends PlayerCallbackProps {
 }
 
 /**
- * `<F8WebPlayer>` — opinionated one-liner that bundles the F8 web defaults:
+ * `<ReelWebPlayer>` — opinionated one-liner that bundles the Reel web defaults:
  *
- * - Standard plugin tuple via `createF8WebPlayerPlugins`
+ * - Standard plugin tuple via `createReelWebPlayerPlugins`
  *   (markers / keyboard / hls-quality / auth / fullscreen / pip / subtitles
  *   / thumbnails / **prefs**).
  * - Vietnamese labels by default.
@@ -75,7 +75,7 @@ export interface F8WebPlayerProps extends PlayerCallbackProps {
  *
  * @phase-5-target T5.3
  */
-export function F8WebPlayer({
+export function ReelWebPlayer({
   src,
   source,
   poster,
@@ -94,7 +94,7 @@ export function F8WebPlayer({
   controls = true,
   // Forward all callback props transparently to <Root>.
   ...callbacks
-}: F8WebPlayerProps): JSX.Element {
+}: ReelWebPlayerProps): JSX.Element {
   const [lightDismissed, setLightDismissed] = useState(false);
 
   // Build the effective source: src convenience shortcut wins, otherwise full
@@ -107,11 +107,11 @@ export function F8WebPlayer({
 
   // Build the effective plugin tuple. Default auth allowlist mirrors F8 prod.
   const pluginList = useMemo(() => {
-    const opts: F8WebPlayerPluginsOptions = {
-      auth: { allowlist: DEFAULT_F8_GATEWAY_ALLOWLIST },
+    const opts: ReelWebPlayerPluginsOptions = {
+      auth: { allowlist: DEFAULT_REEL_GATEWAY_ALLOWLIST },
       ...plugins,
     };
-    return createF8WebPlayerPlugins(opts);
+    return createReelWebPlayerPlugins(opts);
   }, [plugins]);
 
   const mergedOptions = useMemo<PlayerOptions>(
@@ -145,7 +145,7 @@ export function F8WebPlayer({
       playerRef={playerRef}
       {...callbacks}
     >
-      <div data-f8-player="" className={className} style={style}>
+      <div data-reel="" className={className} style={style}>
         <Video />
         <Captions />
         <Spinner />

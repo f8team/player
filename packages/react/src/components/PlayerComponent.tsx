@@ -1,4 +1,4 @@
-import type { Player, PlayerOptions } from "@f8/player-core";
+import type { Player, PlayerOptions } from "@f8team/reel-core";
 import { forwardRef, useImperativeHandle, useRef } from "react";
 import type React from "react";
 
@@ -130,7 +130,7 @@ export const PlayerComponent = forwardRef<PlayerHandle, PlayerComponentProps>(
     return (
       <Root options={options}>
         <InnerHandle handleRef={ref} />
-        <div className={containerClassName} style={{ position: "relative" }} data-f8-player="">
+        <div className={containerClassName} style={{ position: "relative" }} data-reel="">
           <Video className={className} style={style} />
           <Captions />
           {controls && (

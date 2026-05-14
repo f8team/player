@@ -39,7 +39,7 @@ export function Video({ className, style, ...rest }: VideoProps): JSX.Element {
       ref={ref}
       className={className}
       style={style}
-      data-f8-player-video=""
+      data-reel-video=""
       poster={effectivePoster}
       {...rest}
     />

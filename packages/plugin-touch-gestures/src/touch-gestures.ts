@@ -1,4 +1,4 @@
-import type { Player, PluginHost, PluginInstance } from "@f8/player-core";
+import type { Player, PluginHost, PluginInstance } from "@f8team/reel-core";
 
 export interface TouchGesturesPluginOptions {
   /** Seek step for left/right tap zone (seconds). Defaults to 10. */
@@ -7,7 +7,7 @@ export interface TouchGesturesPluginOptions {
   holdDuration?: number;
   /** Zone ratio: portion of width considered left/right zone. Defaults to 0.3. */
   zoneRatio?: number;
-  /** Element to attach gestures to. Defaults to `[data-f8-player]` or `<video>`. */
+  /** Element to attach gestures to. Defaults to `[data-reel]` or `<video>`. */
   getContainer?: () => Element | null;
 }
 
@@ -41,8 +41,8 @@ export function createTouchGesturesPlugin(
       const getEl = (): Element | null => {
         if (getContainer) return getContainer();
         return (
-          document.querySelector("[data-f8-player]") ??
-          document.querySelector("video[data-f8-player-video]") ??
+          document.querySelector("[data-reel]") ??
+          document.querySelector("video[data-reel-video]") ??
           null
         );
       };
@@ -120,7 +120,7 @@ export function createTouchGesturesPlugin(
         // so the overlay's follow-up click does not double-toggle. Left/right
         // zones still seek via this handler.
         const target = e.target as Element | null;
-        if (target?.closest?.("[data-f8-player-center-tap]")) {
+        if (target?.closest?.("[data-reel-center-tap]")) {
           const x = e.changedTouches[0]?.clientX ?? lastTapX;
           if (getZone(x) === "center") {
             return;

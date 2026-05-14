@@ -1,11 +1,11 @@
-import type { Player, PlayerState, PluginHost, SourceDescriptor } from "@f8/player-core";
+import type { Player, PlayerState, PluginHost, SourceDescriptor } from "@f8team/reel-core";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
-  DEFAULT_F8_KEYBOARD,
-  createF8WebPlayerPlugins,
-  type F8WebPlayerPluginsOptions,
-} from "./createF8WebPlayerPlugins.js";
+  DEFAULT_REEL_KEYBOARD,
+  createReelWebPlayerPlugins,
+  type ReelWebPlayerPluginsOptions,
+} from "./createReelWebPlayerPlugins.js";
 
 const thumbnailsMock = vi.hoisted(() => {
   const plugin = { name: "thumbnails", setup: vi.fn() };
@@ -15,7 +15,7 @@ const thumbnailsMock = vi.hoisted(() => {
   };
 });
 
-vi.mock("@f8/player-plugin-thumbnails", () => ({
+vi.mock("@f8team/reel-plugin-thumbnails", () => ({
   createThumbnailsPlugin: thumbnailsMock.createThumbnailsPlugin,
 }));
 
@@ -59,13 +59,13 @@ function createLazyPluginHarness(initialSource: SourceDescriptor | null = null):
   };
 }
 
-describe("createF8WebPlayerPlugins", () => {
+describe("createReelWebPlayerPlugins", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it("omits markers/keyboard/auth/subtitles unless requested", () => {
-    const p = createF8WebPlayerPlugins({
+    const p = createReelWebPlayerPlugins({
       markers: false,
       keyboard: false,
       thumbnails: false,
@@ -83,23 +83,23 @@ describe("createF8WebPlayerPlugins", () => {
   });
 
   it("adds a lazy thumbnails bootstrapper when thumbnails=always (default)", () => {
-    const p = createF8WebPlayerPlugins({
+    const p = createReelWebPlayerPlugins({
       keyboard: false,
       auth: false,
       subtitles: false,
       thumbnails: "always",
-    } satisfies F8WebPlayerPluginsOptions);
+    } satisfies ReelWebPlayerPluginsOptions);
     expect(p.some((pl) => pl.name === "thumbnails-lazy")).toBe(true);
     expect(p.some((pl) => pl.name === "thumbnails")).toBe(false);
   });
 
   it("loads the thumbnails plugin only after the source exposes a thumbnail VTT", async () => {
-    const p = createF8WebPlayerPlugins({
+    const p = createReelWebPlayerPlugins({
       keyboard: false,
       auth: false,
       subtitles: false,
       thumbnails: "always",
-    } satisfies F8WebPlayerPluginsOptions);
+    } satisfies ReelWebPlayerPluginsOptions);
     const lazyPlugin = p.find((pl) => pl.name === "thumbnails-lazy");
     const { host, player, setSource } = createLazyPluginHarness();
     const dispose = lazyPlugin?.setup(player, host);
@@ -125,14 +125,14 @@ describe("createF8WebPlayerPlugins", () => {
     expect(player.removePlugin).toHaveBeenCalledWith("thumbnails");
   });
 
-  it("uses DEFAULT_F8_KEYBOARD when keyboard omitted", () => {
-    const p = createF8WebPlayerPlugins({
+  it("uses DEFAULT_REEL_KEYBOARD when keyboard omitted", () => {
+    const p = createReelWebPlayerPlugins({
       auth: false,
       subtitles: false,
       thumbnails: false,
-    } satisfies F8WebPlayerPluginsOptions);
+    } satisfies ReelWebPlayerPluginsOptions);
     expect(p.find((pl) => pl.name === "keyboard")).toBeTruthy();
     // Setup not invoked — name check is sufficient for ordering contract.
-    void DEFAULT_F8_KEYBOARD;
+    void DEFAULT_REEL_KEYBOARD;
   });
 });

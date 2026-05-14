@@ -1,9 +1,9 @@
 [
   {
-    "name": "@f8/player-plugin-keyboard (gzip)",
+    "name": "@f8team/reel-plugin-keyboard (gzip)",
     "path": "dist/index.js",
     "import": "*",
-    "ignore": ["@f8/player-core"],
+    "ignore": ["@f8team/reel-core"],
     "limit": "3 KB",
     "gzip": true
   }

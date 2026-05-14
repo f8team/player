@@ -3,7 +3,7 @@ export default function ApiReferencePage() {
     <article className="prose">
       <h1>API Reference</h1>
 
-      <h2>@f8/player-react</h2>
+      <h2>@f8team/reel-react</h2>
 
       <h3>Root</h3>
       <p>Context provider và player lifecycle manager. Bắt buộc wrap quanh mọi thành phần khác.</p>
@@ -226,10 +226,10 @@ export default function ApiReferencePage() {
 }`}</code>
       </pre>
 
-      <h2>@f8/player-core</h2>
+      <h2>@f8team/reel-core</h2>
       <p>Framework-agnostic engine. Dùng trực tiếp nếu không dùng React.</p>
       <pre>
-        <code>{`import { createPlayer } from "@f8/player-core";
+        <code>{`import { createPlayer } from "@f8team/reel-core";
 
 const player = createPlayer({
   container: document.getElementById("player"),
@@ -244,7 +244,7 @@ player.on("timeupdate", ({ currentTime }) => console.log(currentTime));`}</code>
       <h2>definePlugin</h2>
       <p>Tạo plugin tuỳ chỉnh:</p>
       <pre>
-        <code>{`import { definePlugin } from "@f8/player-core";
+        <code>{`import { definePlugin } from "@f8team/reel-core";
 
 const myPlugin = definePlugin({
   name: "my-plugin",

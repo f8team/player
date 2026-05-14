@@ -1,5 +1,5 @@
 {
-  "name": "@f8/player-example-headless-tailwind",
+  "name": "@f8team/reel-example-headless-tailwind",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,10 +8,10 @@
     "preview": "vite preview --host 127.0.0.1 --port 6102"
   },
   "dependencies": {
-    "@f8/player-core": "workspace:*",
-    "@f8/player-preset-web": "workspace:*",
-    "@f8/player-react": "workspace:*",
-    "@f8/player-themes": "workspace:*",
+    "@f8team/reel-core": "workspace:*",
+    "@f8team/reel-preset-web": "workspace:*",
+    "@f8team/reel-react": "workspace:*",
+    "@f8team/reel-themes": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

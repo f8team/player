@@ -1,4 +1,4 @@
-import type { Player, PlayerState } from "@f8/player-core";
+import type { Player, PlayerState } from "@f8team/reel-core";
 import { render, type RenderResult } from "@testing-library/react";
 import { type ReactNode } from "react";
 

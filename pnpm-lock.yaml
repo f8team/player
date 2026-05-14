@@ -113,43 +113,43 @@ importers:
       "@codesandbox/sandpack-react":
         specifier: ^2.13.5
         version: 2.20.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../../packages/core
-      "@f8/player-plugin-analytics":
+      "@f8team/reel-plugin-analytics":
         specifier: workspace:*
         version: link:../../packages/plugin-analytics
-      "@f8/player-plugin-auth-aware":
+      "@f8team/reel-plugin-auth-aware":
         specifier: workspace:*
         version: link:../../packages/plugin-auth-aware
-      "@f8/player-plugin-fullscreen":
+      "@f8team/reel-plugin-fullscreen":
         specifier: workspace:*
         version: link:../../packages/plugin-fullscreen
-      "@f8/player-plugin-hls-quality":
+      "@f8team/reel-plugin-hls-quality":
         specifier: workspace:*
         version: link:../../packages/plugin-hls-quality
-      "@f8/player-plugin-keyboard":
+      "@f8team/reel-plugin-keyboard":
         specifier: workspace:*
         version: link:../../packages/plugin-keyboard
-      "@f8/player-plugin-markers":
+      "@f8team/reel-plugin-markers":
         specifier: workspace:*
         version: link:../../packages/plugin-markers
-      "@f8/player-plugin-pip":
+      "@f8team/reel-plugin-pip":
         specifier: workspace:*
         version: link:../../packages/plugin-pip
-      "@f8/player-plugin-resume-position":
+      "@f8team/reel-plugin-resume-position":
         specifier: workspace:*
         version: link:../../packages/plugin-resume-position
-      "@f8/player-plugin-subtitles":
+      "@f8team/reel-plugin-subtitles":
         specifier: workspace:*
         version: link:../../packages/plugin-subtitles
-      "@f8/player-plugin-watermark":
+      "@f8team/reel-plugin-watermark":
         specifier: workspace:*
         version: link:../../packages/plugin-watermark
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../../packages/react
-      "@f8/player-themes":
+      "@f8team/reel-themes":
         specifier: workspace:*
         version: link:../../packages/themes
       react:
@@ -183,46 +183,46 @@ importers:
 
   examples/01-classroom-oneliner:
     dependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../../packages/core
-      "@f8/player-lit":
+      "@f8team/reel-lit":
         specifier: workspace:*
         version: link:../../packages/lit
-      "@f8/player-plugin-auth-aware":
+      "@f8team/reel-plugin-auth-aware":
         specifier: workspace:*
         version: link:../../packages/plugin-auth-aware
-      "@f8/player-plugin-fullscreen":
+      "@f8team/reel-plugin-fullscreen":
         specifier: workspace:*
         version: link:../../packages/plugin-fullscreen
-      "@f8/player-plugin-hls-quality":
+      "@f8team/reel-plugin-hls-quality":
         specifier: workspace:*
         version: link:../../packages/plugin-hls-quality
-      "@f8/player-plugin-keyboard":
+      "@f8team/reel-plugin-keyboard":
         specifier: workspace:*
         version: link:../../packages/plugin-keyboard
-      "@f8/player-plugin-markers":
+      "@f8team/reel-plugin-markers":
         specifier: workspace:*
         version: link:../../packages/plugin-markers
-      "@f8/player-plugin-pip":
+      "@f8team/reel-plugin-pip":
         specifier: workspace:*
         version: link:../../packages/plugin-pip
-      "@f8/player-plugin-prefs":
+      "@f8team/reel-plugin-prefs":
         specifier: workspace:*
         version: link:../../packages/plugin-prefs
-      "@f8/player-plugin-subtitles":
+      "@f8team/reel-plugin-subtitles":
         specifier: workspace:*
         version: link:../../packages/plugin-subtitles
-      "@f8/player-plugin-thumbnails":
+      "@f8team/reel-plugin-thumbnails":
         specifier: workspace:*
         version: link:../../packages/plugin-thumbnails
-      "@f8/player-preset-web":
+      "@f8team/reel-preset-web":
         specifier: workspace:*
         version: link:../../packages/preset-web
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../../packages/react
-      "@f8/player-themes":
+      "@f8team/reel-themes":
         specifier: workspace:*
         version: link:../../packages/themes
       lit:
@@ -247,16 +247,16 @@ importers:
 
   examples/02-headless-tailwind:
     dependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../../packages/core
-      "@f8/player-preset-web":
+      "@f8team/reel-preset-web":
         specifier: workspace:*
         version: link:../../packages/preset-web
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../../packages/react
-      "@f8/player-themes":
+      "@f8team/reel-themes":
         specifier: workspace:*
         version: link:../../packages/themes
       react:
@@ -278,16 +278,16 @@ importers:
 
   examples/03-custom-plugin-analytics:
     dependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../../packages/core
-      "@f8/player-preset-web":
+      "@f8team/reel-preset-web":
         specifier: workspace:*
         version: link:../../packages/preset-web
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../../packages/react
-      "@f8/player-themes":
+      "@f8team/reel-themes":
         specifier: workspace:*
         version: link:../../packages/themes
       react:
@@ -327,7 +327,7 @@ importers:
 
   packages/lit:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
       "@size-limit/preset-small-lib":
@@ -351,10 +351,10 @@ importers:
 
   packages/plugin-analytics:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -375,10 +375,10 @@ importers:
 
   packages/plugin-auth-aware:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -399,10 +399,10 @@ importers:
 
   packages/plugin-fullscreen:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -423,10 +423,10 @@ importers:
 
   packages/plugin-hls-quality:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -447,10 +447,10 @@ importers:
 
   packages/plugin-keyboard:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -471,10 +471,10 @@ importers:
 
   packages/plugin-markers:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -495,10 +495,10 @@ importers:
 
   packages/plugin-pip:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -519,7 +519,7 @@ importers:
 
   packages/plugin-prefs:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
       "@size-limit/preset-small-lib":
@@ -540,10 +540,10 @@ importers:
 
   packages/plugin-resume-position:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -564,10 +564,10 @@ importers:
 
   packages/plugin-safari-mp4-fallback:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -588,10 +588,10 @@ importers:
 
   packages/plugin-story-gestures:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -612,10 +612,10 @@ importers:
 
   packages/plugin-subtitles:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -636,7 +636,7 @@ importers:
 
   packages/plugin-thumbnails:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
       "@size-limit/preset-small-lib":
@@ -657,10 +657,10 @@ importers:
 
   packages/plugin-touch-gestures:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -681,10 +681,10 @@ importers:
 
   packages/plugin-watermark:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -705,40 +705,40 @@ importers:
 
   packages/preset-web:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
-      "@f8/player-lit":
+      "@f8team/reel-lit":
         specifier: workspace:*
         version: link:../lit
-      "@f8/player-plugin-auth-aware":
+      "@f8team/reel-plugin-auth-aware":
         specifier: workspace:*
         version: link:../plugin-auth-aware
-      "@f8/player-plugin-fullscreen":
+      "@f8team/reel-plugin-fullscreen":
         specifier: workspace:*
         version: link:../plugin-fullscreen
-      "@f8/player-plugin-hls-quality":
+      "@f8team/reel-plugin-hls-quality":
         specifier: workspace:*
         version: link:../plugin-hls-quality
-      "@f8/player-plugin-keyboard":
+      "@f8team/reel-plugin-keyboard":
         specifier: workspace:*
         version: link:../plugin-keyboard
-      "@f8/player-plugin-markers":
+      "@f8team/reel-plugin-markers":
         specifier: workspace:*
         version: link:../plugin-markers
-      "@f8/player-plugin-pip":
+      "@f8team/reel-plugin-pip":
         specifier: workspace:*
         version: link:../plugin-pip
-      "@f8/player-plugin-prefs":
+      "@f8team/reel-plugin-prefs":
         specifier: workspace:*
         version: link:../plugin-prefs
-      "@f8/player-plugin-subtitles":
+      "@f8team/reel-plugin-subtitles":
         specifier: workspace:*
         version: link:../plugin-subtitles
-      "@f8/player-plugin-thumbnails":
+      "@f8team/reel-plugin-thumbnails":
         specifier: workspace:*
         version: link:../plugin-thumbnails
-      "@f8/player-react":
+      "@f8team/reel-react":
         specifier: workspace:*
         version: link:../react
       "@size-limit/preset-small-lib":
@@ -771,7 +771,7 @@ importers:
 
   packages/react:
     devDependencies:
-      "@f8/player-core":
+      "@f8team/reel-core":
         specifier: workspace:*
         version: link:../core
       "@size-limit/preset-small-lib":
@@ -9763,10 +9763,10 @@ packages:
         integrity: sha512-buUzX4sXC4efFX6xg2bw6/eZsCUh8qQwSavC4D9HpONMFlRbcHhD8Je5qwYdCpViR6q0qla2wPP+t91a2vgolg==,
       }
 
-  third-party-web@0.29.0:
+  third-party-web@0.29.2:
     resolution:
       {
-        integrity: sha512-nBDSJw5B7Sl1YfsATG2XkW5qgUPODbJhXw++BKygi9w6O/NKS98/uY/nR/DxDq2axEjL6halHW1v+jhm/j1DBQ==,
+        integrity: sha512-fegtha91tq2DHphyoiBXVHjVi2YG9zFaRnboT9C28tO1en9Y3wJsfspuy40F+u5wl3hHVbw7cnd1b67kEGHb8g==,
       }
 
   through@2.3.8:
@@ -11867,7 +11867,7 @@ snapshots:
   "@paulirish/trace_engine@0.0.53":
     dependencies:
       legacy-javascript: 0.0.1
-      third-party-web: 0.29.0
+      third-party-web: 0.29.2
 
   "@pkgjs/parseargs@0.11.0":
     optional: true
@@ -17084,7 +17084,7 @@ snapshots:
 
   third-party-web@0.26.7: {}
 
-  third-party-web@0.29.0: {}
+  third-party-web@0.29.2: {}
 
   through@2.3.8: {}
 

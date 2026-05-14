@@ -23,7 +23,9 @@ export function createSourceRegistry(): SourceRegistry {
 
   function register(provider: SourceProvider): () => void {
     if (providers.some((p) => p.name === provider.name)) {
-      throw new Error(`[@f8/player-core] source provider "${provider.name}" is already registered`);
+      throw new Error(
+        `[@f8team/reel-core] source provider "${provider.name}" is already registered`,
+      );
     }
     providers.push(provider);
     return () => unregister(provider.name);

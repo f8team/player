@@ -12,25 +12,25 @@ import { type ThemeName, type ThemeTokens } from "../types/theme.js";
  * directly so consumers can also use plain CSS to override.
  */
 export const TOKEN_TO_CSS_VAR: Record<keyof ThemeTokens, string> = {
-  "color-bg": "--f8p-color-bg",
-  "color-fg": "--f8p-color-fg",
-  "color-accent": "--f8p-color-accent",
-  "color-overlay": "--f8p-color-overlay",
-  "control-size": "--f8p-control-size",
-  "control-radius": "--f8p-control-radius",
-  "control-gap": "--f8p-control-gap",
-  "control-padding": "--f8p-control-padding",
-  "focus-ring-color": "--f8p-focus-ring-color",
-  "focus-ring-width": "--f8p-focus-ring-width",
-  "seekbar-height": "--f8p-seekbar-height",
-  "seekbar-buffered": "--f8p-seekbar-buffered",
-  "seekbar-played": "--f8p-seekbar-played",
-  "seekbar-knob-size": "--f8p-seekbar-knob-size",
-  "font-family": "--f8p-font-family",
-  "font-size-sm": "--f8p-font-size-sm",
-  "font-size-md": "--f8p-font-size-md",
-  "motion-fast": "--f8p-motion-fast",
-  "motion-base": "--f8p-motion-base",
+  "color-bg": "--reel-color-bg",
+  "color-fg": "--reel-color-fg",
+  "color-accent": "--reel-color-accent",
+  "color-overlay": "--reel-color-overlay",
+  "control-size": "--reel-control-size",
+  "control-radius": "--reel-control-radius",
+  "control-gap": "--reel-control-gap",
+  "control-padding": "--reel-control-padding",
+  "focus-ring-color": "--reel-focus-ring-color",
+  "focus-ring-width": "--reel-focus-ring-width",
+  "seekbar-height": "--reel-seekbar-height",
+  "seekbar-buffered": "--reel-seekbar-buffered",
+  "seekbar-played": "--reel-seekbar-played",
+  "seekbar-knob-size": "--reel-seekbar-knob-size",
+  "font-family": "--reel-font-family",
+  "font-size-sm": "--reel-font-size-sm",
+  "font-size-md": "--reel-font-size-md",
+  "motion-fast": "--reel-motion-fast",
+  "motion-base": "--reel-motion-base",
 };
 
 /**
@@ -54,7 +54,7 @@ export const DEFAULT_TOKENS: Required<ThemeTokens> = {
 
   "seekbar-height": "0.4rem",
   "seekbar-buffered": "rgba(255, 255, 255, 0.35)",
-  "seekbar-played": "var(--f8p-color-accent)",
+  "seekbar-played": "var(--reel-color-accent)",
   "seekbar-knob-size": "1.2rem",
 
   "font-family": "system-ui, -apple-system, 'Segoe UI', sans-serif",

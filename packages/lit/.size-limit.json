@@ -1,17 +1,17 @@
 [
   {
-    "name": "@f8/player-lit adapter only (gzip)",
+    "name": "@f8team/reel-lit adapter only (gzip)",
     "path": "dist/index.js",
     "import": "*",
-    "ignore": ["@f8/player-core", "lit"],
+    "ignore": ["@f8team/reel-core", "lit"],
     "limit": "12 KB",
     "gzip": true
   },
   {
-    "name": "@f8/player-lit adapter hard cap (gzip)",
+    "name": "@f8team/reel-lit adapter hard cap (gzip)",
     "path": "dist/index.js",
     "import": "*",
-    "ignore": ["@f8/player-core", "lit"],
+    "ignore": ["@f8team/reel-core", "lit"],
     "limit": "13 KB",
     "gzip": true
   }

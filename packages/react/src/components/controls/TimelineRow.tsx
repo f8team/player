@@ -7,5 +7,5 @@ export type TimelineRowProps = ComponentPropsWithoutRef<"div">;
  * Pair with {@link ActionsRow} and {@link Bar} `layout="two-row"`.
  */
 export function TimelineRow({ ...props }: TimelineRowProps): JSX.Element {
-  return <div data-f8-player-controls-row="timeline" {...props} />;
+  return <div data-reel-controls-row="timeline" {...props} />;
 }

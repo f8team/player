@@ -1,4 +1,4 @@
-import type { PlayerEvents } from "@f8/player-core";
+import type { PlayerEvents } from "@f8team/reel-core";
 import { useEffect, useRef } from "react";
 
 import { usePlayerContext } from "../context/PlayerContext.js";

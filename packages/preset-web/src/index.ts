@@ -1,23 +1,23 @@
 export {
-  DEFAULT_F8_GATEWAY_ALLOWLIST,
-  DEFAULT_F8_KEYBOARD,
-  createF8WebPlayerPlugins,
-  type F8WebPlayerPluginsOptions,
-} from "./createF8WebPlayerPlugins.js";
+  DEFAULT_REEL_GATEWAY_ALLOWLIST,
+  DEFAULT_REEL_KEYBOARD,
+  createReelWebPlayerPlugins,
+  type ReelWebPlayerPluginsOptions,
+} from "./createReelWebPlayerPlugins.js";
 
-// Phase 5 one-liner (React). Pulls in `@f8/player-react` — peer dep declared in
+// Phase 5 one-liner (React). Pulls in `@f8team/reel-react` — peer dep declared in
 // package.json.
-export { F8WebPlayer } from "./F8WebPlayer.js";
-export type { F8WebPlayerProps, F8WebPlayerLight } from "./F8WebPlayer.js";
+export { ReelWebPlayer } from "./ReelWebPlayer.js";
+export type { ReelWebPlayerProps, ReelWebPlayerLight } from "./ReelWebPlayer.js";
 
-// Phase 5 one-liner (Lit). Pulls in `@f8/player-lit` as optional peer.
-export { F8WebPlayerElement, defineF8WebPlayer } from "./F8WebPlayerLit.js";
+// Phase 5 one-liner (Lit). Pulls in `@f8team/reel-lit` as optional peer.
+export { ReelWebPlayerElement, defineReelWebPlayer } from "./ReelWebPlayerLit.js";
 
-// Convenience re-exports so consumers don't import from `@f8/player-react`
+// Convenience re-exports so consumers don't import from `@f8team/reel-react`
 // separately when using the one-liner.
 export {
   vietnameseLabels,
   defaultLabels,
   type PlayerLabels,
   type PlayerCallbackProps,
-} from "@f8/player-react";
+} from "@f8team/reel-react";
