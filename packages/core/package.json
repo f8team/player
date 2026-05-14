@@ -68,7 +68,7 @@
     "media"
   ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^11.1.6",
+    "@size-limit/preset-small-lib": "^12.1.0",
     "@vitest/coverage-v8": "^4.1.6",
     "jsdom": "^25.0.1",
     "size-limit": "^11.1.6",
