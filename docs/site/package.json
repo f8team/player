@@ -23,13 +23,13 @@
     "@f8team/reel-plugin-auth-aware": "workspace:*",
     "@f8team/reel-plugin-fullscreen": "workspace:*",
     "@codesandbox/sandpack-react": "^2.13.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
     "react-router-dom": "^6.28.0"
   },
   "devDependencies": {
     "@mdx-js/rollup": "^3.1.0",
-    "@types/react": "^18.3.22",
+    "@types/react": "^19.2.14",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.6.2",
